@@ -1,8 +1,8 @@
 {
-  "apiKey": "AIzaSyD57d0HkymVq6iWDQKNG_5Pze4tvhkwm4w",
+  "apiKey": "AIzaSyD57d0HkymVq6iWDQkNG_5Pze4tvhkwm4w",
   "authDomain": "equicomptes-v8-beta.firebaseapp.com",
   "projectId": "equicomptes-v8-beta",
-  "appId": "1:78912509753:web:c2e65bf1956236256dbae8",
   "storageBucket": "equicomptes-v8-beta.firebasestorage.app",
-  "messagingSenderId": "78912509753"
+  "messagingSenderId": "78912509753",
+  "appId": "1:78912509753:web:c2e65bf1956236256dbae8"
 }
