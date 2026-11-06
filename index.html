@@ -229,8 +229,37 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 
 /* Application V8 BÊTA — identité distincte, sans modifier les thèmes historiques */
 .beta-label{display:inline-block;border:1px solid #fff8;border-radius:6px;padding:3px 5px;margin-left:2px;font-size:10px;letter-spacing:.2px;background:#f5a524;color:#161a25;vertical-align:3px}
-.beta-sync-strip{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#f6e5bb;color:#423415;font-size:12px;padding:9px 16px;line-height:1.4}
-.beta-sync-strip span{flex:1;min-width:0;overflow-wrap:anywhere}.beta-sync-strip [hidden]{display:none!important}.beta-sync-strip [data-sync-state="offline"]{color:#794712}.beta-sync-strip [data-sync-state="synced"]{color:#086f55}.beta-sync-strip [data-sync-state="warning"]{font-weight:800;color:#92240a}.beta-sync-strip button{border:1px solid #af954e;background:#fff7e4;padding:7px 9px;border-radius:8px;color:#524020;font-weight:750;font-size:11px}
+/* V8 BÊTA — bandeau compact : état visible, détails privés à la demande. */
+.beta-sync-strip{position:relative;z-index:8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;padding:9px 14px;min-width:0;background:var(--t-card2,#edf4f6);color:var(--t-ink,#172c3a);border-bottom:1px solid var(--t-line,#d9e5e9);line-height:1.3}
+.beta-sync-strip [hidden]{display:none!important}
+.beta-strip-status{flex:1 1 110px;min-width:0;display:flex;align-items:center;gap:8px}
+/* Le module conserve le message complet et l'état dans cet élément ; seul le rendu visuel est abrégé. */
+#beta-sync-indicator{display:inline-flex;align-items:center;gap:7px;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;font-size:0!important;line-height:1.4;font-weight:800!important;letter-spacing:0}
+#beta-sync-indicator::before{content:"";display:inline-block;flex:0 0 10px;width:10px;height:10px;border-radius:50%;background:#c34c50;box-shadow:0 0 0 3px rgba(195,76,80,.14)}
+#beta-sync-indicator::after{content:"Non connecté";font-size:12px;color:var(--t-ink,#172c3a);white-space:nowrap}
+#beta-sync-indicator[data-sync-state="synced"]::before{background:#16846e;box-shadow:0 0 0 3px #16846e25}
+#beta-sync-indicator[data-sync-state="synced"]::after{content:"Synchronisé"}
+#beta-sync-indicator[data-sync-state="pending"]::before,#beta-sync-indicator[data-sync-state="offline"]::before{background:#ce902e;box-shadow:0 0 0 3px #ce902e25}
+#beta-sync-indicator[data-sync-state="pending"]::after{content:"En attente"}
+#beta-sync-indicator[data-sync-state="offline"]::after{content:"Hors ligne"}
+#beta-sync-indicator[data-sync-state="warning"]::after{content:"Conflit à vérifier"}
+#beta-sync-indicator[data-sync-state="error"]::after{content:"Erreur de connexion"}
+.beta-strip-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px;min-width:0}
+.beta-sync-strip button{font-size:12px;font-weight:750;color:var(--t-ink,#172c3a);border:1px solid var(--t-border,#d1dde1);border-radius:9px;background:var(--t-card,#fff);padding:8px 10px;min-height:35px;margin:0;white-space:nowrap;max-width:100%;box-shadow:none}
+.beta-sync-strip button:focus-visible{outline:3px solid #67bbaa;outline-offset:2px}
+#v8-invite-button{margin:0!important;font-size:12px!important}
+#v8-account-info-toggle{display:inline-flex;align-items:center;gap:6px}
+#v8-account-info-toggle[aria-expanded="true"]{border-color:var(--t-primary,#087d80)}
+.beta-account-popover{position:absolute;z-index:30;right:10px;top:calc(100% - 1px);width:min(330px,calc(100vw - 20px));padding:15px;border-radius:14px;border:1px solid var(--t-border,#d6e3e5);background:var(--t-card,#fff);color:var(--t-ink,#1b2a3a);box-shadow:0 12px 32px #13283b30;font-size:13px;line-height:1.55}
+.beta-account-popover .info-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.beta-account-popover .info-head strong{font-size:14px}
+.beta-account-popover .info-head button{border:0;background:transparent;font-size:20px;min-height:26px;padding:1px 6px}
+.beta-account-popover .info-key{display:block;font-size:11px;color:var(--t-muted,#687a87);margin:11px 0 3px;font-weight:750}
+.beta-account-popover .info-value{display:block;overflow-wrap:anywhere;word-break:break-word;white-space:normal;min-width:0;font-weight:620;font-size:13px}
+.beta-account-popover .v8-home-chip{font-size:13px;padding:0;background:none;color:inherit;border:0;font-weight:620}
+.beta-account-popover #beta-account-button{margin-top:14px;width:100%;font-size:12px}
+@media(max-width:355px){.beta-sync-strip{padding:8px 10px;gap:6px}.beta-strip-status{flex-basis:91px}.beta-strip-actions{gap:4px}.beta-sync-strip button{padding:7px}.beta-account-toggle-label{display:none}}
+
 .beta-gate{position:fixed;inset:0;background:rgba(8,17,31,.94);z-index:99998;display:flex;align-items:center;justify-content:center;overflow:auto;padding:15px;color:#16243c}
 .beta-gate[hidden]{display:none!important}.beta-gate-card{background:white;border-radius:18px;max-width:460px;width:100%;padding:21px 18px;box-shadow:0 12px 44px #0008;margin:auto}
 .beta-gate-head{display:flex;align-items:center;gap:12px}.beta-gate-head strong{font-size:19px}.beta-gate-head small{display:block;font-size:12px;color:#667586;margin-top:3px}.beta-gate-logo{background:#1e4d67;color:white;width:45px;height:45px;display:grid;place-items:center;border-radius:13px;font-size:25px}
@@ -248,10 +277,22 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <body>
 <div class="app">
 <header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V8.0 BÊTA</span></h1><p>Un partage juste, en un clin d’œil</p></div><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
-<div class="beta-sync-strip" aria-live="polite" role="status">
-  <span id="beta-sync-indicator">● BÊTA : connexion Firebase nécessaire</span><span class="v8-home-chip" id="v8-home-label" hidden></span>
-  <button type="button" id="beta-resolve-conflicts" hidden aria-label="Examiner les conflits de synchronisation">⚠ Conflits</button>
-  <button type="button" id="v8-invite-button" hidden class="btn secondary" style="margin:0 6px 0 0;font-size:12px">✉ Inviter</button><button type="button" id="beta-account-button" aria-label="Compte et connexion Firebase">Compte Firebase</button>
+<div class="beta-sync-strip" aria-label="Connexion et foyer">
+  <div class="beta-strip-status">
+    <span id="beta-sync-indicator" role="status" aria-live="polite" data-sync-state="neutral">● BÊTA : connexion Firebase nécessaire</span>
+  </div>
+  <div class="beta-strip-actions">
+    <button type="button" id="beta-resolve-conflicts" hidden aria-label="Examiner les conflits de synchronisation">⚠ Conflits</button>
+    <button type="button" id="v8-invite-button" hidden class="btn secondary">✉ Inviter</button>
+    <button type="button" id="v8-account-info-toggle" aria-label="Afficher les informations du compte Firebase" aria-expanded="false" aria-controls="v8-account-info">ⓘ <span class="beta-account-toggle-label">Compte</span></button>
+  </div>
+  <div class="beta-account-popover" id="v8-account-info" hidden aria-label="Informations du compte et de la synchronisation">
+    <div class="info-head"><strong>Informations de connexion</strong><button type="button" id="v8-account-info-close" aria-label="Fermer les informations">×</button></div>
+    <span class="info-key">Adresse e-mail</span><span class="info-value" id="v8-info-email">—</span>
+    <span class="info-key">Foyer</span><span class="info-value"><span class="v8-home-chip" id="v8-home-label" hidden></span><span id="v8-info-home-empty">Non disponible</span></span>
+    <span class="info-key">État de synchronisation</span><span class="info-value" id="v8-info-sync">En attente de connexion</span>
+    <button type="button" id="beta-account-button" aria-label="Gérer la connexion ou se déconnecter">Gérer la connexion Firebase</button>
+  </div>
 </div>
 <nav class="tabs-wrap" aria-label="Navigation"><div class="tabs"><button class="tab" data-tab="calcul" aria-selected="true"><span data-theme-icon="calcul" aria-hidden="true">⌁</span> Calcul</button><button class="tab" data-tab="charges" aria-selected="false"><span data-theme-icon="charges" aria-hidden="true">☷</span> Charges</button><button class="tab" data-tab="historique" aria-selected="false"><span data-theme-icon="historique" aria-hidden="true">▤</span> Historique</button><button class="tab" data-tab="partage" aria-selected="false"><span data-theme-icon="partage" aria-hidden="true">↔</span> Partage</button></div></nav>
 <main class="main">
@@ -1163,6 +1204,47 @@ setTimeout(()=>{
   if(e)e.textContent='Module V8 introuvable : vérifie sync-v8.js puis actualise la page.';
  }
 },4000);
+</script>
+<script>
+/* V8 bandeau compact — lecture seule : pas de modification des comptes ou des données. */
+(()=>{
+ const btn=document.getElementById('v8-account-info-toggle');
+ const pane=document.getElementById('v8-account-info');
+ const close=document.getElementById('v8-account-info-close');
+ const status=document.getElementById('beta-sync-indicator');
+ const name=document.getElementById('v8-home-label');
+ const email=document.getElementById('v8-info-email');
+ const homeEmpty=document.getElementById('v8-info-home-empty');
+ const sync=document.getElementById('v8-info-sync');
+ if(!btn||!pane||!close||!status||!name||!email||!homeEmpty||!sync)return;
+ function refresh(){
+  let last=null;
+  try{last=JSON.parse(localStorage.getItem('equi-v8-verified')||'null');}catch{}
+  const raw=status.textContent.trim();
+  const found=raw.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  email.textContent=last?.email||found?.[0]||'Compte non connecté';
+  const foyer=name.textContent.trim();
+  homeEmpty.hidden=!name.hidden&&!!foyer;
+  sync.textContent=raw||'État non disponible';
+  status.title=raw;
+ }
+ function hide(){pane.hidden=true;btn.setAttribute('aria-expanded','false');}
+ btn.addEventListener('click',(event)=>{
+  event.stopPropagation();
+  const opening=pane.hidden;
+  pane.hidden=!opening;
+  btn.setAttribute('aria-expanded',String(opening));
+  if(opening)refresh();
+ });
+ close.addEventListener('click',hide);
+ document.getElementById('beta-account-button')?.addEventListener('click',hide);
+ document.addEventListener('click',(event)=>{if(!pane.hidden&&!pane.contains(event.target)&&!btn.contains(event.target))hide();});
+ document.addEventListener('keydown',(event)=>{if(event.key==='Escape'&&!pane.hidden){hide();btn.focus();}});
+ const observer=new MutationObserver(refresh);
+ observer.observe(status,{attributes:true,attributeFilter:['data-sync-state'],childList:true,characterData:true,subtree:true});
+ observer.observe(name,{attributes:true,attributeFilter:['hidden'],childList:true,characterData:true,subtree:true});
+ refresh();
+})();
 </script>
 <script type="module" src="./sync-v8.js"></script>
 <script>if("serviceWorker" in navigator && location.protocol==="https:"){navigator.serviceWorker.register("./service-worker.js",{scope:"./"}).catch(()=>{});}</script>
