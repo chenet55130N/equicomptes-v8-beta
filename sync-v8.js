@@ -1,6 +1,6 @@
 /**
- * ÉquiComptes V8.0 BÊTA — mode hors connexion + synchronisation par document.
- * Données de test : l'application V6.4 n'est jamais consultée ni modifiée.
+ * ÉquiComptes V8.1 — mode hors connexion + synchronisation par document.
+ * Données V8.1 : l'application V6.4 n'est jamais consultée ni modifiée.
  * Le serveur est la source commune ; les changements hors ligne sont conservés
  * dans un journal local et transmis au retour de la connexion.
  * Les modifications concurrentes d'un même document nécessitent un arbitrage.
@@ -37,7 +37,7 @@ function errorText(e){
  const code=String(e?.code||''), desc=String(e?.message||'Erreur inconnue');
  if(code.includes('permission-denied'))return 'Accès Firestore refusé : vérifie les UID et les règles publiées.';
  if(code.includes('wrong-password')||code.includes('invalid-credential')||code.includes('user-not-found'))return 'Adresse e-mail ou mot de passe incorrect.';
- if(code.includes('auth/user-token-expired')||code.includes('user-disabled'))return 'Session expirée : reconnecte-toi avec ton mot de passe.';
+ if(code.includes('auth/user-token-expired')||code.includes('user-disabled')||code.includes('user-not-found'))return 'Session expirée : reconnecte-toi avec ton mot de passe.';
  if(code.includes('network')||!navigator.onLine)return 'Connexion Internet indisponible : les changements restent sur ce téléphone.';
  return desc.slice(0,210);
 }
@@ -58,9 +58,10 @@ function showOnly(section){
  for(const id of ['beta-config-panel','v8-auth-panel','v8-verify-panel','v8-house-panel'])el(id).hidden=id!==section;
  el('beta-change-config').hidden=(section==='beta-config-panel');
  el('beta-signout').hidden=!user;
+ el('beta-delete-account-gate').hidden=!user;
 }
 function showConfig(){showOnly('beta-config-panel');el('beta-config-text').value=localStorage.getItem(CFGKEY)||'';note('Renseigne le projet Firebase V8 distinct de la V7.1.');}
-function showLogin(){showOnly('v8-auth-panel');note('Connecte-toi ou crée ton compte ÉquiComptes BÊTA.');}
+function showLogin(){showOnly('v8-auth-panel');note('Connecte-toi ou crée ton compte ÉquiComptes.');}
 function showVerify(){showOnly('v8-verify-panel');note('Vérifie ton adresse e-mail avant de créer ou rejoindre un foyer.');}
 function showHouse(){showOnly('v8-house-panel');note('Crée ton foyer privé, ou colle le lien d’invitation reçu.');}
 function documentKey(g,id){return g+'/'+id;}
@@ -355,7 +356,7 @@ async function startFirebase(cfg){
    window.EQUI_V8_AUTH_LISTENER=true;
    sdk.onAuthStateChanged(auth, async u=>{
     if(u)await bootUser(u);
-    else{user=null;onlineReady=false;resetListeners();el('beta-signout').hidden=true;
+    else{user=null;onlineReady=false;resetListeners();el('beta-signout').hidden=true;el('beta-delete-account-gate').hidden=true;
      if(navigator.onLine)showLogin();else openOffline('Connexion interrompue.');}
    },e=>{if(!openOffline(authError(e))){showLogin();note(authError(e));}});
   }
@@ -463,7 +464,7 @@ el('v8-copy-invite').addEventListener('click',async()=>{
  catch{el('v8-invite-link').select();el('v8-invite-status').textContent='Sélectionne et copie le lien ci-dessus.';}
 });
 el('beta-signout').addEventListener('click',async()=>{
- if(backlog()&&!confirm(`${backlog()} modification(s) ne sont pas encore synchronisées. Exporte une sauvegarde de test avant de te déconnecter. Continuer ?`))return;
+ if(backlog()&&!confirm(`${backlog()} modification(s) ne sont pas encore synchronisées. Exporte une sauvegarde avant de te déconnecter. Continuer ?`))return;
  resetListeners();clearTimeout(saveTimer);clearTimeout(reconnectTimer);
  try{if(auth)await sdk.signOut(auth)}catch{}
  localStorage.removeItem(VERIFIED_KEY);localStorage.removeItem(FOYERKEY);
@@ -471,10 +472,149 @@ el('beta-signout').addEventListener('click',async()=>{
  location.replace(location.pathname);
 });
 el('beta-account-button').addEventListener('click',()=>{
- if(user){if(confirm(`Compte Firebase : ${user.email}\n\nSe déconnecter de la V8 BÊTA ?`))el('beta-signout').click();}
+ if(user){if(confirm(`Compte Firebase : ${user.email}\n\nSe déconnecter d’ÉquiComptes ?`))el('beta-signout').click();}
  else if(!navigator.onLine)note('Une connexion Internet est nécessaire pour ouvrir un nouveau compte.');
  else showLogin();
 });
+// V8.1 — suppression volontaire d'un compte. Aucune donnée d'un autre membre
+// n'est supprimée. La dernière personne nettoie son foyer en un lot atomique.
+const deleteDialog=el('v8-delete-dialog');
+const deleteForm=el('v8-delete-form');
+let deletionBusy=false;
+let deletionPrepared=null;
+function deleteMessage(s){el('v8-delete-feedback').textContent=s;}
+function cleanOwnLocalCopies(uid,hid){
+ try{
+  // Uniquement les données de cette V8 : jamais celles de la V7/V6.
+  const ownPrefix=`equicomptes-v8-beta-local:${uid}:`;
+  const queueSuffix=`:${uid}::`;
+  for(let i=localStorage.length-1;i>=0;i--){
+   const k=localStorage.key(i);
+   if(k&&(k.startsWith(ownPrefix)||(k.startsWith('equicomptes-v8-beta-offline:')&&k.includes(queueSuffix))))localStorage.removeItem(k);
+  }
+  localStorage.removeItem(VERIFIED_KEY);
+  localStorage.removeItem(FOYERKEY);
+ }catch(e){console.warn('Nettoyage local incomplet',e);}
+}
+async function deletionContext(u){
+ const profile=await sdk.getDocFromServer(userProfile(u.uid));
+ if(!profile.exists())return {kind:'account-only',hid:null};
+ const hid=profile.data().hid;
+ if(!/^[a-f0-9]{30,48}$/.test(hid))throw Error('Profil incohérent : suppression sécurisée impossible.');
+ const home=await sdk.getDocFromServer(sdk.doc(db,'foyers',hid));
+ if(!home.exists())throw Error('Foyer introuvable. Ne supprime pas le compte avant de résoudre ce problème.');
+ const members=await sdk.getDocsFromServer(sdk.collection(db,'foyers',hid,'members'));
+ const me=members.docs.find(x=>x.id===u.uid);
+ if(!me)throw Error('Ton compte ne figure pas dans le foyer. Contacte le responsable avant de le supprimer.');
+ const others=members.docs.filter(x=>x.id!==u.uid);
+ if(others.length>1)throw Error('Ce foyer comporte plus de deux membres : suppression à contrôler manuellement.');
+ const owner=home.data().ownerUid===u.uid;
+ if(others.length===0&&!owner)throw Error('Le foyer a un responsable absent. Suppression à contrôler manuellement.');
+ return {kind:others.length?(owner?'transfer':'leave'):'last',hid,other:others[0]?.id||null};
+}
+function explainDeletion(ctx){
+ if(ctx.kind==='account-only')return 'Ton compte n’est associé à aucun foyer. Seule ta connexion ÉquiComptes sera supprimée.';
+ if(ctx.kind==='leave')return 'Ton accès sera retiré du foyer. Les charges, salaires, achats et historiques partagés seront conservés pour l’autre membre.';
+ if(ctx.kind==='transfer')return 'La gestion du foyer sera transférée automatiquement à l’autre membre. Ses données partagées et son compte seront intégralement conservés.';
+ return 'Tu es la dernière personne dans ce foyer. Le foyer et toutes ses données partagées seront supprimés en même temps que ton compte.';
+}
+async function openDeleteDialog(){
+ if(deletionBusy)return;
+ const u=auth?.currentUser;
+ if(!u){note('Connecte-toi pour supprimer ton compte.');return;}
+ if(!navigator.onLine){note('La suppression du compte nécessite Internet.');return;}
+ if(backlog()||conflicts.size||inFlight.size){
+  note('Synchronise ou résous les modifications en attente avant de supprimer ton compte.');return;
+ }
+ deleteMessage('');deleteForm.reset();deletionPrepared=null;
+ el('v8-delete-explanation').textContent='Vérification des membres du foyer…';
+ el('v8-delete-submit').disabled=true;
+ deleteDialog.showModal();
+ try{
+  deletionPrepared=await deletionContext(u);
+  el('v8-delete-explanation').textContent=explainDeletion(deletionPrepared);
+  el('v8-delete-submit').disabled=false;
+ }catch(e){deleteMessage('Vérification impossible : '+authError(e));}
+}
+el('v8-delete-account-open').addEventListener('click',openDeleteDialog);
+el('beta-delete-account-gate').addEventListener('click',openDeleteDialog);
+function closeDeleteDialog(){if(!deletionBusy)deleteDialog.close();}
+el('v8-delete-close').addEventListener('click',closeDeleteDialog);
+el('v8-delete-cancel').addEventListener('click',closeDeleteDialog);
+deleteDialog.addEventListener('cancel',e=>{if(deletionBusy)e.preventDefault();});
+async function commitDeletion(u,ctx){
+ if(ctx.kind==='account-only')return;
+ const hid=ctx.hid;
+ const batch=sdk.writeBatch(db);
+ if(ctx.kind==='transfer'){
+  batch.update(sdk.doc(db,'foyers',hid),{ownerUid:ctx.other});
+  batch.update(memberPath(hid,ctx.other),{role:'owner'});
+  // Ne pas laisser d'anciennes invitations émises par un membre parti.
+  const inv=await sdk.getDocsFromServer(sdk.collection(db,'foyers',hid,'invites'));
+  if(inv.size>350)throw Error('Trop d’invitations à nettoyer : aucun compte supprimé.');
+  for(const item of inv.docs)batch.delete(item.ref);
+ }else if(ctx.kind==='last'){
+  // Suppression de toutes les sous-collections, pas seulement du document foyer.
+  const groups=[...GROUPS,'invites'];
+  let docCount=0;
+  for(const g of groups){
+   const snap=await sdk.getDocsFromServer(sdk.collection(db,'foyers',hid,g));
+   for(const item of snap.docs){batch.delete(item.ref);docCount++;}
+  }
+  // Éviter les lots trop grands : jamais de suppression partielle silencieuse.
+  if(docCount>350)throw Error('Ce foyer contient trop d’éléments pour un effacement sûr depuis le navigateur. Exporte une sauvegarde et contacte l’administrateur. Aucun élément n’a été effacé.');
+ }
+ batch.delete(memberPath(hid,u.uid));
+ batch.delete(userProfile(u.uid));
+ if(ctx.kind==='last')batch.delete(sdk.doc(db,'foyers',hid));
+ await batch.commit();
+}
+deleteForm.addEventListener('submit',async event=>{
+ event.preventDefault();
+ if(deletionBusy||!deletionPrepared)return;
+ const u=auth?.currentUser;
+ if(!u||!navigator.onLine){deleteMessage('Connexion Internet et compte actif nécessaires.');return;}
+ if(el('v8-delete-confirm-word').value.trim().toUpperCase()!=='SUPPRIMER'){
+  deleteMessage('Saisis exactement SUPPRIMER pour confirmer.');return;
+ }
+ const pw=el('v8-delete-password').value;
+ if(!pw){deleteMessage('Saisis ton mot de passe.');return;}
+ if(backlog()||conflicts.size||inFlight.size){deleteMessage('Il reste des modifications à synchroniser ou des conflits à résoudre.');return;}
+ deletionBusy=true;el('v8-delete-submit').disabled=true;
+ const uid=u.uid, knownHid=deletionPrepared.hid;
+ try{
+  deleteMessage('Vérification du mot de passe…');
+  const credential=sdk.EmailAuthProvider.credential(u.email,pw);
+  await sdk.reauthenticateWithCredential(u,credential);
+  await sdk.getIdToken(u,true);
+  const fresh=await deletionContext(u);
+  // L'autre membre a pu rejoindre/quitter le foyer entre l'ouverture et la confirmation.
+  if(fresh.kind!==deletionPrepared.kind||fresh.hid!==deletionPrepared.hid||fresh.other!==deletionPrepared.other){
+   deletionPrepared=fresh;el('v8-delete-explanation').textContent=explainDeletion(fresh);
+   if(fresh.kind!=='account-only')throw Error('La composition du foyer a changé. Relis le message et confirme à nouveau.');
+   // Le retrait du foyer a déjà réussi, mais l'authentification restait à supprimer.
+  }
+  deleteMessage('Suppression sécurisée des données et accès au foyer…');
+  resetListeners();onlineReady=false;
+  await commitDeletion(u,fresh);
+  deleteMessage('Suppression de ton identifiant de connexion…');
+  await sdk.deleteUser(u);
+  cleanOwnLocalCopies(uid,knownHid);
+  deleteDialog.close();
+  location.replace(location.pathname);
+ }catch(e){
+  const code=String(e?.code||'');
+  if(code.includes('wrong-password')||code.includes('invalid-credential'))deleteMessage('Mot de passe incorrect. Aucune suppression effectuée.');
+  else if(code.includes('requires-recent-login'))deleteMessage('Session trop ancienne : reconnecte-toi et réessaie.');
+  else deleteMessage('Suppression inachevée : '+authError(e)+' Si le foyer a déjà été détaché, réessaie pour supprimer ton identifiant de connexion.');
+  if(auth?.currentUser&&!onlineReady)reconnectSoon();
+ }finally{
+  el('v8-delete-password').value='';
+  el('v8-delete-submit').disabled=false;
+  deletionBusy=false;
+ }
+});
+
 window.addEventListener('offline',()=>{disconnected=true;onlineReady=false;resetListeners();openOffline('Hors connexion : tes modifications restent enregistrées localement.');refreshStatus();});
 window.addEventListener('online',()=>{disconnected=false;showStatus('Connexion rétablie : reprise en cours…','pending');reconnectSoon();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&navigator.onLine&&!onlineReady)reconnectSoon();});

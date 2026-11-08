@@ -1,7 +1,7 @@
 {
   "id": "./?equicomptes-v8-beta",
-  "name": "ÉquiComptes V8.0 BÊTA — Multi-foyers",
-  "short_name": "Équi V8 BÊTA",
+  "name": "ÉquiComptes V8.1 — Multi-foyers",
+  "short_name": "Équi V8.1",
   "description": "ÉquiComptes multi-foyers : charges équitables et synchronisation privée avec mode hors ligne.",
   "start_url": "./index.html",
   "scope": "./",

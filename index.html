@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#10233f">
 <meta name="application-name" content="ÉquiComptes">
 <meta name="description" content="Répartition des salaires, échéanciers photo ou manuels, revenus complémentaires et remboursements à 50/50.">
-<title>ÉquiComptes V8 BÊTA · Multi-foyers synchronisés</title>
+<title>ÉquiComptes V8.1 · Multi-foyers synchronisés</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <style>
@@ -227,9 +227,9 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .salary-item{min-width:0}.account-label{display:block;font-size:11px;font-weight:750;color:var(--t-muted,var(--muted));margin:10px 0 5px}.salary-account{display:block;width:100%;min-width:0;border:1px solid var(--t-border,#dce5e9);background:var(--t-input,#f8fafb);color:var(--t-ink,var(--ink));padding:10px 7px;border-radius:10px;font-weight:650;font-size:12px}.transfer .name{min-height:32px;line-height:1.35;overflow-wrap:anywhere}.transfer .amount{font-variant-numeric:tabular-nums}.salary-item .field-label{min-height:18px}.settings-fields select{font-size:13px}
 @media(max-width:360px){.salary-grid{gap:8px}.salary-account{font-size:11px;padding:9px 4px}.salary-item .input-wrap{padding:0 7px}.salary-item .input-wrap input{font-size:17px}.transfer .name{font-size:11px}.transfer .amount{font-size:19px}}
 
-/* Application V8 BÊTA — identité distincte, sans modifier les thèmes historiques */
-.beta-label{display:inline-block;border:1px solid #fff8;border-radius:6px;padding:3px 5px;margin-left:2px;font-size:10px;letter-spacing:.2px;background:#f5a524;color:#161a25;vertical-align:3px}
-/* V8 BÊTA — bandeau compact : état visible, détails privés à la demande. */
+/* Application V8.1 — identité distincte, sans modifier les thèmes historiques */
+.beta-label{display:inline-block;border:1px solid #ffffff66;border-radius:7px;padding:3px 6px;margin-left:3px;font-size:10px;letter-spacing:.2px;background:#ffffff22;color:#fff;vertical-align:3px}
+/* V8.1 — bandeau compact : état visible, détails privés à la demande. */
 .beta-sync-strip{position:relative;z-index:8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;padding:9px 14px;min-width:0;background:var(--t-card2,#edf4f6);color:var(--t-ink,#172c3a);border-bottom:1px solid var(--t-line,#d9e5e9);line-height:1.3}
 .beta-sync-strip [hidden]{display:none!important}
 .beta-strip-status{flex:1 1 110px;min-width:0;display:flex;align-items:center;gap:8px}
@@ -263,7 +263,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .beta-gate{position:fixed;inset:0;background:rgba(8,17,31,.94);z-index:99998;display:flex;align-items:center;justify-content:center;overflow:auto;padding:15px;color:#16243c}
 .beta-gate[hidden]{display:none!important}.beta-gate-card{background:white;border-radius:18px;max-width:460px;width:100%;padding:21px 18px;box-shadow:0 12px 44px #0008;margin:auto}
 .beta-gate-head{display:flex;align-items:center;gap:12px}.beta-gate-head strong{font-size:19px}.beta-gate-head small{display:block;font-size:12px;color:#667586;margin-top:3px}.beta-gate-logo{background:#1e4d67;color:white;width:45px;height:45px;display:grid;place-items:center;border-radius:13px;font-size:25px}
-.beta-gate-warn{font-size:12px;color:#775116;background:#fff4da;border:1px solid #f5d796;padding:11px;border-radius:10px;line-height:1.5}
+.beta-gate-warn{font-size:12px;color:#326a62;background:#eef8f5;border:1px solid #d6eae5;padding:10px 11px;border-radius:10px;line-height:1.5}
 .beta-gate-message{background:#eef4f9;padding:10px 12px;border-radius:9px;font-size:12px;line-height:1.4;overflow-wrap:anywhere}
 #beta-config-panel label,.beta-login-form label{font-weight:750;font-size:12px;display:block;margin:12px 0 6px}
 #beta-config-panel textarea,.beta-login-form input{border:1px solid #a8b8c8;border-radius:9px;padding:12px;width:100%;background:#fff;color:#142236;font:inherit;font-size:13px}
@@ -276,10 +276,10 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V8.0 BÊTA</span></h1><p>Un partage juste, en un clin d’œil</p></div><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
+<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V8.1</span></h1><p>Un partage juste, en un clin d’œil</p></div><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
 <div class="beta-sync-strip" aria-label="Connexion et foyer">
   <div class="beta-strip-status">
-    <span id="beta-sync-indicator" role="status" aria-live="polite" data-sync-state="neutral">● BÊTA : connexion Firebase nécessaire</span>
+    <span id="beta-sync-indicator" role="status" aria-live="polite" data-sync-state="neutral">Connexion en cours…</span>
   </div>
   <div class="beta-strip-actions">
     <button type="button" id="beta-resolve-conflicts" hidden aria-label="Examiner les conflits de synchronisation">⚠ Conflits</button>
@@ -291,7 +291,8 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
     <span class="info-key">Adresse e-mail</span><span class="info-value" id="v8-info-email">—</span>
     <span class="info-key">Foyer</span><span class="info-value"><span class="v8-home-chip" id="v8-home-label" hidden></span><span id="v8-info-home-empty">Non disponible</span></span>
     <span class="info-key">État de synchronisation</span><span class="info-value" id="v8-info-sync">En attente de connexion</span>
-    <button type="button" id="beta-account-button" aria-label="Gérer la connexion ou se déconnecter">Gérer la connexion Firebase</button>
+    <button type="button" id="beta-account-button" aria-label="Se déconnecter du compte">↪ Se déconnecter</button>
+    <button type="button" id="v8-delete-account-open" class="v8-danger-account" aria-label="Supprimer définitivement mon compte">Supprimer mon compte…</button>
   </div>
 </div>
 <nav class="tabs-wrap" aria-label="Navigation"><div class="tabs"><button class="tab" data-tab="calcul" aria-selected="true"><span data-theme-icon="calcul" aria-hidden="true">⌁</span> Calcul</button><button class="tab" data-tab="charges" aria-selected="false"><span data-theme-icon="charges" aria-hidden="true">☷</span> Charges</button><button class="tab" data-tab="historique" aria-selected="false"><span data-theme-icon="historique" aria-hidden="true">▤</span> Historique</button><button class="tab" data-tab="partage" aria-selected="false"><span data-theme-icon="partage" aria-hidden="true">↔</span> Partage</button></div></nav>
@@ -312,12 +313,12 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <div id="charge-groups"></div>
 <details class="annual-overview" id="annual-overview"><summary>▦ Vue annuelle de toutes les charges <span id="annual-overview-year"></span></summary><div class="annual-inside"><p class="note">Prévisions calculées à partir des échéanciers. Touche un mois pour afficher ses charges et virements.</p><div id="annual-months" class="annual-months"></div><div class="annual-footer" id="annual-total"></div></div></details>
 <button class="btn primary wide" id="go-calcul">Voir les virements calculés</button>
-<p class="footnote">Cette V8 BÊTA démarre sans charges, salaires ni historiques. Pour les premiers essais multi-foyers, utilise uniquement des données fictives. N’importe aucune sauvegarde personnelle. Vérifie les échéanciers avant de les valider.</p>
+<p class="footnote">Pense à vérifier les montants et les échéances avant de valider tes virements.</p>
 </section>
 <section id="pane-historique" class="pane">
 <div class="section-top"><h2>Mois enregistrés</h2><span class="hint">Vos répartitions archivées</span></div>
 <div id="history-list" class="group"><div class="empty">Aucun mois enregistré pour l'instant.</div></div>
-<div class="section-top"><h2>Sauvegarde de vos données</h2></div><div class="card"><p class="note">Cette V8 BÊTA synchronise les données du foyer connecté après validation. Les autres foyers ne doivent pas y accéder. Exportez régulièrement une sauvegarde privée. Pour conserver vos données (charges, salaires, revenus complémentaires, paramètres, thèmes et dépenses partagées) si vous changez de téléphone, exportez une sauvegarde.</p><div class="btnbar"><button class="btn secondary" id="export-data">↓ Exporter la sauvegarde</button><button class="btn" id="import-trigger">↑ Importer</button><input id="import-file" type="file" accept="application/json,.json" class="hidden"></div><div class="btnbar"><button class="btn" id="print-current">Imprimer le calcul</button><button class="btn danger" id="reset-all">Réinitialiser l’application</button></div></div>
+<div class="section-top"><h2>Sauvegarde de vos données</h2></div><div class="card"><p class="note">Les données de votre foyer sont synchronisées entre ses membres lorsque la connexion est disponible. Pensez à exporter régulièrement une sauvegarde privée pour pouvoir les restaurer si nécessaire.</p><div class="btnbar"><button class="btn secondary" id="export-data">↓ Exporter la sauvegarde</button><button class="btn" id="import-trigger">↑ Importer</button><input id="import-file" type="file" accept="application/json,.json" class="hidden"></div><div class="btnbar"><button class="btn" id="print-current">Imprimer le calcul</button><button class="btn danger" id="reset-all">Réinitialiser l’application</button></div></div>
 </section>
 <section id="pane-partage" class="pane" aria-labelledby="partage-heading">
   <div class="card">
@@ -395,15 +396,15 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
   </div>
 </dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V8 BÊTA">
+<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V8.1">
  <div class="beta-gate-card">
-  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V8.0 BÊTA</strong><small>Multi-foyers • synchronisation privée</small></div></div>
-  <p class="beta-gate-warn">Cette version est une <b>application de test indépendante</b>. Elle ne modifie ni ta V6.4 ni ta V8.0. Commence avec des montants fictifs.</p>
+  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V8.1</strong><small>Multi-foyers • synchronisation privée</small></div></div>
+  <p class="beta-gate-warn">Une anomalie de fonctionnement ? Merci de la signaler à la personne qui t’a partagé ÉquiComptes.</p>
   <p id="beta-gate-message" class="beta-gate-message" role="status" aria-live="polite">Préparation de la connexion…</p>
   <section id="beta-config-panel" hidden>
    <label for="beta-config-text">Configuration Firebase du projet V8 (une seule fois par téléphone)</label>
    <textarea id="beta-config-text" rows="5" spellcheck="false" placeholder='Colle le firebaseConfig du NOUVEAU projet Firebase V8 : {"apiKey":"…","authDomain":"…","projectId":"…","appId":"…"}'></textarea>
-   <p class="beta-help">Utilise uniquement un <b>projet Firebase V8 séparé</b>, jamais celui de la V8.0. La configuration Web n'est pas un mot de passe.</p>
+   <p class="beta-help">Utilise uniquement le <b>projet Firebase V8</b>, jamais celui de la V7.1. La configuration Web n'est pas un mot de passe.</p>
    <button class="beta-main-btn" id="beta-save-config" type="button">Enregistrer la configuration V8</button>
   </section>
   <section id="v8-auth-panel" hidden>
@@ -426,7 +427,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
    <form id="v8-create-form"><label for="v8-house-name">Nom du foyer (visible par ses membres)</label><input id="v8-house-name" maxlength="55" required placeholder="Ex. Notre foyer"><button class="beta-main-btn" type="submit">Créer mon foyer privé</button></form>
    <form id="v8-join-form" hidden><label for="v8-invite-code">Invitation reçue par e-mail / WhatsApp</label><input id="v8-invite-code" required placeholder="Colle le lien ou le code d'invitation"><p class="beta-help">L'invitation doit être destinée à ton adresse e-mail <b>vérifiée</b> et n'est utilisable qu'une fois.</p><button class="beta-main-btn" type="submit">Rejoindre ce foyer</button></form>
   </section>
-  <div id="beta-gate-actions" class="beta-gate-actions"><button type="button" id="beta-change-config">Configuration Firebase</button><button type="button" id="beta-signout" hidden>Se déconnecter</button></div>
+  <div id="beta-gate-actions" class="beta-gate-actions"><button type="button" id="beta-change-config">Configuration Firebase</button><button type="button" id="beta-signout" hidden>Se déconnecter</button><button type="button" id="beta-delete-account-gate" hidden>Supprimer mon compte…</button></div>
   <p class="beta-help">La première connexion et l'adhésion à un foyer nécessitent Internet. Après validation, l'application peut être utilisée hors ligne sur un appareil personnel.</p>
  </div>
 </div>
@@ -435,7 +436,29 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <p class="note">L'invitation est valable 7 jours et ne peut être acceptée que par l'adresse e-mail indiquée, après vérification.</p>
 <form id="v8-invite-form"><label for="v8-invite-email">Adresse e-mail de la personne invitée</label><input id="v8-invite-email" type="email" required placeholder="prenom@example.com"><button class="btn primary wide" type="submit">Créer un lien d'invitation privé</button></form>
 <div id="v8-invite-result" hidden><label for="v8-invite-link">Copier puis envoyer ce lien à l'invité</label><textarea id="v8-invite-link" rows="3" readonly style="width:100%"></textarea><button class="btn secondary" id="v8-copy-invite" type="button">Copier le lien</button></div><p class="note" id="v8-invite-status" role="status"></p></div></dialog>
+
+<dialog id="v8-delete-dialog" class="dialog v8-delete-dialog" aria-labelledby="v8-delete-heading">
+ <form id="v8-delete-form" class="dialog-inner">
+  <div class="dialog-title"><div><div class="theme-eyebrow">GESTION DU COMPTE</div><h2 id="v8-delete-heading">Supprimer mon compte</h2></div><button type="button" class="close" id="v8-delete-close" aria-label="Fermer">×</button></div>
+  <p class="note"><strong>Cette action est irréversible.</strong> Elle supprimera ton identifiant de connexion ÉquiComptes et ton accès au foyer.</p>
+  <p id="v8-delete-explanation" class="v8-delete-explanation">Vérification du foyer…</p>
+  <p class="note">Si d'autres membres restent, leurs données partagées sont conservées. Sur tes autres appareils, les copies locales ne peuvent pas être effacées à distance.</p>
+  <label for="v8-delete-confirm-word">Saisis <strong>SUPPRIMER</strong> pour confirmer</label>
+  <input id="v8-delete-confirm-word" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="SUPPRIMER" required>
+  <label for="v8-delete-password">Confirme avec ton mot de passe ÉquiComptes</label>
+  <input id="v8-delete-password" type="password" autocomplete="current-password" minlength="6" required>
+  <p id="v8-delete-feedback" class="note" role="status" aria-live="polite"></p>
+  <div class="dialog-actions"><button type="button" class="btn secondary" id="v8-delete-cancel">Annuler</button><button type="submit" id="v8-delete-submit" class="btn danger">Supprimer définitivement</button></div>
+ </form>
+</dialog>
 <style>
+.v8-delete-dialog{z-index:99999;max-width:min(520px,95vw)}
+.v8-delete-dialog .dialog-inner{max-height:85dvh;overflow-y:auto}
+.v8-delete-dialog label{display:block;font-weight:650;margin:13px 0 6px}
+.v8-delete-dialog input{width:100%;max-width:100%;padding:12px;border:1px solid #bdccd4;border-radius:10px;font-size:16px;box-sizing:border-box}
+.v8-delete-explanation{background:#eef7f5;color:#174d43;padding:12px;border-radius:11px;border:1px solid #b5dcd4;line-height:1.5}
+#v8-delete-feedback:not(:empty){background:#fff3e0;padding:10px;border-radius:8px;overflow-wrap:anywhere}
+.beta-account-popover .v8-danger-account{display:block;width:100%;margin-top:8px;border-color:#deb6b6;color:#a13232;background:#fff5f5;font-size:12px}
 .v8-mode-row{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.v8-mode{flex:1;min-width:120px;border:1px solid #c7d5da;background:#f1f6f8;border-radius:12px;padding:12px 7px;font-weight:750;color:#263851}.v8-mode.active{background:#0a807c;color:#fff;border-color:#0a807c}.v8-secondary{margin:12px 0 3px;padding:10px;background:#f0f4f6;border-radius:10px;border:1px solid #dce5e8}#v8-auth-form input,#v8-create-form input,#v8-join-form input{display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #bdccd4;margin:8px 0 16px;font-size:16px}#v8-invite-result textarea{padding:10px;border:1px solid #d5dee4;border-radius:9px}#v8-verify-panel p{line-height:1.55}#v8-house-panel strong{display:block;margin-top:12px}.v8-home-chip{flex:0 0 auto!important;font-size:12px;background:#c3f2e1;color:#175244;padding:5px 9px;border-radius:999px;font-weight:750;display:inline-block;margin-left:7px;vertical-align:middle}
 </style>
 <script>
@@ -857,15 +880,15 @@ function restoreMonth(month){
 }
 
 function download(content,filename,mime){const b=new Blob([content],{type:mime}),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
-function exportData(){download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.0-beta',exportedAt:new Date().toISOString(),...state},null,2),'equicomptes_V8_BETA_sauvegarde_'+state.month+'.json','application/json');toast('Sauvegarde téléchargée')}
+function exportData(){download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.1',exportedAt:new Date().toISOString(),...state},null,2),'equicomptes_V8_1_sauvegarde_'+state.month+'.json','application/json');toast('Sauvegarde téléchargée')}
 function importData(file){if(!file)return;const reader=new FileReader();reader.onload=()=>{try{
  const data=validate(adaptOldBackup(JSON.parse(String(reader.result))));
- if(!confirm('Version BÊTA : importer cette sauvegarde remplacera les données de test et pourra les envoyer dans Firebase sur vos deux téléphones. Ne jamais importer une sauvegarde personnelle pour ce premier essai. Continuer ?'))return;
+ if(!confirm('Importer cette sauvegarde remplacera les données du foyer connecté et pourra synchroniser les changements sur tous ses appareils. Exporte une sauvegarde avant de continuer. Confirmer ?'))return;
  state=data;applyTheme();by('salary-p1').value=state.salaryN;by('salary-p2').value=state.salaryA;by('salary-bank-p1').value=state.bankN;by('salary-bank-p2').value=state.bankA;
  persist();renderResults();renderIncome();renderCharges();renderHistory();renderDebts();resetExpenseForm();toast('Sauvegarde restaurée');
  }catch(e){toast('Fichier de sauvegarde invalide')}};reader.onerror=()=>toast('Lecture du fichier impossible');reader.readAsText(file)}
 function resetData(){
- if(!confirm('BÊTA : réinitialiser les données du foyer synchronisé pour les DEUX téléphones ? Exporte une sauvegarde.'))return;
+ if(!confirm('Réinitialiser les données de ce foyer partagé sur tous les appareils ? Cette action est irréversible. Exporte une sauvegarde avant de continuer.'))return;
  if(!confirm('Dernière confirmation : effacer les données de cette application ?'))return;
  state=seed();applyTheme();by('salary-p1').value=state.salaryN;by('salary-p2').value=state.salaryA;by('salary-bank-p1').value=state.bankN;by('salary-bank-p2').value=state.bankA;
  persist();renderResults();renderIncome();renderCharges();renderHistory();renderDebts();resetExpenseForm();setTab('calcul');toast('Application réinitialisée');
@@ -1143,7 +1166,7 @@ for(const fn of ['renderThemeChart','renderResults','renderCharges','renderIncom
  const wrapped=function(...args){const value=orig.apply(this,args);applyPeopleLabels();return value};
  switch(fn){case 'renderThemeChart':renderThemeChart=wrapped;break;case 'renderResults':renderResults=wrapped;break;case 'renderCharges':renderCharges=wrapped;break;case 'renderIncome':renderIncome=wrapped;break;case 'renderHistory':renderHistory=wrapped;break;case 'renderDebts':renderDebts=wrapped;break;case 'renderSettingsTemplates':renderSettingsTemplates=wrapped;break;case 'displaySettings':displaySettings=wrapped;break;case 'openIncome':openIncome=wrapped;break;case 'openCharge':openCharge=wrapped;break}
 }
-// V8 BÊTA — adaptation sans changement des identifiants p1/p2.
+// V8.1 — adaptation sans changement des identifiants p1/p2.
 // Seul le module sync-v8.js reçoit une passerelle vers les données.
 function betaRefresh(){
  const v=state.monthlySalaries[state.month]||newSalaries(state.settings);
@@ -1238,6 +1261,7 @@ setTimeout(()=>{
  });
  close.addEventListener('click',hide);
  document.getElementById('beta-account-button')?.addEventListener('click',hide);
+ document.getElementById('v8-delete-account-open')?.addEventListener('click',hide);
  document.addEventListener('click',(event)=>{if(!pane.hidden&&!pane.contains(event.target)&&!btn.contains(event.target))hide();});
  document.addEventListener('keydown',(event)=>{if(event.key==='Escape'&&!pane.hidden){hide();btn.focus();}});
  const observer=new MutationObserver(refresh);
