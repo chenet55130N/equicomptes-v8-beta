@@ -29,7 +29,7 @@ jobs:
           if hashlib.sha256(Path('sync-v8.js').read_bytes()).hexdigest()=='9f68b3bdc89b74016331962db659d573dea8bab93b22dd7f038da3a1108a63e4':
               p=Path('sync-v8.js');s=p.read_text();a=s.index('  // Présentation du conflit :');b=s.index('  if(yes){op.base=',a)
               s=s[:a]+"  const yes=confirm(`CONFLIT SUR ${group} / ${id}\n\nDeux téléphones ont changé cet élément.\n\nOK : conserver ta modification locale et l'envoyer.\nAnnuler : utiliser la version du serveur.\n\nPense à exporter ta sauvegarde avant de trancher.`);\n"+s[b:]
-              p.write_text(s)
+              i=s.index('  const yes=confirm(');j=s.index('  if(yes){op.base=',i);s=s[:i]+s[i:j].rstrip('\n').replace('\n',r'\n')+'\n'+s[j:];p.write_text(s)
           if hashlib.sha256(Path('service-worker.js').read_bytes()).hexdigest()=='f0561af40cb2cd5f609ca582e0f65036fcf86700f151638e4356e0662d079d37':
               p=Path('service-worker.js');p.write_text(p.read_text().replace('20261108-conflit-3','20261106-voyant-2'))
           for name, sha in old.items():
