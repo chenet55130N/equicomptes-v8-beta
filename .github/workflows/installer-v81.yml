@@ -26,7 +26,7 @@ jobs:
               'service-worker.js': '6c43a56f70ab159a7ddac2624329b7847a43413b9a1c0f668b766a9eae75e35b',
               'manifest.webmanifest': '8dc80579e396fafa41ccca74f94ed582cccb93a5e0c54b2d2c164f029a9cf9b5',
           }
-                    if hashlib.sha256(Path('sync-v8.js').read_bytes()).hexdigest()=='9f68b3bdc89b74016331962db659d573dea8bab93b22dd7f038da3a1108a63e4':
+          if hashlib.sha256(Path('sync-v8.js').read_bytes()).hexdigest()=='9f68b3bdc89b74016331962db659d573dea8bab93b22dd7f038da3a1108a63e4':
               p=Path('sync-v8.js');s=p.read_text();a=s.index('  // Présentation du conflit :');b=s.index('  if(yes){op.base=',a)
               s=s[:a]+"  const yes=confirm(`CONFLIT SUR ${group} / ${id}\n\nDeux téléphones ont changé cet élément.\n\nOK : conserver ta modification locale et l'envoyer.\nAnnuler : utiliser la version du serveur.\n\nPense à exporter ta sauvegarde avant de trancher.`);\n"+s[b:]
               p.write_text(s)
