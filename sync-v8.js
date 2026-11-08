@@ -249,7 +249,22 @@ function resolveConflicts(){
  for(const [key,c]of [...conflicts]){
   const op=dirty[key];if(!op){conflicts.delete(key);continue;}
   const [group,id]=key.split('/');
-  const yes=confirm(`CONFLIT SUR ${group} / ${id}\n\nDeux téléphones ont changé cet élément.\n\nOK : conserver ta modification locale et l'envoyer.\nAnnuler : utiliser la version du serveur.\n\nPense à exporter ta sauvegarde avant de trancher.`);
+  // Présentation du conflit : texte simplifié, sans changer la décision OK / Annuler.
+  const groupNames={settings:'Paramètres',months:'Salaires du mois',charges:'Charge',incomes:'Revenu complémentaire',expenses:'Achat partagé',settlements:'Remboursement',history:'Historique'};
+  const item=op.value||c.remote||{};
+  const rawName=item.label||item.name||((group==='months'||group==='history')?id:groupNames[group]||'Élément');
+  const itemName=String(rawName).replace(/[\r\n\t]+/g,' ').trim().slice(0,85);
+  const money=(v)=>{
+   if(v===null)return 'Élément supprimé';
+   return v && typeof v.amount==='number' && Number.isFinite(v.amount)
+    ?new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(v.amount/100)
+    :null;
+  };
+  const localAmount=['charges','incomes','expenses'].includes(group)?money(op.deleted?null:op.value):null;
+  const sharedAmount=['charges','incomes','expenses'].includes(group)?money(c.remote):null;
+  const comparison=localAmount!==null && sharedAmount!==null
+   ?`\nSur cet appareil : ${localAmount}\nDans le foyer partagé : ${sharedAmount}\n` : '';
+  const yes=confirm(`DEUX MODIFICATIONS DIFFÉRENTES\n\n« ${itemName} » a été modifié sur deux appareils.${comparison}\nQuelle version veux-tu conserver ?\n\nOK : garder MA modification et l'envoyer au foyer.\n\nAnnuler : garder la VERSION PARTAGÉE et remplacer ma modification.\n\nSeul cet élément est concerné.`);
   if(yes){op.base=c.remote;saveDiskQueue();}
   else{
    delete dirty[key];saveDiskQueue();
