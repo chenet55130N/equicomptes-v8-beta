@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#10233f">
 <meta name="application-name" content="ÉquiComptes">
 <meta name="description" content="Répartition des salaires, échéanciers photo ou manuels, revenus complémentaires et remboursements à 50/50.">
-<title>ÉquiComptes V8.2.1 · Multi-foyers synchronisés</title>
+<title>ÉquiComptes V8.3 · Multi-foyers synchronisés</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <style>
@@ -227,9 +227,9 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .salary-item{min-width:0}.account-label{display:block;font-size:11px;font-weight:750;color:var(--t-muted,var(--muted));margin:10px 0 5px}.salary-account{display:block;width:100%;min-width:0;border:1px solid var(--t-border,#dce5e9);background:var(--t-input,#f8fafb);color:var(--t-ink,var(--ink));padding:10px 7px;border-radius:10px;font-weight:650;font-size:12px}.transfer .name{min-height:32px;line-height:1.35;overflow-wrap:anywhere}.transfer .amount{font-variant-numeric:tabular-nums}.salary-item .field-label{min-height:18px}.settings-fields select{font-size:13px}
 @media(max-width:360px){.salary-grid{gap:8px}.salary-account{font-size:11px;padding:9px 4px}.salary-item .input-wrap{padding:0 7px}.salary-item .input-wrap input{font-size:17px}.transfer .name{font-size:11px}.transfer .amount{font-size:19px}}
 
-/* Application V8.2.1 — identité distincte, sans modifier les thèmes historiques */
+/* Application V8.3 — identité distincte, sans modifier les thèmes historiques */
 .beta-label{display:inline-block;border:1px solid #ffffff66;border-radius:7px;padding:3px 6px;margin-left:3px;font-size:10px;letter-spacing:.2px;background:#ffffff22;color:#fff;vertical-align:3px}
-/* V8.2.1 — bandeau compact : état visible, détails privés à la demande. */
+/* V8.3 — bandeau compact : état visible, détails privés à la demande. */
 .beta-sync-strip{position:relative;z-index:8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;padding:9px 14px;min-width:0;background:var(--t-card2,#edf4f6);color:var(--t-ink,#172c3a);border-bottom:1px solid var(--t-line,#d9e5e9);line-height:1.3}
 .beta-sync-strip [hidden]{display:none!important}
 .beta-strip-status{flex:1 1 110px;min-width:0;display:flex;align-items:center;gap:8px}
@@ -275,7 +275,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 
 .privacy-field{display:none!important}.amounts-masked #ocr-preview-wrap,.amounts-masked #ocr-text,.amounts-masked .ocr-source{display:none!important}.privacy-cover{display:inline-block;padding:12px;font-weight:700;font-size:1.1em}.brand{flex-wrap:wrap}#privacy-toggle{color:inherit;background:transparent;border:1px solid currentColor;width:46px;height:46px;min-width:46px;padding:10px;display:inline-flex;align-items:center;justify-content:center}#v82-open-menu{margin-left:0}
 </style>
-<style>/* V8.2.1 — utiliser les couleurs du thème courant. */
+<style>/* V8.3 — utiliser les couleurs du thème courant. */
 [hidden]{display:none!important}
 .main{padding-bottom:calc(125px + env(safe-area-inset-bottom))}
 .tabs-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:0;top:auto;width:100%;max-width:840px;z-index:20;background:var(--t-card);border-top:1px solid var(--t-line);padding:9px 10px calc(9px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px #0001}
@@ -307,7 +307,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V8.2.1</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
+<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V8.3</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
 <div class="beta-sync-strip" aria-label="Connexion et foyer">
   <div class="beta-strip-status">
     <span id="beta-sync-indicator" role="status" aria-live="polite" data-sync-state="neutral">Connexion en cours…</span>
@@ -331,7 +331,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <section id="pane-calcul" class="pane active">
 <div class="section-top"><h2>Vos revenus</h2><span class="hint">Compte de réception au choix pour chaque salaire</span></div>
 <div class="card"><div class="salary-grid"><div class="salary-item"><label for="salary-p1" class="field-label">Salaire de Personne 1</label><div class="input-wrap"><input id="salary-p1" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="unit">€</span></div><label for="salary-bank-p1" class="account-label">Salaire reçu sur</label><select id="salary-bank-p1" class="salary-account" aria-label="Compte recevant le salaire de Personne 1"><option value="joint">Le compte joint</option><option value="personal">Compte personnel</option></select></div><div class="salary-item"><label for="salary-p2" class="field-label">Salaire de Personne 2</label><div class="input-wrap"><input id="salary-p2" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="unit">€</span></div><label for="salary-bank-p2" class="account-label">Salaire reçu sur</label><select id="salary-bank-p2" class="salary-account" aria-label="Compte recevant le salaire de Personne 2"><option value="joint">Le compte joint</option><option value="personal">Compte personnel</option></select></div></div><div class="pills"><span class="pill">Total des salaires : <strong id="total-income">—</strong></span><span class="pill" id="ratio-text">Répartition : —</span></div><p class="helper">Salaires et comptes habituels personnalisables dans Paramètres. Seuls les salaires servent au prorata des charges. <button type="button" class="inline-link" id="apply-default-salaries">↺ Rétablir les valeurs habituelles</button></p></div>
-<div class="highlight"><div class="mini-title"><span data-theme-icon="resultat" aria-hidden="true">✦</span> Résultat instantané</div><h2>Virements entre vos comptes</h2><p>Le sens des virements dépend du compte qui reçoit chaque salaire.</p><div class="transfers"><div class="transfer"><div class="name" id="transfer-p1-name">Personne 1</div><div class="amount" id="transfer-p1">—</div><div class="desc" id="transfer-p1-label">Saisir les salaires</div><div class="small-transfer"><span>Contribution de Personne 1</span><strong id="contrib-p1">—</strong></div></div><div class="transfer gold"><div class="name" id="transfer-p2-name">Personne 2</div><div class="amount" id="transfer-p2">—</div><div class="desc" id="transfer-p2-label">Saisir les salaires</div><div class="small-transfer"><span>Contribution de la personne 2</span><strong id="contrib-p2">—</strong></div></div></div><div class="split-meter" aria-label="Proportion des revenus"><div class="n" id="split-n" style="width:50%"></div><div class="a"></div></div><div class="theme-chart" id="theme-chart" aria-live="off"></div><div class="legend"><span><i class="dot"></i> Personne 1 <strong id="percent-n">—</strong></span><span><i class="dot a"></i> Personne 2 <strong id="percent-a">—</strong></span></div><div id="warning"></div><div class="income-impact hidden" id="income-impact"><div class="impact-head">↳ Revenus complémentaires intégrés</div><div class="impact-grid"><span>Personne 1 <strong id="credit-p1">0,00 €</strong></span><span>Personne 2 <strong id="credit-p2">0,00 €</strong></span><span>Compte joint <strong id="credit-common">0,00 €</strong></span></div></div></div>
+<div class="highlight"><div class="mini-title"><span data-theme-icon="resultat" aria-hidden="true">✦</span> Résultat instantané</div><h2>Virements restant à effectuer</h2><p>Solde net restant, bonus inclus. Confirmez les mouvements réalisés dans les détails ci-dessous.</p><div class="transfers"><div class="transfer"><div class="name" id="transfer-p1-name">Personne 1</div><div class="amount" id="transfer-p1">—</div><div class="desc" id="transfer-p1-label">Saisir les salaires</div><div class="small-transfer"><span>Contribution de Personne 1</span><strong id="contrib-p1">—</strong></div></div><div class="transfer gold"><div class="name" id="transfer-p2-name">Personne 2</div><div class="amount" id="transfer-p2">—</div><div class="desc" id="transfer-p2-label">Saisir les salaires</div><div class="small-transfer"><span>Contribution de la personne 2</span><strong id="contrib-p2">—</strong></div></div></div><div class="split-meter" aria-label="Proportion des revenus"><div class="n" id="split-n" style="width:50%"></div><div class="a"></div></div><div class="theme-chart" id="theme-chart" aria-live="off"></div><div class="legend"><span><i class="dot"></i> Personne 1 <strong id="percent-n">—</strong></span><span><i class="dot a"></i> Personne 2 <strong id="percent-a">—</strong></span></div><div id="warning"></div><div class="income-impact hidden" id="income-impact"><div class="impact-head">↳ Revenus complémentaires intégrés</div><div class="impact-grid"><span>Personne 1 <strong id="credit-p1">0,00 €</strong></span><span>Personne 2 <strong id="credit-p2">0,00 €</strong></span><span>Compte joint <strong id="credit-common">0,00 €</strong></span></div></div></div>
 <div class="section-top"><h2>Revenus complémentaires</h2><span id="incomes-count" class="hint">Aucun ce mois</span></div>
 <div class="card income-card"><p class="note">Versements reçus sur le compte joint.</p>
 <div id="income-list" class="income-list"></div>
@@ -341,7 +341,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <div id="income-totals" class="v82-destinations"></div>
 <p class="note">Les sommes à reverser sont intégrées aux virements calculés. Ces versements ne changent pas le prorata des salaires.</p></div>
 <div class="section-top"><h2>Charges retenues</h2><span id="count-selected" class="hint">—</span></div><div class="card"><div class="breakdown"><div class="metric"><span>Communes</span><strong id="common-total">0 €</strong></div><div class="metric"><span>Perso Personne 1</span><strong id="personal-n-total">0 €</strong></div><div class="metric"><span>Perso Personne 2</span><strong id="personal-a-total">0 €</strong></div></div><div class="small-transfer" style="margin-top:14px"><span>À réserver pour les charges</span><strong id="all-total">0 €</strong></div><div class="btnbar"><button class="btn secondary wide" id="go-charges">☷ Choisir et ajuster les charges</button></div></div>
-<div class="debt-quick" aria-label="Remboursements personnels"><div class="mini-title">↔ Dépenses communes payées personnellement</div><div class="debt-quick-row"><div class="debt-quick-result" id="debt-quick-result">Aucun remboursement en attente</div><button type="button" class="btn tiny" id="go-partage">Ouvrir ↗</button></div></div>
+<div class="card" id="monthly-movements"></div><div class="debt-quick" aria-label="Remboursements personnels"><div class="mini-title">↔ Dépenses communes payées personnellement</div><div class="debt-quick-row"><div class="debt-quick-result" id="debt-quick-result">Aucun remboursement en attente</div><button type="button" class="btn tiny" id="go-partage">Ouvrir ↗</button></div></div>
 <div class="btnbar"><button class="btn primary" id="save-month">✓ Enregistrer ce mois</button><button class="btn" id="copy-result">▤ Copier les virements</button></div><p class="footnote">La répartition des charges communes se base sur les salaires, qu’ils arrivent sur le compte joint ou sur les comptes personnels. Les revenus complémentaires déclarés arrivent sur le joint et sont attribués à leur bénéficiaire. Aucun virement bancaire n’est effectué par cette application.</p>
 </section>
 <section id="pane-charges" class="pane">
@@ -424,7 +424,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
   <p class="ocr-privacy">Après application, vérifie le calendrier de la charge puis touche « Enregistrer ». Aucun changement n'est sauvegardé à cette étape.</p>
  </div>
 </div></dialog>
-<dialog id="income-dialog" class="dialog" aria-labelledby="income-dialog-heading"><form id="income-form" class="dialog-inner"><div class="dialog-title"><h2 id="income-dialog-heading">Ajouter un revenu</h2><button type="button" class="close" id="close-income" aria-label="Fermer">×</button></div><div class="formline"><label for="income-name">Origine du versement</label><input id="income-name" type="text" maxlength="100" required placeholder="Ex. Remboursement mutuelle"></div><div class="formline"><label for="income-amount">Montant réellement versé (€)</label><input id="income-amount" type="text" inputmode="decimal" required placeholder="0,00"></div><div class="formline"><label for="income-owner">À qui revient cet argent ?</label><select id="income-owner"><option value="p1">À Personne 1 : virer 100 % sur son compte</option><option value="p2">À Personne 2 : virer 100 % sur son compte</option><option value="common">Aux deux : laisser 100 % sur le compte joint</option></select></div><div class="dialog-hint">Ce revenu s'applique uniquement au mois actuellement sélectionné. Il ne modifie pas les pourcentages calculés sur les salaires.</div><div class="dialog-actions"><button type="button" id="delete-income" class="btn danger hidden">Supprimer ce versement</button><div class="right"><button type="button" id="cancel-income" class="btn">Annuler</button><button type="submit" class="btn primary">Enregistrer</button></div></div></form></dialog>
+<dialog id="income-dialog" class="dialog" aria-labelledby="income-dialog-heading"><form id="income-form" class="dialog-inner"><div class="dialog-title"><h2 id="income-dialog-heading">Ajouter un revenu</h2><button type="button" class="close" id="close-income" aria-label="Fermer">×</button></div><div class="formline"><label for="income-name">Origine du versement</label><input id="income-name" type="text" maxlength="100" required placeholder="Ex. Remboursement mutuelle"></div><div class="formline"><label for="income-amount">Montant réellement versé (€)</label><input id="income-amount" type="text" inputmode="decimal" required placeholder="0,00"></div><div class="formline"><label for="income-owner">À qui revient cet argent ?</label><select id="income-owner"><option value="split">Aux deux : 50/50 sur les comptes personnels</option><option value="p1">À Personne 1 : virer 100 % sur son compte</option><option value="p2">À Personne 2 : virer 100 % sur son compte</option><option value="common">Aux deux : laisser 100 % sur le compte joint</option></select></div><div class="dialog-hint">Ce revenu s'applique uniquement au mois actuellement sélectionné. Il ne modifie pas les pourcentages calculés sur les salaires.</div><div class="dialog-actions"><button type="button" id="delete-income" class="btn danger hidden">Supprimer ce versement</button><div class="right"><button type="button" id="cancel-income" class="btn">Annuler</button><button type="submit" class="btn primary">Enregistrer</button></div></div></form></dialog>
 <dialog id="settings-dialog" class="dialog settings-dialog" aria-labelledby="settings-heading"><form id="settings-form" class="dialog-inner"><div class="dialog-title"><div><div class="theme-eyebrow">PERSONNALISATION</div><h2 id="settings-heading">Paramètres</h2></div><button type="button" class="close" id="close-settings" aria-label="Fermer">×</button></div><p class="note">Ces valeurs serviront à préremplir les salaires lorsque tu ouvres un mois qui n'a pas encore été renseigné. Modifier les paramètres ne change pas les salaires déjà saisis.</p><div class="settings-fields"><div class="formline"><label for="person-name-p1">Prénom ou nom du compte personnel 1</label><input id="person-name-p1" type="text" maxlength="32" required placeholder="Ex. Camille" autocomplete="off"></div><div class="formline"><label for="person-name-p2">Prénom ou nom du compte personnel 2</label><input id="person-name-p2" type="text" maxlength="32" required placeholder="Ex. Alex" autocomplete="off"></div><div class="formline"><label for="default-p1">Salaire habituel de Personne 1 (€)</label><input id="default-p1" type="text" inputmode="decimal" required></div><div class="formline"><label for="default-p2">Salaire habituel de Personne 2 (€)</label><input id="default-p2" type="text" inputmode="decimal" required></div><div class="formline"><label for="default-bank-p1">Compte recevant habituellement le salaire de Personne 1</label><select id="default-bank-p1"><option value="joint">Compte joint</option><option value="personal">Compte personnel</option></select></div><div class="formline"><label for="default-bank-p2">Compte recevant habituellement le salaire de Personne 2</label><select id="default-bank-p2"><option value="joint">Compte joint</option><option value="personal">Compte personnel</option></select></div></div><p class="note">Chaque mois conserve ses propres choix. Tu peux choisir deux comptes joints, deux comptes personnels ou une configuration mixte.</p><div class="template-settings"><div class="template-settings-head"><div><h3>Revenus complémentaires préenregistrés</h3><p class="note">Personnalise les raccourcis de la page Calcul. Un revenu n'est jamais ajouté automatiquement à un nouveau mois.</p></div></div><div id="settings-income-templates" class="settings-income-templates"></div><button type="button" class="btn secondary" id="add-income-template">＋ Créer un modèle de revenu</button><p class="note template-settings-help">Supprimer un modèle le retire définitivement des prochains mois, sans effacer les versements déjà enregistrés dans les anciens mois. Confirme les changements avec « Enregistrer les paramètres ».</p></div><div class="dialog-actions"><button type="button" id="cancel-settings" class="btn">Annuler</button><button type="submit" class="btn primary">✓ Enregistrer les paramètres</button></div></form></dialog>
 <dialog id="theme-dialog" class="dialog theme-dialog" aria-labelledby="theme-dialog-heading">
   <div class="dialog-inner"><div class="dialog-title"><div><div class="theme-eyebrow">PERSONNALISATION</div><h2 id="theme-dialog-heading">Choisir un univers</h2></div><button class="close" type="button" id="close-themes" aria-label="Fermer">×</button></div>
@@ -434,9 +434,9 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
   </div>
 </dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V8.2.1">
+<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V8.3">
  <div class="beta-gate-card">
-  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V8.2.1</strong><small>Multi-foyers • synchronisation privée</small></div></div>
+  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V8.3</strong><small>Multi-foyers • synchronisation privée</small></div></div>
   <p class="beta-gate-warn">Une anomalie de fonctionnement ? Merci de la signaler à la personne qui t’a partagé ÉquiComptes.</p>
   <p id="beta-gate-message" class="beta-gate-message" role="status" aria-live="polite">Préparation de la connexion…</p>
   <section id="beta-config-panel" hidden>
@@ -507,7 +507,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <button class="btn" data-v82-action="themes">◐ Apparence</button>
 <button class="btn" data-v82-action="backups">↓ Sauvegardes</button>
 <button class="btn" data-v82-action="help">? Aide et suggestions</button>
-</div><p class="footnote">ÉquiComptes V8.2.1</p></div></dialog>
+</div><p class="footnote">ÉquiComptes V8.3</p></div></dialog>
 <dialog id="v82-account" class="dialog" aria-labelledby="v82-account-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-account-title">Mon compte et mon foyer</h2><button class="close" data-v82-close="v82-account" aria-label="Fermer">×</button></div><div id="v82-account-content"></div></div></dialog>
 <dialog id="v82-backups" class="dialog" aria-labelledby="v82-backup-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-backup-title">Sauvegardes</h2><button class="close" data-v82-close="v82-backups" aria-label="Fermer">×</button></div>
 <div class="formline"><label for="v82-frequency">Fréquence sur cet appareil</label><select id="v82-frequency"><option value="7">Tous les 7 jours</option><option value="15">Tous les 15 jours</option><option value="month">Tous les mois</option><option value="off">Désactivée</option></select></div>
@@ -659,11 +659,11 @@ function validate(data){
  clean.bankN=normalizeBank(data.bankN??clean.settings.bankN);clean.bankA=normalizeBank(data.bankA??clean.settings.bankA);
  clean.monthlySalaries={};
  if(data.monthlySalaries&&typeof data.monthlySalaries==='object')for(const [m,v] of Object.entries(data.monthlySalaries).slice(0,240)){
-  if(validMonth(m)&&v&&typeof v==='object')clean.monthlySalaries[m]={n:String(v.n??'').trim()||formatInput(clean.settings.defaultN),a:String(v.a??'').trim()||formatInput(clean.settings.defaultA),bankN:normalizeBank(v.bankN??(m===clean.month?data.bankN:'joint')),bankA:normalizeBank(v.bankA??(m===clean.month?data.bankA:'joint'))};
+  if(validMonth(m)&&v&&typeof v==='object')clean.monthlySalaries[m]={n:String(v.n??'').trim()||formatInput(clean.settings.defaultN),a:String(v.a??'').trim()||formatInput(clean.settings.defaultA),moveN:Number.isSafeInteger(v.moveN)?v.moveN:0,moveA:Number.isSafeInteger(v.moveA)?v.moveA:0,bankN:normalizeBank(v.bankN??(m===clean.month?data.bankN:'joint')),bankA:normalizeBank(v.bankA??(m===clean.month?data.bankA:'joint'))};
  }
  if(!clean.monthlySalaries[clean.month])clean.monthlySalaries[clean.month]={n:clean.salaryN,a:clean.salaryA,bankN:clean.bankN,bankA:clean.bankA};
  else {clean.salaryN=clean.monthlySalaries[clean.month].n;clean.salaryA=clean.monthlySalaries[clean.month].a;clean.bankN=clean.monthlySalaries[clean.month].bankN;clean.bankA=clean.monthlySalaries[clean.month].bankA}
- clean.additionalIncome=Array.isArray(data.additionalIncome)?data.additionalIncome.slice(0,2000).filter(x=>x&&validMonth(x.month)).map((x,i)=>({id:String(x.id||'inc-'+i).slice(0,90),month:x.month,name:String(x.name||'Revenu complémentaire').slice(0,100),amount:safeCents(x.amount),owner:['p1','p2','common'].includes(x.owner)?x.owner:'common',templateId:String(x.templateId||'').slice(0,80),enabled:x.enabled!==false})):[];
+ clean.additionalIncome=Array.isArray(data.additionalIncome)?data.additionalIncome.slice(0,2000).filter(x=>x&&validMonth(x.month)).map((x,i)=>({id:String(x.id||'inc-'+i).slice(0,90),month:x.month,name:String(x.name||'Revenu complémentaire').slice(0,100),amount:safeCents(x.amount),owner:['p1','p2','common','split'].includes(x.owner)?x.owner:'common',paid:{p1:x.paid?.p1===true,p2:x.paid?.p2===true,common:x.paid?.common===true},templateId:String(x.templateId||'').slice(0,80),enabled:x.enabled!==false})):[];
  clean.theme=THEMES.some(t=>t.id===data.theme)?data.theme:'signature';
  clean.charges=data.charges.slice(0,300).map((x,i)=>({id:String(x.id||'item-'+i).slice(0,80),name:String(x.name||'Charge').slice(0,90),amount:safeCents(x.amount),owner:['common','p1','p2'].includes(x.owner)?x.owner:'common',enabled:x.enabled!==false,schedule:normalizeSchedule(x.schedule)}));
  clean.history=data.history.slice(0,120).filter(x=>x&&validMonth(x.month)&&x.result).map(x=>({month:x.month,savedAt:String(x.savedAt||''),result:x.result,charges:Array.isArray(x.charges)?x.charges.slice(0,300):[],additionalIncome:Array.isArray(x.additionalIncome)?x.additionalIncome.slice(0,500).map(v=>({...v})):null}));
@@ -676,12 +676,28 @@ let state;try{const loaded=localStorage.getItem(KEY);state=loaded?validate(adapt
 let currentTab='calcul',editingId=null,toastTimer;
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){toast('Sauvegarde locale impossible : utilise Exporter.')}if(window.EQUI_BETA_SYNC_HOOK)window.EQUI_BETA_SYNC_HOOK();}
 function monthIncome(){return state.additionalIncome.filter(x=>x.month===state.month)}
+
+function bonusParts(x){return {p1:x.owner==='p1'?x.amount:x.owner==='split'?Math.ceil(x.amount/2):0,p2:x.owner==='p2'?x.amount:x.owner==='split'?Math.floor(x.amount/2):0,common:x.owner==='common'?x.amount:0}}
+function bonusRows(x){if(!x.enabled)return '';return Object.entries(bonusParts(x)).filter(([p,n])=>n>0).map(([p,n])=>`<div class="small-transfer" style="flex-wrap:wrap;gap:10px"><span>${p==='common'?'À conserver sur le joint':'Compte joint → '+esc(personName(p))} · ${fmt(n)}${x.paid?.[p]?' · ✓ Effectué':''}</span><button class="btn tiny" data-bonus-id="${esc(x.id)}" data-bonus-person="${p}">${x.paid?.[p]?'Annuler la validation':p==='common'?'✓ Reçu et conservé':'✓ Virement effectué'}</button></div>`).join('')}
+function movementState(r=compute()){
+ const month=state.monthlySalaries[state.month]||{},base={p1:r.netN-r.extra.p1,p2:r.netA-r.extra.p2},done={p1:month.moveN||0,p2:month.moveA||0},bonusDone={p1:0,p2:0};
+ for(const x of monthIncome())if(x.enabled){const p=bonusParts(x);for(const who of ['p1','p2'])if(x.paid?.[who])bonusDone[who]+=p[who]}
+ return {base,done,bonusDone,remaining:{p1:r.netN-done.p1-bonusDone.p1,p2:r.netA-done.p2-bonusDone.p2}};
+}
+function renderMovements(r){const el=by('monthly-movements');if(!el)return;const m=movementState(r);el.innerHTML='<h3>Virements issus du calcul initial</h3><p class="note">Hors bonus, suivis séparément ci-dessus. Le récapitulatif indique le solde restant : ne réalisez pas les deux une seconde fois.</p>'+['p1','p2'].map(p=>{const remain=m.base[p]-m.done[p];return `<div class="small-transfer" style="flex-wrap:wrap;gap:10px"><div><strong>${esc(personName(p))}</strong><p class="note">Calculé : ${fmt(m.base[p])} · Déjà effectué (net) : ${fmt(m.done[p])}</p><p>${remain>0?'Compte joint → compte personnel':remain<0?'Compte personnel → compte joint':'✓ Aucun mouvement restant'}${remain?' : '+fmt(Math.abs(remain)):''}</p></div><div>${remain&&r.s?`<button class="btn" data-base-done="${p}">✓ Mouvement effectué</button>`:''}${m.done[p]?`<button class="btn tiny" data-base-undo="${p}">Annuler la validation</button>`:''}</div></div>`}).join('')+'<p class="note">Une validation confirme un mouvement réalisé dans votre banque. Si le calcul change, seul l’écart restant est proposé. Les montants négatifs indiquent un apport au compte joint.</p>'}
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-bonus-id],[data-base-done],[data-base-undo]');if(!b)return;
+ if(b.dataset.bonusId){const x=state.additionalIncome.find(x=>x.id===b.dataset.bonusId&&x.month===state.month);if(!x||!x.enabled)return;const who=b.dataset.bonusPerson;if(!['p1','p2','common'].includes(who))return;const was=x.paid?.[who];if(!confirm(was?'Annuler cette confirmation ? Aucun mouvement bancaire ne sera annulé.':'Confirmer que ce mouvement de '+fmt(bonusParts(x)[who])+' a déjà été effectué ?'))return;x.paid={...x.paid,[who]:!was};}
+ else{const p=b.dataset.baseDone||b.dataset.baseUndo,r=compute(),m=movementState(r);if(!['p1','p2'].includes(p))return;if(!confirm(b.dataset.baseUndo?'Annuler le suivi des mouvements de cette personne pour ce mois ? Aucun virement bancaire ne sera annulé.':'Confirmer le mouvement restant de '+fmt(Math.abs(m.base[p]-m.done[p]))+' pour '+personName(p)+' ?'))return;const key=p==='p1'?'moveN':'moveA';state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],[key]:b.dataset.baseUndo?0:m.base[p]};}
+ persist();renderResults();renderIncome();
+});
+
 function compute(){
  const n=parseMoney(state.salaryN),a=parseMoney(state.salaryA),s=n+a;
  const groups={common:0,p1:0,p2:0};let count=0;
  for(const ch of state.charges){const ef=effectiveCharge(ch,state.month);if(ef.active){groups[ch.owner]+=ef.amount;count++}}
  const extra={p1:0,p2:0,common:0};let extraCount=0;
- for(const inc of monthIncome()){if(inc.enabled){extra[inc.owner]+=inc.amount;extraCount++}}
+ for(const inc of monthIncome()){if(inc.enabled){const parts=bonusParts(inc);extra.p1+=parts.p1;extra.p2+=parts.p2;extra.common+=parts.common;extraCount++}}
  const commonN=s?Math.round(groups.common*n/s):0;const commonA=groups.common-commonN;
  const cn=commonN+groups.p1,ca=commonA+groups.p2;
  const bankN=normalizeBank(state.bankN),bankA=normalizeBank(state.bankA);
@@ -739,7 +755,7 @@ function renderThemeChart(r){
 }
 
 function renderResults(){
- const r=compute(),has=r.s>0;
+ const totalResult=compute(),track=movementState(totalResult),r={...totalResult,netN:track.remaining.p1,netA:track.remaining.p2},has=r.s>0;
  by('total-income').textContent=fmt(r.s);
  by('ratio-text').textContent=has?`Personne 1 ${(r.pctN*100).toFixed(1).replace('.',',')} % · Personne 2 ${(r.pctA*100).toFixed(1).replace('.',',')} %`:'Répartition à calculer';
  by('period-label').textContent=labelMonth(state.month);by('month').value=state.month;
@@ -762,15 +778,15 @@ function renderResults(){
  else if(r.disposableN<0||r.disposableA<0){w.className='note danger';w.textContent='Attention : au moins une personne doit contribuer davantage que son salaire et ses revenus complémentaires personnels. Vérifie les charges et la répartition.'}
  else{w.className='note';w.textContent=`Après les virements, le compte joint conserve ${fmt(r.jointKeep)} : ${fmt(r.total)} pour les charges et ${fmt(r.extra.common)} de revenus communs supplémentaires.`}
  for(const group of ['common','p1','p2']){const el=by('g-'+group);if(el)el.textContent=fmt(r.groups[group]);const ct=by('gcount-'+group);if(ct)ct.textContent=String(state.charges.filter(c=>c.owner===group&&effectiveCharge(c,state.month).active).length)}
- renderThemeChart(r);renderDebtQuick();return r;
+ renderMovements(totalResult);renderThemeChart(r);renderDebtQuick();return r;
 }
 
 let editingIncomeId=null, addingIncomeFromTemplate='', settingsTemplateDraft=[];
 function renderIncome(){
  const items=monthIncome(),extra=compute().extra;
  by('incomes-count').textContent=items.filter(x=>x.enabled).length+' pris en compte ce mois';
- by('income-list').innerHTML=items.length?items.map(x=>`<article class="v82-income${x.enabled?'':' is-off'}"><h3>${esc(x.name)}</h3><div class="money">${fmt(x.amount)}</div><p class="note">${x.owner==='common'?'Conservé sur le compte joint':x.owner==='p1'?'À reverser à Personne 1':'À reverser à Personne 2'}</p><label class="v82-check"><input type="checkbox" data-income-toggle="${esc(x.id)}" ${x.enabled?'checked':''}>Pris en compte ce mois</label><div class="btnbar"><button class="btn" data-income-edit="${esc(x.id)}">✎ Modifier</button><button class="btn danger" data-income-remove="${esc(x.id)}">Retirer du mois</button></div></article>`).join(''):'<p class="note">Aucun versement ajouté ce mois.</p>';
- by('income-totals').innerHTML='<h3>Destination des versements</h3><div><span>À reverser à Personne 1</span><strong>'+fmt(extra.p1)+'</strong></div><div><span>À reverser à Personne 2</span><strong>'+fmt(extra.p2)+'</strong></div><div><span>À garder sur le joint</span><strong>'+fmt(extra.common)+'</strong></div>';
+ by('income-list').innerHTML=items.length?items.map(x=>`<article class="v82-income${x.enabled?'':' is-off'}"><h3>${esc(x.name)}</h3><div class="money">${fmt(x.amount)}</div><p class="note">${x.owner==='split'?'50/50 sur les comptes personnels':x.owner==='common'?'Conservé sur le compte joint':x.owner==='p1'?'À reverser à Personne 1':'À reverser à Personne 2'}</p><label class="v82-check"><input type="checkbox" data-income-toggle="${esc(x.id)}" ${x.enabled?'checked':''}>Pris en compte ce mois</label>${bonusRows(x)}<div class="btnbar"><button class="btn" data-income-edit="${esc(x.id)}">✎ Modifier</button><button class="btn danger" data-income-remove="${esc(x.id)}">Retirer du mois</button></div></article>`).join(''):'<p class="note">Aucun versement ajouté ce mois.</p>';
+ by('income-totals').innerHTML='<h3>Répartition totale des bonus</h3><div><span>Attribué à Personne 1</span><strong>'+fmt(extra.p1)+'</strong></div><div><span>Attribué à Personne 2</span><strong>'+fmt(extra.p2)+'</strong></div><div><span>À garder sur le joint</span><strong>'+fmt(extra.common)+'</strong></div>';
  by('income-template-actions').innerHTML=state.incomeTemplates.length?state.incomeTemplates.map(t=>{
   const exists=items.some(x=>x.templateId===t.id||(t.id==='rente-p1'&&/revenu complémentaire/i.test(x.name)));
   return `<button type="button" class="btn secondary income-quick-btn" data-template-add="${esc(t.id)}" ${exists?'disabled':''}><span>${esc(t.name)}<small>${fmt(t.amount)}</small><small>${exists?'✓ Ajouté ce mois':'＋ Ajouter à '+esc(labelMonth(state.month))}</small></span></button>`;
@@ -789,13 +805,13 @@ function openIncome(id=null,templateId=''){
 function closeIncome(){const d=by('income-dialog');if(typeof d.close==='function')d.close();else d.removeAttribute('open')}
 function incomeSubmitted(e){
  e.preventDefault();const name=by('income-name').value.trim(),raw=by('income-amount').value.trim(),amount=parseMoney(raw),owner=by('income-owner').value;
- if(!name||!/^[\d\s\u00a0\u202f]+(?:[.,]\d{1,2})?$/.test(raw)||!amount||amount>100000000||!['p1','p2','common'].includes(owner)){toast('Indique un nom et un montant valide supérieur à zéro.');return}
+ if(!name||!/^[\d\s\u00a0\u202f]+(?:[.,]\d{1,2})?$/.test(raw)||!amount||amount>100000000||!['p1','p2','common','split'].includes(owner)){toast('Indique un nom et un montant valide supérieur à zéro.');return}
  const row=state.additionalIncome.find(x=>x.id===editingIncomeId&&x.month===state.month);
- if(row)Object.assign(row,{name,amount,owner});
+ if(row&&Object.values(row.paid||{}).some(Boolean)&&(row.amount!==amount||row.owner!==owner)){toast('Annule les confirmations de ce bonus avant de modifier sa répartition ou son montant.');return} if(row)Object.assign(row,{name,amount,owner});
  else state.additionalIncome.push({id:'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,8),month:state.month,name,amount,owner,templateId:addingIncomeFromTemplate,enabled:true});
  persist();closeIncome();renderResults();renderIncome();toast('Revenu complémentaire enregistré');
 }
-function removeIncome(id=editingIncomeId){const row=state.additionalIncome.find(x=>x.id===id&&x.month===state.month);if(!row)return;if(!confirm(`Supprimer « ${row.name} » de ${labelMonth(state.month)} ?\nLes autres mois et les archives enregistrées ne seront pas modifiés.`))return;state.additionalIncome=state.additionalIncome.filter(x=>x.id!==row.id);persist();closeIncome();renderResults();renderIncome();toast('Versement supprimé de ce mois')}
+function removeIncome(id=editingIncomeId){const row=state.additionalIncome.find(x=>x.id===id&&x.month===state.month);if(!row)return;if(Object.values(row.paid||{}).some(Boolean)){toast('Annule les confirmations de ce bonus avant de le retirer.');return}if(!confirm(`Supprimer « ${row.name} » de ${labelMonth(state.month)} ?\nLes autres mois et les archives enregistrées ne seront pas modifiés.`))return;state.additionalIncome=state.additionalIncome.filter(x=>x.id!==row.id);persist();closeIncome();renderResults();renderIncome();toast('Versement supprimé de ce mois')}
 function renderSettingsTemplates(){
  by('settings-income-templates').innerHTML=settingsTemplateDraft.length?settingsTemplateDraft.map((t,i)=>`<div class="template-settings-row" data-template-row="${esc(t.id)}"><div class="template-settings-num" aria-hidden="true">${i+1}</div><div class="template-settings-grid"><div class="formline wide"><label for="template-name-${i}">Nom du revenu</label><input id="template-name-${i}" data-template-name="${esc(t.id)}" type="text" maxlength="100" placeholder="Ex. Rente, remboursement régulier" value="${esc(t.name)}" required></div><div class="formline"><label for="template-amount-${i}">Montant habituel (€)</label><input id="template-amount-${i}" data-template-amount="${esc(t.id)}" type="text" inputmode="decimal" value="${esc(t.amountInput)}" required></div><div class="formline"><label for="template-owner-${i}">À attribuer à</label><select id="template-owner-${i}" data-template-owner="${esc(t.id)}"><option value="p1" ${t.owner==='p1'?'selected':''}>Personne 1</option><option value="p2" ${t.owner==='p2'?'selected':''}>Personne 2</option><option value="common" ${t.owner==='common'?'selected':''}>Compte joint</option></select></div></div><button type="button" class="btn tiny danger template-remove" data-template-remove="${esc(t.id)}" aria-label="Supprimer le modèle ${esc(t.name)}">✕ Supprimer</button></div>`).join(''):'<p class="note">Aucun revenu préenregistré. Utilise « Créer un modèle de revenu » ou ajoute directement un revenu ponctuel dans Calcul.</p>';
 }
@@ -824,7 +840,7 @@ function saveSettings(e){
 }
 function switchMonth(month){
  if(!validMonth(month)||month===state.month)return;
- state.monthlySalaries[state.month]={n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};
+ state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};
  state.month=month;
  const sal=state.monthlySalaries[month]||newSalaries(state.settings);
  state.salaryN=sal.n;state.salaryA=sal.a;state.bankN=sal.bankN;state.bankA=sal.bankA;state.monthlySalaries[month]={...sal};
@@ -927,15 +943,15 @@ ${transferSentence('Personne 2',r.netA)}
 Solde cible du compte joint après transferts : ${fmt(r.jointKeep)} (${fmt(r.total)} de charges et ${fmt(r.extra.common)} de revenus communs)`;
 }
 
-async function copyResult(){const t=withNames(resultText(compute()));try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(t);else{const e=document.createElement('textarea');e.value=t;e.style.position='fixed';e.style.left='-99999px';document.body.append(e);e.select();if(!document.execCommand('copy'))throw Error('Copie impossible');e.remove()}toast('Récapitulatif copié !')}catch(e){toast('Copie indisponible : utilise une sauvegarde ou une capture d’écran.')}}
+async function copyResult(){const r=compute(),m=movementState(r);const t=withNames(resultText({...r,netN:m.remaining.p1,netA:m.remaining.p2}));try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(t);else{const e=document.createElement('textarea');e.value=t;e.style.position='fixed';e.style.left='-99999px';document.body.append(e);e.select();if(!document.execCommand('copy'))throw Error('Copie impossible');e.remove()}toast('Récapitulatif copié !')}catch(e){toast('Copie indisponible : utilise une sauvegarde ou une capture d’écran.')}}
 function saveMonth(){const r=compute();if(!r.s){toast('Saisis les salaires avant d’enregistrer.');return}const previous=state.history.findIndex(x=>x.month===state.month);if(previous>=0&&!confirm(`Un calcul de ${labelMonth(state.month)} existe déjà. Le remplacer ?`))return;const snapshot={month:state.month,savedAt:new Date().toISOString(),result:{...r},charges:JSON.parse(JSON.stringify(state.charges)),resolvedCharges:state.charges.map(ch=>({id:ch.id,name:ch.name,owner:ch.owner,amount:effectiveCharge(ch,state.month).amount})),additionalIncome:monthIncome().map(x=>({...x}))};if(previous>=0)state.history.splice(previous,1);state.history.push(snapshot);state.history.sort((a,b)=>b.month.localeCompare(a.month));persist();toast(`${labelMonth(state.month)} enregistré`)}
 function renderHistory(){by('history-list').innerHTML=state.history.length?state.history.map(x=>{const r=x.result;return `<article class="archive"><div class="archive-head"><h3>${esc(labelMonth(x.month))}</h3><span class="pill">${fmt(Number(r.total)||0)} de charges</span></div><p>Salaires : ${fmt(Number(r.s)||0)} · Prorata Personne 1 : ${((Number(r.pctN)||0)*100).toFixed(1).replace('.',',')} %</p><p>Répartition enregistrée (figée), indépendante des modifications ultérieures. Comptes des salaires : Personne 1 ${r.bankN==='personal'?'personnel':'joint'}, Personne 2 ${r.bankA==='personal'?'personnel':'joint'}.</p>${(Number(r.extraTotal)||0)>0?`<p>Revenus complémentaires : ${fmt(r.extraTotal)} (dont ${fmt(Number(r.extra?.common)||0)} gardés sur le compte joint)</p>`:''}<div class="two"><div><small>Compte Personne 1</small><strong>${fmt(Math.abs(Number(r.netN)||0))}</strong><small>${r.netN<0?'À apporter':'À virer'}</small></div><div><small>Compte Personne 2</small><strong>${fmt(Math.abs(Number(r.netA)||0))}</strong><small>${r.netA<0?'À apporter':'À virer'}</small></div></div><div class="buttons"><button class="btn tiny" data-restore="${esc(x.month)}">Charger le mois</button><button class="btn tiny danger" data-remove-month="${esc(x.month)}">Supprimer</button></div></article>`}).join(''):'<div class="empty">Aucun mois enregistré pour l’instant. Dans « Calcul », touche « Enregistrer ce mois » pour conserver le résultat.</div>'}
 function restoreMonth(month){
- const x=state.history.find(x=>x.month===month);if(!x)return;
+ const x=state.history.find(x=>x.month===month);if(!x)return;if(state.additionalIncome.some(i=>i.month===month&&Object.values(i.paid||{}).some(Boolean))){toast('Ce mois contient des bonus confirmés. Annule leurs confirmations avant de recharger une archive.');return}
  if(!confirm(`Aller en ${labelMonth(month)} et rétablir les salaires et revenus complémentaires archivés ? Les échéanciers actuels ne seront pas remplacés. Le résultat original restera visible dans l’historique.`))return;
- state.monthlySalaries[state.month]={n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};
+ state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};
  state.month=x.month;state.salaryN=formatInput(Number(x.result.n)||0);state.salaryA=formatInput(Number(x.result.a)||0);state.bankN=normalizeBank(x.result.bankN);state.bankA=normalizeBank(x.result.bankA);
- state.monthlySalaries[state.month]={n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA}; // Ne pas écraser les échéanciers actuels à partir d’une archive.
+ state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA}; // Ne pas écraser les échéanciers actuels à partir d’une archive.
  if(Array.isArray(x.additionalIncome)){
   state.additionalIncome=state.additionalIncome.filter(i=>i.month!==state.month).concat(x.additionalIncome.map(i=>({...i,month:state.month})));
  }
@@ -944,7 +960,7 @@ function restoreMonth(month){
 }
 
 function download(content,filename,mime){const b=new Blob([content],{type:mime}),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
-function exportData(){download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.2.1',exportedAt:new Date().toISOString(),...state},null,2),'equicomptes_V8_2_sauvegarde_'+state.month+'.json','application/json');toast('Sauvegarde téléchargée')}
+function exportData(){download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.3',exportedAt:new Date().toISOString(),...state},null,2),'equicomptes_V8_3_sauvegarde_'+state.month+'.json','application/json');toast('Sauvegarde téléchargée')}
 function importData(file){if(!file)return;const reader=new FileReader();reader.onload=()=>{try{
  const data=validate(adaptOldBackup(JSON.parse(String(reader.result))));
  if(!confirm('Importer cette sauvegarde remplacera les données du foyer connecté et pourra synchroniser les changements sur tous ses appareils. Exporte une sauvegarde avant de continuer. Confirmer ?'))return;
@@ -1013,7 +1029,7 @@ by('income-template-actions').addEventListener('click',e=>{const btn=e.target.cl
 by('income-form').addEventListener('submit',incomeSubmitted);
 by('close-income').addEventListener('click',closeIncome);by('cancel-income').addEventListener('click',closeIncome);
 by('delete-income').addEventListener('click',removeIncome);
-by('income-list').addEventListener('change',e=>{const id=e.target.dataset.incomeToggle;if(!id)return;const row=state.additionalIncome.find(x=>x.id===id&&x.month===state.month);if(!row)return;row.enabled=e.target.checked;persist();renderIncome();renderResults()});
+by('income-list').addEventListener('change',e=>{const id=e.target.dataset.incomeToggle;if(!id)return;const row=state.additionalIncome.find(x=>x.id===id&&x.month===state.month);if(!row)return;if(Object.values(row.paid||{}).some(Boolean)){e.target.checked=row.enabled;toast('Annule les confirmations avant de désactiver ce bonus.');return}row.enabled=e.target.checked;persist();renderIncome();renderResults()});
 by('income-list').addEventListener('click',e=>{const del=e.target.closest('[data-income-remove]');if(del){removeIncome(del.dataset.incomeRemove);return}const btn=e.target.closest('[data-income-edit]');if(btn)openIncome(btn.dataset.incomeEdit)});
 by('open-settings').addEventListener('click',displaySettings);by('close-settings').addEventListener('click',closeSettings);by('cancel-settings').addEventListener('click',closeSettings);
 by('settings-form').addEventListener('submit',saveSettings);
@@ -1036,17 +1052,17 @@ by('settings-income-templates').addEventListener('click',e=>{
  if(!confirm(`Supprimer le modèle « ${t.name||'sans nom'} » ?\nIl ne sera plus proposé dans les prochains mois. Les versements déjà saisis resteront intacts.\nCette suppression sera définitive après enregistrement des paramètres.`))return;
  settingsTemplateDraft=settingsTemplateDraft.filter(x=>x.id!==t.id);renderSettingsTemplates();
 });
-by('apply-default-salaries').addEventListener('click',()=>{if(!confirm('Rétablir les deux salaires et leurs comptes de réception habituels pour ce mois ?'))return;const v=newSalaries(state.settings);state.salaryN=v.n;state.salaryA=v.a;state.bankN=v.bankN;state.bankA=v.bankA;state.monthlySalaries[state.month]={...v};by('salary-p1').value=v.n;by('salary-p2').value=v.a;by('salary-bank-p1').value=v.bankN;by('salary-bank-p2').value=v.bankA;persist();renderResults();toast('Salaires et comptes habituels rétablis')});
+by('apply-default-salaries').addEventListener('click',()=>{if(!confirm('Rétablir les deux salaires et leurs comptes de réception habituels pour ce mois ?'))return;const v=newSalaries(state.settings);state.salaryN=v.n;state.salaryA=v.a;state.bankN=v.bankN;state.bankA=v.bankA;state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],...v};by('salary-p1').value=v.n;by('salary-p2').value=v.a;by('salary-bank-p1').value=v.bankN;by('salary-bank-p2').value=v.bankA;persist();renderResults();toast('Salaires et comptes habituels rétablis')});
 by('go-partage').addEventListener('click',()=>setTab('partage'));
 by('expense-form').addEventListener('submit',submitExpense);by('expense-cancel').addEventListener('click',resetExpenseForm);
 by('expense-list').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.editExpense)editExpense(b.dataset.editExpense);else if(b.dataset.removeExpense)deleteExpense(b.dataset.removeExpense)});
 by('settle-debts').addEventListener('click',settleDebts);by('settlement-list').addEventListener('click',e=>{const b=e.target.closest('button[data-undo-settlement]');if(b)undoSettlement(b.dataset.undoSettlement)});
 resetExpenseForm();
 
-for(const t of document.querySelectorAll('.tab'))t.addEventListener('click',()=>setTab(t.dataset.tab));by('go-charges').addEventListener('click',()=>setTab('charges'));by('go-calcul').addEventListener('click',()=>setTab('calcul'));by('month').addEventListener('change',e=>switchMonth(e.target.value));for(const [id,key] of [['salary-p1','salaryN'],['salary-p2','salaryA']]){by(id).value=state[key];by(id).addEventListener('input',e=>{state[key]=e.target.value;state.monthlySalaries[state.month]={n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});by(id).addEventListener('blur',e=>{if(e.target.value.trim()){state[key]=formatInput(parseMoney(e.target.value));e.target.value=state[key];state.monthlySalaries[state.month]={n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()}})}
+for(const t of document.querySelectorAll('.tab'))t.addEventListener('click',()=>setTab(t.dataset.tab));by('go-charges').addEventListener('click',()=>setTab('charges'));by('go-calcul').addEventListener('click',()=>setTab('calcul'));by('month').addEventListener('change',e=>switchMonth(e.target.value));for(const [id,key] of [['salary-p1','salaryN'],['salary-p2','salaryA']]){by(id).value=state[key];by(id).addEventListener('input',e=>{state[key]=e.target.value;state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});by(id).addEventListener('blur',e=>{if(e.target.value.trim()){state[key]=formatInput(parseMoney(e.target.value));e.target.value=state[key];state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()}})}
 for(const [id,key] of [['salary-bank-p1','bankN'],['salary-bank-p2','bankA']]){
  by(id).value=normalizeBank(state[key]);
- by(id).addEventListener('change',e=>{state[key]=normalizeBank(e.target.value);state.monthlySalaries[state.month]={n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});
+ by(id).addEventListener('change',e=>{state[key]=normalizeBank(e.target.value);state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});
 }
 by('charge-groups').addEventListener('change',e=>{
  const toggle=e.target.dataset.toggle,amt=e.target.dataset.amount;
@@ -1231,7 +1247,7 @@ for(const fn of ['renderThemeChart','renderResults','renderCharges','renderIncom
  const wrapped=function(...args){const value=orig.apply(this,args);applyPeopleLabels();return value};
  switch(fn){case 'renderThemeChart':renderThemeChart=wrapped;break;case 'renderResults':renderResults=wrapped;break;case 'renderCharges':renderCharges=wrapped;break;case 'renderIncome':renderIncome=wrapped;break;case 'renderHistory':renderHistory=wrapped;break;case 'renderDebts':renderDebts=wrapped;break;case 'renderSettingsTemplates':renderSettingsTemplates=wrapped;break;case 'displaySettings':displaySettings=wrapped;break;case 'openIncome':openIncome=wrapped;break;case 'openCharge':openCharge=wrapped;break}
 }
-// V8.2.1 — adaptation sans changement des identifiants p1/p2.
+// V8.3 — adaptation sans changement des identifiants p1/p2.
 // Seul le module sync-v8.js reçoit une passerelle vers les données.
 function betaRefresh(){
  const v=state.monthlySalaries[state.month]||newSalaries(state.settings);
@@ -1280,7 +1296,7 @@ window.EquiBetaBridge={
  render:betaRefresh
 };
 
-// Extensions V8.2.1, dans la même portée que le moteur V8.1.
+// Extensions V8.3, dans la même portée que le moteur V8.1.
 const v82Demo = window.EQUI_V82_DEMO === true;
 const v82Contact = ''; // À renseigner après confirmation de la création de l’adresse.
 function v82Open(id) {
@@ -1398,7 +1414,7 @@ async function v82Snapshot(reason='automatic'){
  finally{v82BackupBusy=false;}
 }
 function v82Download(copy){
- download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.2.1',exportedAt:copy.at,...copy.payload},null,2),'equicomptes_V8_2_'+copy.at.replace(/[:.]/g,'-')+'.json','application/json');
+ download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.3',exportedAt:copy.at,...copy.payload},null,2),'equicomptes_V8_2_'+copy.at.replace(/[:.]/g,'-')+'.json','application/json');
 }
 async function v82RenderBackups(){
  const context=v82Context();
