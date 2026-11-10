@@ -625,7 +625,7 @@ function adaptOldBackup(data){
  const scan=v=>{
    if(Array.isArray(v)){v.forEach(scan);return}
    if(v&&typeof v==='object')for(const [k,x] of Object.entries(v)){
-     if(['owner','payer','from','to'].includes(k)&&typeof x==='string'&&!['common','p1','p2','aucun'].includes(x))codes.add(x);
+     if(['owner','payer','from','to'].includes(k)&&typeof x==='string'&&!['common','p1','p2','aucun','split'].includes(x))codes.add(x);
      scan(x)
    }
  };
