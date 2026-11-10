@@ -27,6 +27,11 @@ let currentUserUID = '', currentEmail = '';
 let startCloudToken = 0;
 const PATH = ['foyers',localStorage.getItem(FOYERKEY) || ''];
 let myHome=null, booting=false, lastBootUid='', autoSignedIn=false;
+window.EQUI_V82_CONTEXT=()=>({
+ uid:currentUserUID,hid:PATH[1],
+ ready:!deletionBusy&&!!currentUserUID&&!!PATH[1]&&gate.hidden&&(onlineReady||!!localStorage.getItem('equicomptes-v8-beta-local:'+currentUserUID+':'+PATH[1])),
+ synced:onlineReady&&navigator.onLine&&!disconnected&&!backlog()&&!conflicts.size&&!inFlight.size
+});
 
 function showStatus(t, kind='neutral'){
  if(status){status.textContent = '● ' + t;status.dataset.syncState=kind;}
@@ -599,6 +604,7 @@ deleteForm.addEventListener('submit',async event=>{
   await commitDeletion(u,fresh);
   deleteMessage('Suppression de ton identifiant de connexion…');
   await sdk.deleteUser(u);
+  try{await B.clearBackups?.(uid,knownHid);}catch(e){console.warn('Nettoyage des copies locales incomplet',e);}
   cleanOwnLocalCopies(uid,knownHid);
   deleteDialog.close();
   location.replace(location.pathname);

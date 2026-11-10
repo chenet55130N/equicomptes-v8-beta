@@ -1,6 +1,6 @@
-// ÉquiComptes V8.1 — cache PWA dédié à la V8 uniquement.
-const CACHE='equi-v8-beta-cache-20261108-v81-5';
-const APP_FILES=['./','./index.html','./manifest.webmanifest','./service-worker.js','./sync-v8.js','./firebase-config.json','./icon-192.png','./icon-512.png'];
+// ÉquiComptes V8.2 — cache PWA dédié à la V8 uniquement.
+const CACHE='equi-v8-beta-cache-20261110-v82-2';
+const APP_FILES=['./','./index.html','./manifest.webmanifest','./service-worker.js','./sync-v8.js?v=8.2','./firebase-config.json','./icon-192.png','./icon-512.png'];
 const FIREBASE_SDK='https://www.gstatic.com/firebasejs/13.2.0/';
 self.addEventListener('install',evt=>{
  evt.waitUntil(caches.open(CACHE).then(c=>c.addAll(APP_FILES)).then(()=>self.skipWaiting()));

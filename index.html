@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#10233f">
 <meta name="application-name" content="ÉquiComptes">
 <meta name="description" content="Répartition des salaires, échéanciers photo ou manuels, revenus complémentaires et remboursements à 50/50.">
-<title>ÉquiComptes V8.1 · Multi-foyers synchronisés</title>
+<title>ÉquiComptes V8.2 · Multi-foyers synchronisés</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <style>
@@ -227,9 +227,9 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .salary-item{min-width:0}.account-label{display:block;font-size:11px;font-weight:750;color:var(--t-muted,var(--muted));margin:10px 0 5px}.salary-account{display:block;width:100%;min-width:0;border:1px solid var(--t-border,#dce5e9);background:var(--t-input,#f8fafb);color:var(--t-ink,var(--ink));padding:10px 7px;border-radius:10px;font-weight:650;font-size:12px}.transfer .name{min-height:32px;line-height:1.35;overflow-wrap:anywhere}.transfer .amount{font-variant-numeric:tabular-nums}.salary-item .field-label{min-height:18px}.settings-fields select{font-size:13px}
 @media(max-width:360px){.salary-grid{gap:8px}.salary-account{font-size:11px;padding:9px 4px}.salary-item .input-wrap{padding:0 7px}.salary-item .input-wrap input{font-size:17px}.transfer .name{font-size:11px}.transfer .amount{font-size:19px}}
 
-/* Application V8.1 — identité distincte, sans modifier les thèmes historiques */
+/* Application V8.2 — identité distincte, sans modifier les thèmes historiques */
 .beta-label{display:inline-block;border:1px solid #ffffff66;border-radius:7px;padding:3px 6px;margin-left:3px;font-size:10px;letter-spacing:.2px;background:#ffffff22;color:#fff;vertical-align:3px}
-/* V8.1 — bandeau compact : état visible, détails privés à la demande. */
+/* V8.2 — bandeau compact : état visible, détails privés à la demande. */
 .beta-sync-strip{position:relative;z-index:8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;padding:9px 14px;min-width:0;background:var(--t-card2,#edf4f6);color:var(--t-ink,#172c3a);border-bottom:1px solid var(--t-line,#d9e5e9);line-height:1.3}
 .beta-sync-strip [hidden]{display:none!important}
 .beta-strip-status{flex:1 1 110px;min-width:0;display:flex;align-items:center;gap:8px}
@@ -273,10 +273,39 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .beta-gate-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.beta-gate-actions button{font-size:12px;padding:9px;background:#f1f4f7;color:#335;border:1px solid #d5dde8;border-radius:9px}
 @media print{.beta-gate,.beta-sync-strip{display:none!important}}
 </style>
+<style>/* V8.2 — utiliser les couleurs du thème courant. */
+[hidden]{display:none!important}
+.main{padding-bottom:calc(125px + env(safe-area-inset-bottom))}
+.tabs-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:0;top:auto;width:100%;max-width:840px;z-index:20;background:var(--t-card);border-top:1px solid var(--t-line);padding:9px 10px calc(9px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px #0001}
+.tabs{gap:6px}.tabs .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:64px;border:0;border-radius:16px;color:var(--t-muted);background:transparent;font-size:12px}
+.tabs .tab[aria-selected=true]{background:var(--t-primary);color:var(--t-primary-text)}
+.tabs .tab svg{width:24px;height:24px;margin:0}
+#v82-open-menu{margin-left:auto;background:transparent;border:1px solid currentColor;color:inherit;white-space:nowrap}
+.v82-drawer{margin:0 0 0 auto;max-width:min(370px,92vw);height:100dvh;max-height:100dvh;border-radius:24px 0 0 24px}
+.v82-menu-links{display:grid;gap:10px}.v82-menu-links .btn{justify-content:flex-start;min-height:54px}
+.v82-income{padding:17px 0;border-bottom:1px solid var(--t-line)}
+.v82-income h3{margin:0;font-size:16px}.v82-income .money{font-size:24px;font-weight:800;margin:10px 0}
+.v82-check{display:flex;align-items:center;gap:9px;font-size:13px;min-height:44px}
+.v82-check input{width:20px;height:20px;accent-color:var(--t-primary)}
+.v82-income.is-off{opacity:.6}
+.v82-destinations{margin-top:20px;border-top:1px solid var(--t-line);padding-top:15px}
+.v82-destinations div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--t-line)}
+.v82-backup-banner{position:fixed;bottom:calc(90px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(95vw,620px);background:var(--t-card);color:var(--t-ink);border:1px solid var(--t-primary);padding:12px;border-radius:15px;z-index:22;box-shadow:var(--t-shadow);display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
+.v82-backup-banner[hidden]{display:none}
+#v82-backup-list article{border-top:1px solid var(--t-line);padding:15px 0}
+#v82-account-content{display:grid;gap:12px}
+#v82-account-content .v8-home-chip{display:inline-flex}
+#v82-account-content .info-value{overflow-wrap:anywhere}
+#v82-help textarea{font:inherit;display:block;width:100%;padding:12px;border:1px solid var(--t-border);border-radius:12px;background:var(--t-input);color:var(--t-ink)}
+#v82-help summary{padding:12px 0;cursor:pointer}
+.toast{bottom:calc(105px + env(safe-area-inset-bottom))}
+.v82-demo-bar{padding:10px;text-align:center;background:var(--t-card2);color:var(--t-ink);font-size:12px}
+@media print{.tabs-wrap,#v82-open-menu,.v82-backup-banner,.v82-demo-bar{display:none!important}.main{padding-bottom:0}}
+</style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V8.1</span></h1><p>Un partage juste, en un clin d’œil</p></div><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
+<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V8.2</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
 <div class="beta-sync-strip" aria-label="Connexion et foyer">
   <div class="beta-strip-status">
     <span id="beta-sync-indicator" role="status" aria-live="polite" data-sync-state="neutral">Connexion en cours…</span>
@@ -295,15 +324,21 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
     <button type="button" id="v8-delete-account-open" class="v8-danger-account" aria-label="Supprimer définitivement mon compte">Supprimer mon compte…</button>
   </div>
 </div>
-<nav class="tabs-wrap" aria-label="Navigation"><div class="tabs"><button class="tab" data-tab="calcul" aria-selected="true"><span data-theme-icon="calcul" aria-hidden="true">⌁</span> Calcul</button><button class="tab" data-tab="charges" aria-selected="false"><span data-theme-icon="charges" aria-hidden="true">☷</span> Charges</button><button class="tab" data-tab="historique" aria-selected="false"><span data-theme-icon="historique" aria-hidden="true">▤</span> Historique</button><button class="tab" data-tab="partage" aria-selected="false"><span data-theme-icon="partage" aria-hidden="true">↔</span> Partage</button></div></nav>
+<nav class="tabs-wrap" aria-label="Navigation"><div class="tabs"><button class="tab" data-tab="calcul" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 11h1m6 0h1m-8 4h1m6 0h1m-8 3h1m6 0h1"/></svg><span>Calcul</span></button><button class="tab" data-tab="charges" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg><span>Charges</span></button><button class="tab" data-tab="partage" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h15m-4-4 4 4-4 4M20 16H5m4-4-4 4 4 4"/></svg><span>Avances</span></button><button class="tab" data-tab="historique" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6M12 7v5l3 2"/></svg><span>Historique</span></button></div></nav>
 <main class="main">
 <section id="pane-calcul" class="pane active">
 <div class="section-top"><h2>Vos revenus</h2><span class="hint">Compte de réception au choix pour chaque salaire</span></div>
 <div class="card"><div class="salary-grid"><div class="salary-item"><label for="salary-p1" class="field-label">Salaire de Personne 1</label><div class="input-wrap"><input id="salary-p1" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="unit">€</span></div><label for="salary-bank-p1" class="account-label">Salaire reçu sur</label><select id="salary-bank-p1" class="salary-account" aria-label="Compte recevant le salaire de Personne 1"><option value="joint">Le compte joint</option><option value="personal">Compte personnel</option></select></div><div class="salary-item"><label for="salary-p2" class="field-label">Salaire de Personne 2</label><div class="input-wrap"><input id="salary-p2" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="unit">€</span></div><label for="salary-bank-p2" class="account-label">Salaire reçu sur</label><select id="salary-bank-p2" class="salary-account" aria-label="Compte recevant le salaire de Personne 2"><option value="joint">Le compte joint</option><option value="personal">Compte personnel</option></select></div></div><div class="pills"><span class="pill">Total des salaires : <strong id="total-income">—</strong></span><span class="pill" id="ratio-text">Répartition : —</span></div><p class="helper">Salaires et comptes habituels personnalisables dans Paramètres. Seuls les salaires servent au prorata des charges. <button type="button" class="inline-link" id="apply-default-salaries">↺ Rétablir les valeurs habituelles</button></p></div>
 <div class="highlight"><div class="mini-title"><span data-theme-icon="resultat" aria-hidden="true">✦</span> Résultat instantané</div><h2>Virements entre vos comptes</h2><p>Le sens des virements dépend du compte qui reçoit chaque salaire.</p><div class="transfers"><div class="transfer"><div class="name" id="transfer-p1-name">Personne 1</div><div class="amount" id="transfer-p1">—</div><div class="desc" id="transfer-p1-label">Saisir les salaires</div><div class="small-transfer"><span>Contribution de Personne 1</span><strong id="contrib-p1">—</strong></div></div><div class="transfer gold"><div class="name" id="transfer-p2-name">Personne 2</div><div class="amount" id="transfer-p2">—</div><div class="desc" id="transfer-p2-label">Saisir les salaires</div><div class="small-transfer"><span>Contribution de la personne 2</span><strong id="contrib-p2">—</strong></div></div></div><div class="split-meter" aria-label="Proportion des revenus"><div class="n" id="split-n" style="width:50%"></div><div class="a"></div></div><div class="theme-chart" id="theme-chart" aria-live="off"></div><div class="legend"><span><i class="dot"></i> Personne 1 <strong id="percent-n">—</strong></span><span><i class="dot a"></i> Personne 2 <strong id="percent-a">—</strong></span></div><div id="warning"></div><div class="income-impact hidden" id="income-impact"><div class="impact-head">↳ Revenus complémentaires intégrés</div><div class="impact-grid"><span>Personne 1 <strong id="credit-p1">0,00 €</strong></span><span>Personne 2 <strong id="credit-p2">0,00 €</strong></span><span>Compte joint <strong id="credit-common">0,00 €</strong></span></div></div></div>
 <div class="section-top"><h2>Revenus complémentaires</h2><span id="incomes-count" class="hint">Aucun ce mois</span></div>
-<div class="card income-card"><p class="note" style="margin:0 0 12px">Primes, remboursements ou autres versements… versés sur le <strong>compte joint</strong>. Attribue-les à Personne 1, Personne 2 (reversés à 100 %) ou au compte commun (conservés sur place). Ils ne changent pas le prorata des salaires.</p><div class="income-actions"><div id="income-template-actions" class="income-template-actions" aria-label="Revenus habituels à ajouter"></div><button class="btn" type="button" id="add-income">＋ Autre revenu</button></div><p class="micro-note">✎ Renommer et ajuster un versement déjà ajouté ; × le supprimer de ce mois. Pour retirer définitivement un raccourci, ouvre ⚙ Paramètres.</p><div id="income-list" class="income-list"></div><div class="income-totals" id="income-totals">Aucun revenu complémentaire pris en compte ce mois.</div></div>
-<div class="section-top"><h2>Charges retenues</h2><span id="count-selected" class="hint">—</span></div><div class="card"><div class="breakdown"><div class="metric"><span>Communes</span><strong id="common-total">0 €</strong></div><div class="metric"><span>Perso Personne 1</span><strong id="personal-n-total">0 €</strong></div><div class="metric"><span>Perso Personne 2</span><strong id="personal-a-total">0 €</strong></div></div><div class="small-transfer" style="margin-top:14px"><span>Total prélevé sur le compte joint</span><strong id="all-total">0 €</strong></div><div class="btnbar"><button class="btn secondary wide" id="go-charges">☷ Choisir et ajuster les charges</button></div></div>
+<div class="card income-card"><p class="note">Versements reçus sur le compte joint.</p>
+<div id="income-list" class="income-list"></div>
+<button class="btn secondary wide" type="button" id="add-income">＋ Ajouter un versement</button>
+<h3>Versements habituels à ajouter</h3><div id="income-template-actions" class="income-template-actions"></div>
+<p class="micro-note">Gérer les raccourcis dans Menu → Paramètres.</p>
+<div id="income-totals" class="v82-destinations"></div>
+<p class="note">Les sommes à reverser sont intégrées aux virements calculés. Ces versements ne changent pas le prorata des salaires.</p></div>
+<div class="section-top"><h2>Charges retenues</h2><span id="count-selected" class="hint">—</span></div><div class="card"><div class="breakdown"><div class="metric"><span>Communes</span><strong id="common-total">0 €</strong></div><div class="metric"><span>Perso Personne 1</span><strong id="personal-n-total">0 €</strong></div><div class="metric"><span>Perso Personne 2</span><strong id="personal-a-total">0 €</strong></div></div><div class="small-transfer" style="margin-top:14px"><span>À réserver pour les charges</span><strong id="all-total">0 €</strong></div><div class="btnbar"><button class="btn secondary wide" id="go-charges">☷ Choisir et ajuster les charges</button></div></div>
 <div class="debt-quick" aria-label="Remboursements personnels"><div class="mini-title">↔ Dépenses communes payées personnellement</div><div class="debt-quick-row"><div class="debt-quick-result" id="debt-quick-result">Aucun remboursement en attente</div><button type="button" class="btn tiny" id="go-partage">Ouvrir ↗</button></div></div>
 <div class="btnbar"><button class="btn primary" id="save-month">✓ Enregistrer ce mois</button><button class="btn" id="copy-result">▤ Copier les virements</button></div><p class="footnote">La répartition des charges communes se base sur les salaires, qu’ils arrivent sur le compte joint ou sur les comptes personnels. Les revenus complémentaires déclarés arrivent sur le joint et sont attribués à leur bénéficiaire. Aucun virement bancaire n’est effectué par cette application.</p>
 </section>
@@ -318,19 +353,20 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <section id="pane-historique" class="pane">
 <div class="section-top"><h2>Mois enregistrés</h2><span class="hint">Vos répartitions archivées</span></div>
 <div id="history-list" class="group"><div class="empty">Aucun mois enregistré pour l'instant.</div></div>
-<div class="section-top"><h2>Sauvegarde de vos données</h2></div><div class="card"><p class="note">Les données de votre foyer sont synchronisées entre ses membres lorsque la connexion est disponible. Pensez à exporter régulièrement une sauvegarde privée pour pouvoir les restaurer si nécessaire.</p><div class="btnbar"><button class="btn secondary" id="export-data">↓ Exporter la sauvegarde</button><button class="btn" id="import-trigger">↑ Importer</button><input id="import-file" type="file" accept="application/json,.json" class="hidden"></div><div class="btnbar"><button class="btn" id="print-current">Imprimer le calcul</button><button class="btn danger" id="reset-all">Réinitialiser l’application</button></div></div>
+<p class="note">Les copies et exports sont accessibles dans Menu → Sauvegardes.</p><div class="card"><p class="note">Les données de votre foyer sont synchronisées entre ses membres lorsque la connexion est disponible. Pensez à exporter régulièrement une sauvegarde privée pour pouvoir les restaurer si nécessaire.</p><div class="btnbar"><button class="btn secondary" id="export-data">↓ Exporter la sauvegarde</button><button class="btn" id="import-trigger">↑ Importer</button><input id="import-file" type="file" accept="application/json,.json" class="hidden"></div><div class="btnbar"><button class="btn" id="print-current">Imprimer le calcul</button><button class="btn danger" id="reset-all">Réinitialiser l’application</button></div></div>
 </section>
 <section id="pane-partage" class="pane" aria-labelledby="partage-heading">
   <div class="card">
-    <div class="shared-heading"><div class="symbol" aria-hidden="true">↔</div><div><h2 id="partage-heading">Dépenses partagées</h2><p>Courses, loisirs, achats… payés par Personne 1 ou Personne 2 avec leurs comptes personnels, puis partagés à 50/50.</p></div></div>
+    <div class="shared-heading"><div class="symbol" aria-hidden="true">↔</div><div><h2 id="partage-heading">Avances et remboursements</h2><p>Courses, loisirs, achats… payés par Personne 1 ou Personne 2 avec leurs comptes personnels, puis partagés à 50/50 ou remboursés à 100 % par l’autre personne.</p></div></div>
     <div class="disclaimer">Indépendant des charges fixes : ces remboursements ne changent pas les virements de salaires depuis le compte joint. Les dépenses ouvertes restent suivies même lorsque tu changes de mois.</div>
   </div>
   <div class="debt-hero" aria-live="polite"><div class="mini-title">SOLDE DES REMBOURSEMENTS</div><div class="debt-result"><div class="sentence" id="debt-direction">Aucune dette en cours</div><div class="money" id="debt-amount">0,00 €</div></div><p class="note" id="debt-explanation">Ajoute votre premier achat pour commencer.</p>
   <div class="debt-metrics"><div class="debt-metric"><span>Avancé par Personne 1</span><strong id="debt-paid-p1">0,00 €</strong></div><div class="debt-metric"><span>Avancé par Personne 2</span><strong id="debt-paid-p2">0,00 €</strong></div></div><div class="debt-meter" aria-label="Part des dépenses avancées par chacun"><span class="payer-n" id="debt-bar-p1" style="width:50%"></span><span class="payer-a" id="debt-bar-p2" style="width:50%"></span></div><button type="button" class="btn primary wide" id="settle-debts" disabled>✓ Marquer comme remboursé / compensé</button><div class="debt-settlement-note">Le calcul compense les achats des deux personnes : un seul remboursement final suffit. Un centime d'écart éventuel est arrondi sur le solde global.</div></div>
-  <div class="card"><h3 id="expense-form-title" style="margin:0 0 14px;font-size:17px;font-family:var(--t-heading)">＋ Ajouter un achat partagé</h3><form id="expense-form" class="debt-form"><div class="debt-form-grid">
+  <div class="card"><h3 id="expense-form-title" style="margin:0 0 14px;font-size:17px;font-family:var(--t-heading)">＋ Ajouter une avance</h3><form id="expense-form" class="debt-form"><div class="debt-form-grid">
     <div class="formline wide"><label for="expense-label">Pour quoi ?</label><input id="expense-label" name="description" maxlength="100" required placeholder="Ex. Courses Intermarché" autocomplete="off"></div>
     <div class="formline"><label for="expense-amount">Montant (€)</label><input id="expense-amount" name="amount" type="text" inputmode="decimal" required placeholder="Ex. 68,45" autocomplete="off"></div>
     <div class="formline"><label for="expense-payer">Qui a payé ?</label><select id="expense-payer" name="payer"><option value="p1">Personne 1</option><option value="p2">Personne 2</option></select></div>
+    <div class="formline wide"><label for="expense-repayment">Remboursement</label><select id="expense-repayment" name="repayment" aria-describedby="expense-repayment-help"><option value="half">50/50 — chacun sa moitié</option><option value="full">100 % — l’autre rembourse tout</option></select><small id="expense-repayment-help">Pour un achat de 100 € : l’autre personne rembourse 50 € ou 100 €, selon ton choix.</small></div>
     <div class="formline wide"><label for="expense-date">Date de l'achat</label><input id="expense-date" name="date" type="date" required></div>
   </div><div class="form-actions"><button class="btn primary" type="submit" id="expense-submit">＋ Ajouter la dépense</button><button class="btn hidden" type="button" id="expense-cancel">Annuler la modification</button></div></form></div>
   <div class="debt-section-head"><h3>Dépenses à équilibrer</h3><span id="expense-count" class="hint">0 achat</span></div><div class="group" style="margin-top:0"><div id="expense-list" class="debt-list"><div class="debt-list-empty">Aucun achat pour le moment.</div></div></div>
@@ -396,9 +432,9 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
   </div>
 </dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V8.1">
+<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V8.2">
  <div class="beta-gate-card">
-  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V8.1</strong><small>Multi-foyers • synchronisation privée</small></div></div>
+  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V8.2</strong><small>Multi-foyers • synchronisation privée</small></div></div>
   <p class="beta-gate-warn">Une anomalie de fonctionnement ? Merci de la signaler à la personne qui t’a partagé ÉquiComptes.</p>
   <p id="beta-gate-message" class="beta-gate-message" role="status" aria-live="polite">Préparation de la connexion…</p>
   <section id="beta-config-panel" hidden>
@@ -461,9 +497,35 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .beta-account-popover .v8-danger-account{display:block;width:100%;margin-top:8px;border-color:#deb6b6;color:#a13232;background:#fff5f5;font-size:12px}
 .v8-mode-row{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.v8-mode{flex:1;min-width:120px;border:1px solid #c7d5da;background:#f1f6f8;border-radius:12px;padding:12px 7px;font-weight:750;color:#263851}.v8-mode.active{background:#0a807c;color:#fff;border-color:#0a807c}.v8-secondary{margin:12px 0 3px;padding:10px;background:#f0f4f6;border-radius:10px;border:1px solid #dce5e8}#v8-auth-form input,#v8-create-form input,#v8-join-form input{display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #bdccd4;margin:8px 0 16px;font-size:16px}#v8-invite-result textarea{padding:10px;border:1px solid #d5dee4;border-radius:9px}#v8-verify-panel p{line-height:1.55}#v8-house-panel strong{display:block;margin-top:12px}.v8-home-chip{flex:0 0 auto!important;font-size:12px;background:#c3f2e1;color:#175244;padding:5px 9px;border-radius:999px;font-weight:750;display:inline-block;margin-left:7px;vertical-align:middle}
 </style>
+<dialog id="v82-menu" class="dialog v82-drawer" aria-labelledby="v82-menu-title">
+<div class="dialog-inner"><div class="dialog-title"><h2 id="v82-menu-title">Votre menu</h2><button class="close" data-v82-close="v82-menu" aria-label="Fermer le menu">×</button></div>
+<div class="v82-menu-links">
+<button class="btn" data-v82-action="account">⌂ Mon compte et mon foyer</button>
+<button class="btn" data-v82-action="settings">⚙ Paramètres</button>
+<button class="btn" data-v82-action="themes">◐ Apparence</button>
+<button class="btn" data-v82-action="backups">↓ Sauvegardes</button>
+<button class="btn" data-v82-action="help">? Aide et suggestions</button>
+</div><p class="footnote">ÉquiComptes V8.2</p></div></dialog>
+<dialog id="v82-account" class="dialog" aria-labelledby="v82-account-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-account-title">Mon compte et mon foyer</h2><button class="close" data-v82-close="v82-account" aria-label="Fermer">×</button></div><div id="v82-account-content"></div></div></dialog>
+<dialog id="v82-backups" class="dialog" aria-labelledby="v82-backup-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-backup-title">Sauvegardes</h2><button class="close" data-v82-close="v82-backups" aria-label="Fermer">×</button></div>
+<div class="formline"><label for="v82-frequency">Fréquence sur cet appareil</label><select id="v82-frequency"><option value="7">Tous les 7 jours</option><option value="15">Tous les 15 jours</option><option value="month">Tous les mois</option><option value="off">Désactivée</option></select></div>
+<label class="v82-check"><input id="v82-offer" type="checkbox">Me proposer de télécharger la copie</label>
+<p class="note">Une copie est créée à l’ouverture ou pendant l’utilisation lorsque l’échéance est atteinte. Les cinq dernières copies restent sur cet appareil. Télécharge une copie et conserve-la ailleurs pour couvrir sa perte.</p>
+<p id="v82-backup-status" class="note" role="status"></p><p id="v82-backup-dates" class="note"></p>
+<button class="btn primary" id="v82-backup-now">Créer une copie maintenant</button><div id="v82-backup-list"></div>
+<div id="v82-backup-original"></div>
+</div></dialog>
+<dialog id="v82-help" class="dialog" aria-labelledby="v82-help-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-help-title">Aide et suggestions</h2><button class="close" data-v82-close="v82-help" aria-label="Fermer">×</button></div>
+<details><summary>Charges ou Avances ?</summary><p class="note">Les charges du joint sont réparties au prorata des salaires pour leur part commune. Les achats avancés sur vos comptes personnels se compensent dans Avances, selon le choix 50/50 ou 100 % de chaque achat.</p></details>
+<form id="v82-feedback-form"><div class="formline"><label for="v82-feedback-type">Votre demande</label><select id="v82-feedback-type"><option>Signaler un problème</option><option>Proposer une amélioration</option></select></div><div class="formline"><label for="v82-feedback-text">Description</label><textarea id="v82-feedback-text" rows="5" maxlength="2500" required></textarea></div>
+<p class="note">Évite les informations financières personnelles. Le message préparé contient la version et les informations du navigateur affichées ci-dessous.</p><details><summary>Informations jointes</summary><p id="v82-feedback-tech" class="note"></p></details>
+<button class="btn primary" type="submit">Préparer le message</button><p id="v82-contact-note" class="note"></p><div id="v82-feedback-preview" hidden><div class="formline"><label for="v82-feedback-body">Message à copier</label><textarea id="v82-feedback-body" rows="8" readonly></textarea></div><button class="btn" id="v82-copy-feedback" type="button">Copier le message</button></div>
+</form></div></dialog>
+<div id="v82-backup-offer" class="v82-backup-banner" hidden><span>Une copie automatique est prête.</span><button class="btn tiny" id="v82-download-latest">Télécharger</button><button class="btn tiny" id="v82-dismiss-backup" aria-label="Fermer la proposition de téléchargement">Plus tard</button></div>
+
 <script>
 (()=>{'use strict';
-const KEY=(()=>{let v=null;try{v=JSON.parse(localStorage.getItem('equi-v8-verified')||'null')}catch{};
+const KEY=window.EQUI_V82_DEMO?'equicomptes-demo-v82-local':(()=>{let v=null;try{v=JSON.parse(localStorage.getItem('equi-v8-verified')||'null')}catch{};
 return v?.uid&&v?.hid?'equicomptes-v8-beta-local:'+v.uid+':'+v.hid:'equicomptes-v8-beta-local:invité';})(); // Stockage dédié par membre+foyer, isolé de V7
 const DEFAULTS=[]; // Aucune charge ni donnée privée dans le code public.
 
@@ -603,7 +665,7 @@ function validate(data){
  clean.theme=THEMES.some(t=>t.id===data.theme)?data.theme:'signature';
  clean.charges=data.charges.slice(0,300).map((x,i)=>({id:String(x.id||'item-'+i).slice(0,80),name:String(x.name||'Charge').slice(0,90),amount:safeCents(x.amount),owner:['common','p1','p2'].includes(x.owner)?x.owner:'common',enabled:x.enabled!==false,schedule:normalizeSchedule(x.schedule)}));
  clean.history=data.history.slice(0,120).filter(x=>x&&validMonth(x.month)&&x.result).map(x=>({month:x.month,savedAt:String(x.savedAt||''),result:x.result,charges:Array.isArray(x.charges)?x.charges.slice(0,300):[],additionalIncome:Array.isArray(x.additionalIncome)?x.additionalIncome.slice(0,500).map(v=>({...v})):null}));
- clean.expenses=Array.isArray(data.expenses)?data.expenses.slice(0,2500).filter(x=>x&&typeof x==='object').map((x,i)=>({id:String(x.id||'e-'+i).slice(0,80),label:String(x.label||'Achat partagé').slice(0,100),amount:safeCents(x.amount),payer:x.payer==='p2'?'p2':'p1',date:/^\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01])$/.test(x.date||'')?x.date:new Date().toISOString().slice(0,10),settlementId:String(x.settlementId||'').slice(0,80)})).filter(x=>x.amount>0):[];
+ clean.expenses=Array.isArray(data.expenses)?data.expenses.slice(0,2500).filter(x=>x&&typeof x==='object').map((x,i)=>({id:String(x.id||'e-'+i).slice(0,80),label:String(x.label||'Achat partagé').slice(0,100),amount:safeCents(x.amount),payer:x.payer==='p2'?'p2':'p1',repayment:x.repayment==='full'?'full':'half',date:/^\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01])$/.test(x.date||'')?x.date:new Date().toISOString().slice(0,10),settlementId:String(x.settlementId||'').slice(0,80)})).filter(x=>x.amount>0):[];
  clean.settlements=Array.isArray(data.settlements)?data.settlements.slice(0,500).filter(x=>x&&typeof x==='object').map((x,i)=>({id:String(x.id||'s-'+i).slice(0,80),at:String(x.at||'').slice(0,50),amount:safeCents(x.amount),from:x.from==='p1'?'p1':x.from==='p2'?'p2':'aucun',to:x.to==='p1'?'p1':x.to==='p2'?'p2':'aucun',expenseIds:Array.isArray(x.expenseIds)?x.expenseIds.slice(0,2500).map(id=>String(id).slice(0,80)):[]})):[];
  return clean;
 }
@@ -704,13 +766,13 @@ function renderResults(){
 let editingIncomeId=null, addingIncomeFromTemplate='', settingsTemplateDraft=[];
 function renderIncome(){
  const items=monthIncome(),extra=compute().extra;
- by('incomes-count').textContent=`${items.filter(x=>x.enabled).length} actif(s) ce mois`;
- by('income-list').innerHTML=items.length?items.map(x=>`<div class="income-row${x.enabled?'':' is-off'}"><div class="who" aria-hidden="true">${x.owner==='common'?'⌂':x.owner==='p1'?esc(personInitial('p1')):esc(personInitial('p2'))}</div><div><div class="main-label">${esc(x.name)}</div><div class="sub-label">${x.owner==='p1'?'100 % à Personne 1':x.owner==='p2'?'100 % à Personne 2':'100 % sur le compte joint'}</div></div><div class="right"><strong class="money">${fmt(x.amount)}</strong><label class="switch" title="Prendre en compte ce versement"><input type="checkbox" data-income-toggle="${esc(x.id)}" ${x.enabled?'checked':''} aria-label="Activer ${esc(x.name)}"><span></span></label><button class="edit" type="button" data-income-edit="${esc(x.id)}" aria-label="Renommer ou modifier ${esc(x.name)}" title="Renommer / modifier">✎</button><button class="edit income-delete" type="button" data-income-remove="${esc(x.id)}" aria-label="Supprimer ${esc(x.name)} de ce mois" title="Supprimer ce mois">×</button></div></div>`).join(''):'<div class="debt-list-empty">Aucun revenu complémentaire enregistré ce mois. Ajoute seulement les sommes réellement versées sur le compte joint.</div>';
- by('income-totals').textContent=`À reverser : Personne 1 ${fmt(extra.p1)} · Personne 2 ${fmt(extra.p2)}. À conserver sur le compte joint : ${fmt(extra.common)}.`;
+ by('incomes-count').textContent=items.filter(x=>x.enabled).length+' pris en compte ce mois';
+ by('income-list').innerHTML=items.length?items.map(x=>`<article class="v82-income${x.enabled?'':' is-off'}"><h3>${esc(x.name)}</h3><div class="money">${fmt(x.amount)}</div><p class="note">${x.owner==='common'?'Conservé sur le compte joint':x.owner==='p1'?'À reverser à Personne 1':'À reverser à Personne 2'}</p><label class="v82-check"><input type="checkbox" data-income-toggle="${esc(x.id)}" ${x.enabled?'checked':''}>Pris en compte ce mois</label><div class="btnbar"><button class="btn" data-income-edit="${esc(x.id)}">✎ Modifier</button><button class="btn danger" data-income-remove="${esc(x.id)}">Retirer du mois</button></div></article>`).join(''):'<p class="note">Aucun versement ajouté ce mois.</p>';
+ by('income-totals').innerHTML='<h3>Destination des versements</h3><div><span>À reverser à Personne 1</span><strong>'+fmt(extra.p1)+'</strong></div><div><span>À reverser à Personne 2</span><strong>'+fmt(extra.p2)+'</strong></div><div><span>À garder sur le joint</span><strong>'+fmt(extra.common)+'</strong></div>';
  by('income-template-actions').innerHTML=state.incomeTemplates.length?state.incomeTemplates.map(t=>{
   const exists=items.some(x=>x.templateId===t.id||(t.id==='rente-p1'&&/revenu complémentaire/i.test(x.name)));
-  return `<button type="button" class="btn secondary income-quick-btn" data-template-add="${esc(t.id)}" ${exists?'disabled title="Déjà ajouté ce mois"':''}>＋ ${esc(t.name)} <small>${fmt(t.amount)}</small></button>`;
- }).join(''):'<span class="no-templates">Aucun raccourci enregistré. Crée-en dans ⚙ Paramètres si tu le souhaites.</span>';
+  return `<button type="button" class="btn secondary income-quick-btn" data-template-add="${esc(t.id)}" ${exists?'disabled':''}><span>${esc(t.name)}<small>${fmt(t.amount)}</small><small>${exists?'✓ Ajouté ce mois':'＋ Ajouter à '+esc(labelMonth(state.month))}</small></span></button>`;
+ }).join(''):'<p class="note">Crée un raccourci dans Menu → Paramètres.</p>';
 }
 function openIncome(id=null,templateId=''){
  editingIncomeId=id;addingIncomeFromTemplate=templateId;
@@ -880,7 +942,7 @@ function restoreMonth(month){
 }
 
 function download(content,filename,mime){const b=new Blob([content],{type:mime}),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
-function exportData(){download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.1',exportedAt:new Date().toISOString(),...state},null,2),'equicomptes_V8_1_sauvegarde_'+state.month+'.json','application/json');toast('Sauvegarde téléchargée')}
+function exportData(){download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.2',exportedAt:new Date().toISOString(),...state},null,2),'equicomptes_V8_2_sauvegarde_'+state.month+'.json','application/json');toast('Sauvegarde téléchargée')}
 function importData(file){if(!file)return;const reader=new FileReader();reader.onload=()=>{try{
  const data=validate(adaptOldBackup(JSON.parse(String(reader.result))));
  if(!confirm('Importer cette sauvegarde remplacera les données du foyer connecté et pourra synchroniser les changements sur tous ses appareils. Exporte une sauvegarde avant de continuer. Confirmer ?'))return;
@@ -901,8 +963,9 @@ const person=p=>personName(p);
 let editingExpenseId=null;
 function debtState(){
  const pending=state.expenses.filter(x=>!x.settlementId);
- let n=0,a=0;for(const x of pending){if(x.payer==='p1')n+=x.amount;else a+=x.amount}
- const delta=n-a;const amount=Math.round(Math.abs(delta)/2);
+ let n=0,a=0,delta=0;for(const x of pending){if(x.payer==='p1')n+=x.amount;else a+=x.amount;delta+=(x.payer==='p1'?1:-1)*x.amount*(x.repayment==='full'?2:1)}
+ // Double du remboursement : conserver les demi-centimes jusqu’au solde global.
+const amount=Math.round(Math.abs(delta)/2);
  return {pending,n,a,total:n+a,amount,from:delta>0?'p2':delta<0?'p1':null,to:delta>0?'p1':delta<0?'p2':null};
 }
 function debtPhrase(r){if(!r.pending.length)return 'Aucun remboursement en attente';if(!r.amount)return 'Vos dépenses sont équilibrées';return `${person(r.from)} doit ${fmt(r.amount)} à ${person(r.to)}`}
@@ -913,32 +976,32 @@ function renderDebts(){
  by('debt-amount').textContent=fmt(d.amount);
  by('debt-paid-p1').textContent=fmt(d.n);by('debt-paid-p2').textContent=fmt(d.a);
  by('debt-bar-p1').style.width=(d.total?100*d.n/d.total:50)+'%';by('debt-bar-p2').style.width=(d.total?100*d.a/d.total:50)+'%';
- by('debt-explanation').textContent=!d.pending.length?'Ajoutez un achat payé depuis un compte personnel pour calculer les remboursements.':d.amount?`${d.pending.length} achat${d.pending.length>1?'s':''} à partager. On compense les montants avancés, puis on rembourse uniquement la différence.`:'Les achats de l’un compensent ceux de l’autre. Aucun virement nécessaire : tu peux clôturer la liste.';
+ by('debt-explanation').textContent=!d.pending.length?'Ajoutez un achat payé depuis un compte personnel pour calculer les remboursements.':d.amount?`${d.pending.length} achat${d.pending.length>1?'s':''} en attente. Chaque remboursement est calculé à 50/50 ou à 100 %, puis les dettes se compensent.`:'Les achats de l’un compensent ceux de l’autre. Aucun virement nécessaire : tu peux clôturer la liste.';
  by('settle-debts').disabled=!d.pending.length;
  by('expense-count').textContent=`${d.pending.length} achat${d.pending.length>1?'s':''}`;
  const sorted=d.pending.slice().sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id));
- by('expense-list').innerHTML=sorted.length?sorted.map(x=>`<div class="debt-item"><div class="paid-by-icon ${esc(x.payer)}" aria-hidden="true">${x.payer==='p1'?esc(personInitial('p1')):esc(personInitial('p2'))}</div><div class="details"><strong>${esc(x.label)}</strong><small>${dateFr(x.date)} · Payé par ${person(x.payer)} · 50/50</small></div><div class="right"><span class="sum">${fmt(x.amount)}</span><button type="button" class="icon-button" data-edit-expense="${esc(x.id)}" title="Modifier la dépense" aria-label="Modifier ${esc(x.label)}">✎</button><button type="button" class="icon-button" data-remove-expense="${esc(x.id)}" title="Supprimer la dépense" aria-label="Supprimer ${esc(x.label)}">×</button></div></div>`).join(''):'<div class="debt-list-empty">Aucun achat en attente. Ajoute les dépenses communes réglées par vos comptes personnels.</div>';
+ by('expense-list').innerHTML=sorted.length?sorted.map(x=>`<div class="debt-item"><div class="paid-by-icon ${esc(x.payer)}" aria-hidden="true">${x.payer==='p1'?esc(personInitial('p1')):esc(personInitial('p2'))}</div><div class="details"><strong>${esc(x.label)}</strong><small>${dateFr(x.date)} · Payé par ${person(x.payer)} · ${x.repayment==='full'?'100 % à rembourser':'50/50'}</small></div><div class="right"><span class="sum">${fmt(x.amount)}</span><button type="button" class="icon-button" data-edit-expense="${esc(x.id)}" title="Modifier la dépense" aria-label="Modifier ${esc(x.label)}">✎</button><button type="button" class="icon-button" data-remove-expense="${esc(x.id)}" title="Supprimer la dépense" aria-label="Supprimer ${esc(x.label)}">×</button></div></div>`).join(''):'<div class="debt-list-empty">Aucun achat en attente. Ajoute les achats avancés depuis vos comptes personnels.</div>';
  const settles=state.settlements.slice().reverse();
  by('settlement-count').textContent=`${settles.length} clôture${settles.length>1?'s':''}`;
  by('settlement-list').innerHTML=settles.length?settles.map(x=>{
   const lines=state.expenses.filter(e=>e.settlementId===x.id);
   const title=x.amount>0?`${person(x.from)} a remboursé ${person(x.to)} : ${fmt(x.amount)}`:'Dépenses compensées · 0,00 €';
   const date=x.at?new Date(x.at).toLocaleDateString('fr-FR'):'—';
-  return `<div class="settlement-item"><div class="settlement-head"><strong>${esc(title)}</strong><span>${date}</span></div><div class="settlement-detail">${lines.length} dépense${lines.length>1?'s':''} clôturée${lines.length>1?'s':''}</div><details><summary>Voir les achats</summary><ul>${lines.map(e=>`<li>${esc(e.label)} : ${fmt(e.amount)} · ${person(e.payer)}</li>`).join('')}</ul></details><div class="buttons"><button class="btn tiny" type="button" data-undo-settlement="${esc(x.id)}">↶ Annuler la clôture</button></div></div>`
+  return `<div class="settlement-item"><div class="settlement-head"><strong>${esc(title)}</strong><span>${date}</span></div><div class="settlement-detail">${lines.length} dépense${lines.length>1?'s':''} clôturée${lines.length>1?'s':''}</div><details><summary>Voir les achats</summary><ul>${lines.map(e=>`<li>${esc(e.label)} : ${fmt(e.amount)} · ${person(e.payer)} · ${e.repayment==='full'?'100 % à rembourser':'50/50'}</li>`).join('')}</ul></details><div class="buttons"><button class="btn tiny" type="button" data-undo-settlement="${esc(x.id)}">↶ Annuler la clôture</button></div></div>`
  }).join(''):'<div class="debt-list-empty">Les remboursements clôturés apparaîtront ici, avec le détail des dépenses.</div>';
 }
-function resetExpenseForm(){editingExpenseId=null;by('expense-form').reset();by('expense-date').value=todayLocal();by('expense-payer').value='p1';by('expense-submit').textContent='＋ Ajouter la dépense';by('expense-form-title').textContent='＋ Ajouter un achat partagé';by('expense-cancel').classList.add('hidden')}
+function resetExpenseForm(){editingExpenseId=null;by('expense-form').reset();by('expense-date').value=todayLocal();by('expense-payer').value='p1';by('expense-repayment').value='half';by('expense-submit').textContent='＋ Ajouter la dépense';by('expense-form-title').textContent='＋ Ajouter une avance';by('expense-cancel').classList.add('hidden')}
 function submitExpense(e){
- e.preventDefault();const label=by('expense-label').value.trim(),raw=by('expense-amount').value.trim(),amount=parseMoney(raw),date=by('expense-date').value,payer=by('expense-payer').value;
+ e.preventDefault();const label=by('expense-label').value.trim(),raw=by('expense-amount').value.trim(),amount=parseMoney(raw),date=by('expense-date').value,payer=by('expense-payer').value,repayment=by('expense-repayment').value==='full'?'full':'half';
  if(!label){toast('Indique le motif de la dépense.');return}
  if(!raw||!/^[\d\s\u00a0\u202f]+(?:[.,]\d{1,2})?$/.test(raw)||amount<=0||amount>100000000){toast('Saisis un montant valide et supérieur à zéro.');return}
  if(!/^\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01])$/.test(date)){toast('Sélectionne une date valide.');return}
  if(!['p1','p2'].includes(payer)){toast('Sélectionne qui a payé.');return}
- if(editingExpenseId){const exp=state.expenses.find(x=>x.id===editingExpenseId&&!x.settlementId);if(exp)Object.assign(exp,{label,amount,date,payer})}
- else{state.expenses.push({id:'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,8),label,amount,date,payer,settlementId:''})}
+ if(editingExpenseId){const exp=state.expenses.find(x=>x.id===editingExpenseId&&!x.settlementId);if(exp)Object.assign(exp,{label,amount,date,payer,repayment})}
+ else{state.expenses.push({id:'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,8),label,amount,date,payer,repayment,settlementId:''})}
  persist();resetExpenseForm();renderDebts();toast('Dépense enregistrée');
 }
-function editExpense(id){const e=state.expenses.find(x=>x.id===id&&!x.settlementId);if(!e)return;editingExpenseId=id;by('expense-label').value=e.label;by('expense-amount').value=formatInput(e.amount);by('expense-payer').value=e.payer;by('expense-date').value=e.date;by('expense-form-title').textContent='✎ Modifier l’achat';by('expense-submit').textContent='✓ Enregistrer la modification';by('expense-cancel').classList.remove('hidden');by('expense-form').scrollIntoView({behavior:'smooth',block:'center'});by('expense-label').focus()}
+function editExpense(id){const e=state.expenses.find(x=>x.id===id&&!x.settlementId);if(!e)return;editingExpenseId=id;by('expense-label').value=e.label;by('expense-amount').value=formatInput(e.amount);by('expense-payer').value=e.payer;by('expense-repayment').value=e.repayment==='full'?'full':'half';by('expense-date').value=e.date;by('expense-form-title').textContent='✎ Modifier l’achat';by('expense-submit').textContent='✓ Enregistrer la modification';by('expense-cancel').classList.remove('hidden');by('expense-form').scrollIntoView({behavior:'smooth',block:'center'});by('expense-label').focus()}
 function deleteExpense(id){const e=state.expenses.find(x=>x.id===id&&!x.settlementId);if(!e)return;if(!confirm(`Supprimer la dépense « ${e.label} » de ${fmt(e.amount)} ?`))return;state.expenses=state.expenses.filter(x=>x.id!==id);if(editingExpenseId===id)resetExpenseForm();persist();renderDebts();toast('Dépense supprimée')}
 function settleDebts(){const d=debtState();if(!d.pending.length)return;const phr=d.amount?`${person(d.from)} a remboursé ${fmt(d.amount)} à ${person(d.to)}`:'Les achats ont été compensés sans virement';if(!confirm(`Confirmer la clôture de ${d.pending.length} dépense(s) ?\n${phr}.\n\nCette action ne réalise pas de virement bancaire.`))return;
  const id='s'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);const ids=d.pending.map(x=>x.id);state.settlements.push({id,at:new Date().toISOString(),amount:d.amount,from:d.from||'aucun',to:d.to||'aucun',expenseIds:ids});for(const x of d.pending)x.settlementId=id;persist();resetExpenseForm();renderDebts();toast('Dépenses clôturées : solde remis à zéro')}
@@ -1166,7 +1229,7 @@ for(const fn of ['renderThemeChart','renderResults','renderCharges','renderIncom
  const wrapped=function(...args){const value=orig.apply(this,args);applyPeopleLabels();return value};
  switch(fn){case 'renderThemeChart':renderThemeChart=wrapped;break;case 'renderResults':renderResults=wrapped;break;case 'renderCharges':renderCharges=wrapped;break;case 'renderIncome':renderIncome=wrapped;break;case 'renderHistory':renderHistory=wrapped;break;case 'renderDebts':renderDebts=wrapped;break;case 'renderSettingsTemplates':renderSettingsTemplates=wrapped;break;case 'displaySettings':displaySettings=wrapped;break;case 'openIncome':openIncome=wrapped;break;case 'openCharge':openCharge=wrapped;break}
 }
-// V8.1 — adaptation sans changement des identifiants p1/p2.
+// V8.2 — adaptation sans changement des identifiants p1/p2.
 // Seul le module sync-v8.js reçoit une passerelle vers les données.
 function betaRefresh(){
  const v=state.monthlySalaries[state.month]||newSalaries(state.settings);
@@ -1214,6 +1277,185 @@ window.EquiBetaBridge={
  resetLocal:()=>{state=seed();try{localStorage.removeItem(KEY)}catch{};betaRefresh()},
  render:betaRefresh
 };
+
+// Extensions V8.2, dans la même portée que le moteur V8.1.
+const v82Demo = window.EQUI_V82_DEMO === true;
+const v82Contact = ''; // À renseigner après confirmation de la création de l’adresse.
+function v82Open(id) {
+ const dialog=by(id);
+ if(!dialog.open)dialog.showModal();
+}
+function v82Close(id){by(id).close();}
+by('v82-open-menu').onclick=()=>{v82Open('v82-menu');by('v82-open-menu').setAttribute('aria-expanded','true');};
+by('v82-menu').addEventListener('close',()=>by('v82-open-menu').setAttribute('aria-expanded','false'));
+document.querySelectorAll('[data-v82-close]').forEach(button=>button.onclick=()=>v82Close(button.dataset.v82Close));
+by('v82-menu').addEventListener('click',event=>{
+ if(event.target!==by('v82-menu'))return;
+ const rect=by('v82-menu').getBoundingClientRect();
+ if(event.clientX<rect.left||event.clientX>rect.right)v82Close('v82-menu');
+});
+document.querySelectorAll('[data-v82-action]').forEach(button=>button.onclick=()=>{
+ v82Close('v82-menu');
+ const action=button.dataset.v82Action;
+ if(action==='account')v82Open('v82-account');
+ if(action==='settings')displaySettings();
+ if(action==='themes'){previewThemes();v82Open('theme-dialog');}
+ if(action==='backups'){v82Open('v82-backups');v82RenderBackups();}
+ if(action==='help')v82Open('v82-help');
+});
+// Déplacer les contrôles existants conserve leurs gestionnaires Firebase.
+['v8-info-email','v8-home-label','v8-info-home-empty','v8-info-sync','v8-invite-button','beta-account-button','v8-delete-account-open'].forEach(id=>by('v82-account-content').append(by(id)));
+['open-settings','open-themes','v8-account-info-toggle'].forEach(id=>by(id).hidden=true);
+by('v8-account-info-close').hidden=true;
+['v8-invite-button','beta-account-button','v8-delete-account-open'].forEach(id=>by(id).addEventListener('click',()=>v82Close('v82-account')));
+by('v82-backup-original').append(by('export-data').closest('.card'));
+by('v82-feedback-tech').textContent='ÉquiComptes 8.2 · '+navigator.userAgent;
+by('v82-contact-note').textContent=v82Contact?'Le message s’ouvrira dans ta messagerie.':'Adresse de contact en cours de création. Tu peux préparer et copier ton retour.';
+by('v82-feedback-form').onsubmit=event=>{
+ event.preventDefault();
+ const body=by('v82-feedback-type').value+'\n\n'+by('v82-feedback-text').value.trim()+'\n\n'+by('v82-feedback-tech').textContent;
+ by('v82-feedback-body').value=body;by('v82-feedback-preview').hidden=false;
+ if(v82Contact)location.href='mailto:'+v82Contact+'?subject='+encodeURIComponent('ÉquiComptes 8.2 — '+by('v82-feedback-type').value)+'&body='+encodeURIComponent(body);
+};
+by('v82-copy-feedback').onclick=async()=>{
+ try{await navigator.clipboard.writeText(by('v82-feedback-body').value);toast('Message copié');}
+ catch{by('v82-feedback-body').focus();by('v82-feedback-body').select();toast('Sélectionne puis copie le message.');}
+};
+function v82Context(){
+ if(v82Demo)return {scope:KEY,ready:true,synced:false,label:'Copie de démonstration'};
+ const context=window.EQUI_V82_CONTEXT?.();
+ if(!context?.ready||KEY!=='equicomptes-v8-beta-local:'+context.uid+':'+context.hid)return null;
+ return {scope:KEY,ready:true,synced:context.synced,label:context.synced?'Données synchronisées':'Données locales · des changements peuvent rester à synchroniser'};
+}
+let v82DbPromise=null,v82BackupBusy=false,v82Latest=null;
+function v82Db(){
+ if(!v82DbPromise)v82DbPromise=new Promise((resolve,reject)=>{
+  const request=indexedDB.open(v82Demo?'equicomptes-demo-v82-backups':'equicomptes-v8-backups',1);
+  request.onupgradeneeded=()=>request.result.createObjectStore('scopes');
+  request.onsuccess=()=>resolve(request.result);
+  request.onerror=()=>{v82DbPromise=null;reject(request.error);};
+ });
+ return v82DbPromise;
+}
+function v82DefaultRecord(){return {frequency:'15',offer:true,copies:[]};}
+async function v82Read(scope){
+ const db=await v82Db();
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction('scopes','readonly'),request=tx.objectStore('scopes').get(scope);
+  request.onsuccess=()=>resolve(request.result||v82DefaultRecord());
+  request.onerror=()=>reject(request.error);
+ });
+}
+async function v82Change(scope,change){
+ const db=await v82Db();
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction('scopes','readwrite'),store=tx.objectStore('scopes'),request=store.get(scope);
+  let result;
+  request.onsuccess=()=>{
+   try{result=change(request.result||v82DefaultRecord());store.put(result,scope);}
+   catch(error){tx.abort();reject(error);}
+  };
+  tx.oncomplete=()=>resolve(result);
+  tx.onerror=()=>reject(tx.error);
+  tx.onabort=()=>reject(tx.error||Error('Sauvegarde interrompue'));
+ });
+}
+function v82Due(record){
+ const last=record.copies[0];
+ if(record.frequency==='off')return null;
+ if(!last)return new Date(0);
+ const date=new Date(last.at);
+ if(record.frequency==='month'){
+  const day=date.getDate();date.setDate(1);date.setMonth(date.getMonth()+1);
+  const maxDay=new Date(date.getFullYear(),date.getMonth()+1,0).getDate();
+  date.setDate(Math.min(day,maxDay));
+ }else date.setDate(date.getDate()+Number(record.frequency));
+ return date;
+}
+function v82BackupError(error){by('v82-backup-status').textContent='Copie impossible sur cet appareil. Utilise Exporter la sauvegarde. '+(error?.name||'');}
+async function v82Snapshot(reason='automatic'){
+ const context=v82Context();if(!context||v82BackupBusy)return false;
+ v82BackupBusy=true;
+ try{
+  const payload=JSON.parse(JSON.stringify(state)),at=new Date().toISOString();
+  let made=null;
+  const record=await v82Change(context.scope,record=>{
+   const due=v82Due(record);
+   if(reason==='automatic'&&(!due||due>new Date()))return record;
+   made={id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),at,reason,label:context.label,payload};
+   record.copies=[made,...record.copies].slice(0,5);
+   return record;
+  });
+  if(made&&context.scope===v82Context()?.scope){
+   v82Latest=made;
+   by('v82-backup-status').textContent='Copie enregistrée sur cet appareil.';
+   if(reason==='automatic'&&record.offer)by('v82-backup-offer').hidden=false;
+  }
+  return !!made;
+ }catch(error){v82BackupError(error);return false}
+ finally{v82BackupBusy=false;}
+}
+function v82Download(copy){
+ download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.2',exportedAt:copy.at,...copy.payload},null,2),'equicomptes_V8_2_'+copy.at.replace(/[:.]/g,'-')+'.json','application/json');
+}
+async function v82RenderBackups(){
+ const context=v82Context();
+ if(!context){by('v82-backup-status').textContent='Connecte-toi et charge ton foyer pour accéder à ses copies.';by('v82-backup-list').replaceChildren();return;}
+ try{
+  const record=await v82Read(context.scope);
+  if(context.scope!==v82Context()?.scope)return;
+  by('v82-frequency').value=record.frequency;by('v82-offer').checked=record.offer;
+  const due=v82Due(record),last=record.copies[0];
+  by('v82-backup-dates').textContent='Dernière copie · '+(last?new Date(last.at).toLocaleString('fr-FR'):'aucune')+' — Prochaine échéance · '+(due?(last?due.toLocaleDateString('fr-FR'):'à la prochaine ouverture du foyer'):'désactivée');
+  by('v82-backup-list').innerHTML=record.copies.map(copy=>'<article><strong>'+esc(new Date(copy.at).toLocaleString('fr-FR'))+'</strong><p class="note">'+esc(copy.label)+(copy.reason==='before-restore'?' · avant restauration':'')+'</p><div class="btnbar"><button class="btn" data-v82-download="'+esc(copy.id)+'">Télécharger</button><button class="btn" data-v82-restore="'+esc(copy.id)+'">Restaurer…</button></div></article>').join('');
+  by('v82-backup-list').querySelectorAll('button').forEach(button=>button.onclick=async()=>{
+   if(context.scope!==v82Context()?.scope)return;
+   const copy=record.copies.find(item=>item.id===(button.dataset.v82Download||button.dataset.v82Restore));
+   if(button.dataset.v82Download){v82Download(copy);return;}
+   if(!confirm('Restaurer cette copie remplacera les données du foyer et pourra synchroniser ce remplacement sur les autres appareils. Continuer ?'))return;
+   const restored=validate(adaptOldBackup(copy.payload));
+   if(!await v82Snapshot('before-restore')){toast('Copie de sécurité impossible. Restauration annulée.');return;}
+   if(context.scope!==v82Context()?.scope)return;
+   state=restored;persist();betaRefresh();resetExpenseForm();await v82RenderBackups();toast('Copie restaurée localement. Consulte le voyant de synchronisation.');
+  });
+ }catch(error){v82BackupError(error);}
+}
+async function v82SavePreferences(){
+ const context=v82Context();if(!context)return;
+ try{
+  const frequency=by('v82-frequency').value,offer=by('v82-offer').checked;
+  await v82Change(context.scope,record=>({...record,frequency,offer}));
+  await v82RenderBackups();
+ }catch(error){v82BackupError(error);}
+}
+by('v82-frequency').onchange=v82SavePreferences;by('v82-offer').onchange=v82SavePreferences;
+by('v82-backup-now').onclick=async()=>{await v82Snapshot('manual');await v82RenderBackups();};
+by('v82-download-latest').onclick=()=>{if(v82Latest&&v82Context()){v82Download(v82Latest);by('v82-backup-offer').hidden=true;}};
+by('v82-dismiss-backup').onclick=()=>by('v82-backup-offer').hidden=true;
+window.EquiBetaBridge.clearBackups=async(uid,hid)=>{
+ const db=await v82Db();
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction('scopes','readwrite');
+  const store=tx.objectStore('scopes'),cursor=store.openCursor();
+  cursor.onsuccess=()=>{
+   const item=cursor.result;
+   if(!item)return;
+   if(String(item.key).startsWith('equicomptes-v8-beta-local:'+uid+':'))item.delete();
+   item.continue();
+  };
+  tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+ });
+};
+setTimeout(()=>v82Snapshot(),2500);
+setInterval(()=>{if(!document.hidden)v82Snapshot();},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)v82Snapshot();});
+if(v82Demo){
+ by('beta-gate').hidden=true;
+ by('beta-sync-indicator').textContent='● Démonstration locale · aucune synchronisation Firebase';
+ by('v8-info-email').textContent='Compte fictif';
+ by('v8-home-label').textContent='Camille et Alex';by('v8-home-label').hidden=false;by('v8-info-home-empty').hidden=true;
+ ['beta-account-button','v8-delete-account-open'].forEach(id=>by(id).onclick=()=>toast('Fonction de compte disponible dans la version connectée.'));
+}
 
 applyPeopleLabels();applyTheme();renderCharges();renderIncome();
 })();
@@ -1270,6 +1512,6 @@ setTimeout(()=>{
  refresh();
 })();
 </script>
-<script type="module" src="./sync-v8.js"></script>
+<script type="module" src="./sync-v8.js?v=8.2"></script>
 <script>if("serviceWorker" in navigator && location.protocol==="https:"){navigator.serviceWorker.register("./service-worker.js",{scope:"./"}).catch(()=>{});}</script>
 </body></html>
