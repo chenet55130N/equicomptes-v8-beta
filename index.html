@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#10233f">
 <meta name="application-name" content="ÉquiComptes">
 <meta name="description" content="Répartition des salaires, échéanciers photo ou manuels, revenus complémentaires et remboursements à 50/50.">
-<title>ÉquiComptes V8.2 · Multi-foyers synchronisés</title>
+<title>ÉquiComptes V8.2.1 · Multi-foyers synchronisés</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <style>
@@ -227,9 +227,9 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .salary-item{min-width:0}.account-label{display:block;font-size:11px;font-weight:750;color:var(--t-muted,var(--muted));margin:10px 0 5px}.salary-account{display:block;width:100%;min-width:0;border:1px solid var(--t-border,#dce5e9);background:var(--t-input,#f8fafb);color:var(--t-ink,var(--ink));padding:10px 7px;border-radius:10px;font-weight:650;font-size:12px}.transfer .name{min-height:32px;line-height:1.35;overflow-wrap:anywhere}.transfer .amount{font-variant-numeric:tabular-nums}.salary-item .field-label{min-height:18px}.settings-fields select{font-size:13px}
 @media(max-width:360px){.salary-grid{gap:8px}.salary-account{font-size:11px;padding:9px 4px}.salary-item .input-wrap{padding:0 7px}.salary-item .input-wrap input{font-size:17px}.transfer .name{font-size:11px}.transfer .amount{font-size:19px}}
 
-/* Application V8.2 — identité distincte, sans modifier les thèmes historiques */
+/* Application V8.2.1 — identité distincte, sans modifier les thèmes historiques */
 .beta-label{display:inline-block;border:1px solid #ffffff66;border-radius:7px;padding:3px 6px;margin-left:3px;font-size:10px;letter-spacing:.2px;background:#ffffff22;color:#fff;vertical-align:3px}
-/* V8.2 — bandeau compact : état visible, détails privés à la demande. */
+/* V8.2.1 — bandeau compact : état visible, détails privés à la demande. */
 .beta-sync-strip{position:relative;z-index:8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;padding:9px 14px;min-width:0;background:var(--t-card2,#edf4f6);color:var(--t-ink,#172c3a);border-bottom:1px solid var(--t-line,#d9e5e9);line-height:1.3}
 .beta-sync-strip [hidden]{display:none!important}
 .beta-strip-status{flex:1 1 110px;min-width:0;display:flex;align-items:center;gap:8px}
@@ -272,8 +272,10 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .beta-help{font-size:11px;color:#667586;line-height:1.55}
 .beta-gate-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.beta-gate-actions button{font-size:12px;padding:9px;background:#f1f4f7;color:#335;border:1px solid #d5dde8;border-radius:9px}
 @media print{.beta-gate,.beta-sync-strip{display:none!important}}
+
+.privacy-field{display:none!important}.amounts-masked #ocr-preview-wrap,.amounts-masked #ocr-text,.amounts-masked .ocr-source{display:none!important}.privacy-cover{display:inline-block;padding:12px;font-weight:700;font-size:1.1em}.brand{flex-wrap:wrap}#privacy-toggle{color:inherit;background:transparent;border:1px solid currentColor;font-size:13px;padding:10px}#v82-open-menu{margin-left:0}
 </style>
-<style>/* V8.2 — utiliser les couleurs du thème courant. */
+<style>/* V8.2.1 — utiliser les couleurs du thème courant. */
 [hidden]{display:none!important}
 .main{padding-bottom:calc(125px + env(safe-area-inset-bottom))}
 .tabs-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:0;top:auto;width:100%;max-width:840px;z-index:20;background:var(--t-card);border-top:1px solid var(--t-line);padding:9px 10px calc(9px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px #0001}
@@ -305,7 +307,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V8.2</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
+<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V8.2.1</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
 <div class="beta-sync-strip" aria-label="Connexion et foyer">
   <div class="beta-strip-status">
     <span id="beta-sync-indicator" role="status" aria-live="polite" data-sync-state="neutral">Connexion en cours…</span>
@@ -432,9 +434,9 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
   </div>
 </dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V8.2">
+<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V8.2.1">
  <div class="beta-gate-card">
-  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V8.2</strong><small>Multi-foyers • synchronisation privée</small></div></div>
+  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V8.2.1</strong><small>Multi-foyers • synchronisation privée</small></div></div>
   <p class="beta-gate-warn">Une anomalie de fonctionnement ? Merci de la signaler à la personne qui t’a partagé ÉquiComptes.</p>
   <p id="beta-gate-message" class="beta-gate-message" role="status" aria-live="polite">Préparation de la connexion…</p>
   <section id="beta-config-panel" hidden>
@@ -505,7 +507,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <button class="btn" data-v82-action="themes">◐ Apparence</button>
 <button class="btn" data-v82-action="backups">↓ Sauvegardes</button>
 <button class="btn" data-v82-action="help">? Aide et suggestions</button>
-</div><p class="footnote">ÉquiComptes V8.2</p></div></dialog>
+</div><p class="footnote">ÉquiComptes V8.2.1</p></div></dialog>
 <dialog id="v82-account" class="dialog" aria-labelledby="v82-account-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-account-title">Mon compte et mon foyer</h2><button class="close" data-v82-close="v82-account" aria-label="Fermer">×</button></div><div id="v82-account-content"></div></div></dialog>
 <dialog id="v82-backups" class="dialog" aria-labelledby="v82-backup-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-backup-title">Sauvegardes</h2><button class="close" data-v82-close="v82-backups" aria-label="Fermer">×</button></div>
 <div class="formline"><label for="v82-frequency">Fréquence sur cet appareil</label><select id="v82-frequency"><option value="7">Tous les 7 jours</option><option value="15">Tous les 15 jours</option><option value="month">Tous les mois</option><option value="off">Désactivée</option></select></div>
@@ -942,7 +944,7 @@ function restoreMonth(month){
 }
 
 function download(content,filename,mime){const b=new Blob([content],{type:mime}),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
-function exportData(){download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.2',exportedAt:new Date().toISOString(),...state},null,2),'equicomptes_V8_2_sauvegarde_'+state.month+'.json','application/json');toast('Sauvegarde téléchargée')}
+function exportData(){download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.2.1',exportedAt:new Date().toISOString(),...state},null,2),'equicomptes_V8_2_sauvegarde_'+state.month+'.json','application/json');toast('Sauvegarde téléchargée')}
 function importData(file){if(!file)return;const reader=new FileReader();reader.onload=()=>{try{
  const data=validate(adaptOldBackup(JSON.parse(String(reader.result))));
  if(!confirm('Importer cette sauvegarde remplacera les données du foyer connecté et pourra synchroniser les changements sur tous ses appareils. Exporte une sauvegarde avant de continuer. Confirmer ?'))return;
@@ -1229,7 +1231,7 @@ for(const fn of ['renderThemeChart','renderResults','renderCharges','renderIncom
  const wrapped=function(...args){const value=orig.apply(this,args);applyPeopleLabels();return value};
  switch(fn){case 'renderThemeChart':renderThemeChart=wrapped;break;case 'renderResults':renderResults=wrapped;break;case 'renderCharges':renderCharges=wrapped;break;case 'renderIncome':renderIncome=wrapped;break;case 'renderHistory':renderHistory=wrapped;break;case 'renderDebts':renderDebts=wrapped;break;case 'renderSettingsTemplates':renderSettingsTemplates=wrapped;break;case 'displaySettings':displaySettings=wrapped;break;case 'openIncome':openIncome=wrapped;break;case 'openCharge':openCharge=wrapped;break}
 }
-// V8.2 — adaptation sans changement des identifiants p1/p2.
+// V8.2.1 — adaptation sans changement des identifiants p1/p2.
 // Seul le module sync-v8.js reçoit une passerelle vers les données.
 function betaRefresh(){
  const v=state.monthlySalaries[state.month]||newSalaries(state.settings);
@@ -1278,7 +1280,7 @@ window.EquiBetaBridge={
  render:betaRefresh
 };
 
-// Extensions V8.2, dans la même portée que le moteur V8.1.
+// Extensions V8.2.1, dans la même portée que le moteur V8.1.
 const v82Demo = window.EQUI_V82_DEMO === true;
 const v82Contact = ''; // À renseigner après confirmation de la création de l’adresse.
 function v82Open(id) {
@@ -1396,7 +1398,7 @@ async function v82Snapshot(reason='automatic'){
  finally{v82BackupBusy=false;}
 }
 function v82Download(copy){
- download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.2',exportedAt:copy.at,...copy.payload},null,2),'equicomptes_V8_2_'+copy.at.replace(/[:.]/g,'-')+'.json','application/json');
+ download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.2.1',exportedAt:copy.at,...copy.payload},null,2),'equicomptes_V8_2_'+copy.at.replace(/[:.]/g,'-')+'.json','application/json');
 }
 async function v82RenderBackups(){
  const context=v82Context();
@@ -1514,4 +1516,46 @@ setTimeout(()=>{
 </script>
 <script type="module" src="./sync-v8.js?v=8.2"></script>
 <script>if("serviceWorker" in navigator && location.protocol==="https:"){navigator.serviceWorker.register("./service-worker.js",{scope:"./"}).catch(()=>{});}</script>
+<script>
+// Masquage visuel local : ne modifie jamais les données du foyer.
+(()=>{'use strict';
+const KEY='equicomptes-mask-amounts';let masked=false;try{masked=localStorage.getItem(KEY)==='1'}catch{}
+const originals=new Map(),fields=new Map();
+const money= /[-−+]?\s*\d[\d\s\u00a0\u202f]*(?:[.,]\d+)?\s*(?:€|EUR\b)/g;
+const hide=s=>String(s).replace(money,' •••• €');
+const confirmOriginal=window.confirm.bind(window),alertOriginal=window.alert.bind(window);
+window.confirm=s=>confirmOriginal(masked?hide(s):s);window.alert=s=>alertOriginal(masked?hide(s):s);
+function scan(){
+ observer.disconnect();document.documentElement.classList.toggle("amounts-masked",masked);
+ if(masked){
+ const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
+ while(n=walk.nextNode()){
+ if(n.parentElement?.closest('script,style,textarea,#privacy-toggle'))continue;
+ const before=n.data,after=hide(before);if(before!==after){originals.set(n,before);n.data=after;}
+ }
+ document.querySelectorAll('input[inputmode="decimal"]').forEach(el=>{
+ if(fields.has(el))return;
+ const cover=document.createElement('span');cover.className='privacy-cover';cover.textContent='•••• €';cover.title='Réaffiche les montants pour les modifier';
+ fields.set(el,{cover,hidden:el.hidden,aria:el.getAttribute('aria-hidden')});el.classList.add('privacy-field');el.setAttribute('aria-hidden','true');el.after(cover);
+ });
+ document.querySelectorAll('[title],[aria-label]').forEach(el=>{for(const attr of ['title','aria-label']){const s=el.getAttribute(attr);if(s&&hide(s)!==s){const key={el,attr};originals.set(key,s);el.setAttribute(attr,hide(s))}}});
+ }else{
+ for(const [node,value] of originals){if(node.el){if(node.el.getAttribute(node.attr)===hide(value))node.el.setAttribute(node.attr,value)}else if(node.data===hide(value))node.data=value}originals.clear();
+ for(const [el,v] of fields){el.classList.remove('privacy-field');if(v.aria===null)el.removeAttribute('aria-hidden');else el.setAttribute('aria-hidden',v.aria);v.cover.remove()}fields.clear();
+ }
+ const b=document.getElementById('privacy-toggle');if(b){b.textContent=masked?'◉ Afficher':'◉ Masquer';b.setAttribute('aria-pressed',String(masked));b.setAttribute('aria-label',masked?'Afficher les montants':'Masquer les montants')}
+ observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['title','aria-label']});
+}
+const observer=new MutationObserver(scan);
+function start(){
+ const button=document.createElement('button');button.id='privacy-toggle';button.type='button';button.className='btn';document.getElementById('v82-open-menu').before(button);
+ button.onclick=()=>{masked=!masked;try{localStorage.setItem(KEY,masked?'1':'0')}catch{}scan()};
+ document.addEventListener('submit',e=>{if(masked&&e.target.querySelector('input[inputmode="decimal"]')){e.preventDefault();e.stopImmediatePropagation();alertOriginal('Réaffiche les montants avant de modifier ce formulaire.')}},true);
+ document.addEventListener('click',e=>{if(!masked)return;const target=e.target.closest('#open-ocr,#copy-result,#export-data,[data-v82-download]');if(target){e.preventDefault();e.stopImmediatePropagation();alertOriginal('Réaffiche les montants pour utiliser cette action : elle peut révéler les vraies valeurs.')}},true);
+ scan();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+
+</script>
 </body></html>
