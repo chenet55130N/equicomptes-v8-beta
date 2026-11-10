@@ -273,7 +273,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .beta-gate-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.beta-gate-actions button{font-size:12px;padding:9px;background:#f1f4f7;color:#335;border:1px solid #d5dde8;border-radius:9px}
 @media print{.beta-gate,.beta-sync-strip{display:none!important}}
 
-.privacy-field{display:none!important}.amounts-masked #ocr-preview-wrap,.amounts-masked #ocr-text,.amounts-masked .ocr-source{display:none!important}.privacy-cover{display:inline-block;padding:12px;font-weight:700;font-size:1.1em}.brand{flex-wrap:wrap}#privacy-toggle{color:inherit;background:transparent;border:1px solid currentColor;font-size:13px;padding:10px}#v82-open-menu{margin-left:0}
+.privacy-field{display:none!important}.amounts-masked #ocr-preview-wrap,.amounts-masked #ocr-text,.amounts-masked .ocr-source{display:none!important}.privacy-cover{display:inline-block;padding:12px;font-weight:700;font-size:1.1em}.brand{flex-wrap:wrap}#privacy-toggle{color:inherit;background:transparent;border:1px solid currentColor;width:46px;height:46px;min-width:46px;padding:10px;display:inline-flex;align-items:center;justify-content:center}#v82-open-menu{margin-left:0}
 </style>
 <style>/* V8.2.1 — utiliser les couleurs du thème courant. */
 [hidden]{display:none!important}
@@ -1543,7 +1543,7 @@ function scan(){
  for(const [node,value] of originals){if(node.el){if(node.el.getAttribute(node.attr)===hide(value))node.el.setAttribute(node.attr,value)}else if(node.data===hide(value))node.data=value}originals.clear();
  for(const [el,v] of fields){el.classList.remove('privacy-field');if(v.aria===null)el.removeAttribute('aria-hidden');else el.setAttribute('aria-hidden',v.aria);v.cover.remove()}fields.clear();
  }
- const b=document.getElementById('privacy-toggle');if(b){b.textContent=masked?'◉ Afficher':'◉ Masquer';b.setAttribute('aria-pressed',String(masked));b.setAttribute('aria-label',masked?'Afficher les montants':'Masquer les montants')}
+ const b=document.getElementById('privacy-toggle');if(b){b.innerHTML='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>'+(masked?'<path d="m3 3 18 18"/>':'')+'</svg>';b.setAttribute('aria-pressed',String(masked));b.setAttribute('aria-label',masked?'Afficher les montants':'Masquer les montants')}
  observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['title','aria-label']});
 }
 const observer=new MutationObserver(scan);
