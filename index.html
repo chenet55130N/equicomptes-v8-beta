@@ -507,7 +507,18 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <button class="btn" data-v82-action="themes">◐ Apparence</button>
 <button class="btn" data-v82-action="backups">↓ Sauvegardes</button>
 <button class="btn" data-v82-action="help">? Aide et suggestions</button>
+<button class="btn" data-v82-action="share">▦ Partager ÉquiComptes</button>
 </div><p class="footnote">ÉquiComptes V8.3</p></div></dialog>
+<dialog id="v82-share" class="dialog" aria-labelledby="v82-share-title"><div class="dialog-inner">
+<div class="dialog-title"><h2 id="v82-share-title">Partager ÉquiComptes</h2><button class="close" data-v82-close="v82-share" aria-label="Fermer">×</button></div>
+<p class="note">Faites scanner ce QR code pour ouvrir l'application officielle et l'installer sur un téléphone.</p>
+<div style="max-width:296px;margin:14px auto;padding:13px;border:1px solid var(--t-line);border-radius:15px;background:#fff;text-align:center">
+<svg id="v82-share-qr" role="img" aria-label="QR code d'installation ÉquiComptes" viewBox="0 0 41 41" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto;max-width:250px;margin:auto;image-rendering:pixelated"><rect width="41" height="41" fill="#fff"/></svg>
+</div>
+<p class="note" style="text-align:center;overflow-wrap:anywhere"><a id="v82-share-link" href="https://chenet55130n.github.io/equicomptes-v8-beta/" target="_blank" rel="noopener noreferrer">chenet55130n.github.io/equicomptes-v8-beta/</a></p>
+<div class="btnbar" style="justify-content:center"><button class="btn primary" id="v82-share-copy" type="button">Copier le lien</button><button class="btn" id="v82-share-system" type="button">Partager…</button></div>
+<p class="note">Ce QR code partage uniquement l'adresse de l'application : aucun identifiant, code d'invitation ou donnée de votre foyer. Sur Android : menu du navigateur → Installer l'application ou Ajouter à l'écran d'accueil.</p>
+</div></dialog>
 <dialog id="v82-account" class="dialog" aria-labelledby="v82-account-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-account-title">Mon compte et mon foyer</h2><button class="close" data-v82-close="v82-account" aria-label="Fermer">×</button></div><div id="v82-account-content"></div></div></dialog>
 <dialog id="v82-backups" class="dialog" aria-labelledby="v82-backup-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-backup-title">Sauvegardes</h2><button class="close" data-v82-close="v82-backups" aria-label="Fermer">×</button></div>
 <div class="formline"><label for="v82-frequency">Fréquence sur cet appareil</label><select id="v82-frequency"><option value="7">Tous les 7 jours</option><option value="15">Tous les 15 jours</option><option value="month">Tous les mois</option><option value="off">Désactivée</option></select></div>
@@ -1320,6 +1331,27 @@ document.querySelectorAll('[data-v82-action]').forEach(button=>button.onclick=()
  if(action==='themes'){previewThemes();v82Open('theme-dialog');}
  if(action==='backups'){v82Open('v82-backups');v82RenderBackups();}
  if(action==='help')v82Open('v82-help');
+ if(action==='share'){v82RenderShare();v82Open('v82-share');}
+});
+
+// QR intégré hors ligne : matrice version 4 (33×33), marge blanche de 4 modules sur chaque bord.
+// Le QR contient uniquement l'URL publique de l'application, jamais un identifiant de foyer.
+function v82RenderShare(){
+ const svg=by('v82-share-qr');if(svg.dataset.ready==='1')return;
+ const rows='1fdecc07f|104a10141|1752b8e5d|174b2295d|17452ad5d|105bee441|1fd55557f|000277300|146a51725|1621baf4b|026c33bcd|05afbb73a|1dd489043|1c1f083eb|166c6ea15|081a075f8|1a723156a|0c16a774b|16e5bf66d|1591e411a|05e7bf361|060b56265|1a4b5aac5|01a8706fb|18fd527fb|001dfa511|1fd12295d|1046da71b|17456b3f0|174a4b4b3|17546feb3|104ec17b8|1fd4a2579'.split('|'),NS='http://www.w3.org/2000/svg';
+ let path='';
+ for(let y=0;y<rows.length;y++){const n=BigInt('0x'+rows[y]);for(let x=0;x<33;x++)if((n & (1n << BigInt(32-x)))!==0n)path+='M'+(x+4)+','+(y+4)+'h1v1h-1z';}
+ const p=document.createElementNS(NS,'path');p.setAttribute('d',path);p.setAttribute('fill','#111827');svg.appendChild(p);svg.dataset.ready='1';
+}
+by('v82-share-copy').addEventListener('click',async()=>{
+ const url=by('v82-share-link').href;
+ try{await navigator.clipboard.writeText(url);toast('Lien d’installation copié');}
+ catch{const t=document.createElement('textarea');t.value=url;t.style.position='fixed';t.style.left='-9999px';document.body.appendChild(t);t.select();const ok=document.execCommand('copy');t.remove();toast(ok?'Lien copié':'Sélectionne le lien affiché pour le copier');}
+});
+by('v82-share-system').addEventListener('click',async()=>{
+ const url=by('v82-share-link').href;
+ if(navigator.share){try{await navigator.share({title:'ÉquiComptes',text:'Installer ÉquiComptes',url});}catch(e){if(e.name!=='AbortError')toast('Partage indisponible : utilise Copier le lien');}}
+ else{try{await navigator.clipboard.writeText(url);toast('Lien copié : partage-le dans ton application de messagerie');}catch{toast('Utilise Copier le lien ou le lien affiché');}}
 });
 // Déplacer les contrôles existants conserve leurs gestionnaires Firebase.
 ['v8-info-email','v8-home-label','v8-info-home-empty','v8-info-sync','v8-invite-button','beta-account-button','v8-delete-account-open'].forEach(id=>by('v82-account-content').append(by(id)));
