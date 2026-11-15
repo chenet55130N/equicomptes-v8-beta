@@ -321,6 +321,15 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .lab-choice input{width:auto!important}
 #lab-banking .btnbar{flex-wrap:wrap}
 @media(max-width:420px){#lab-banking .lab-row{grid-template-columns:1fr}}
+.lab-payer-fields{background:var(--t-card2);border:1px solid var(--t-line);padding:15px;border-radius:14px}
+.lab-payer-fields h3{font-size:15px;margin:0 0 6px}
+.lab-payer-fields .note{font-size:12px;margin:0 0 12px}
+.lab-payer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lab-payer-item{border:1px solid var(--t-line);padding:10px;border-radius:10px}
+.lab-payer-item.lab-payer-active{border-color:var(--t-primary);box-shadow:inset 0 0 0 1px var(--t-primary)}
+.lab-payer-item label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}
+.lab-payer-item select{width:100%;font-size:13px;border:1px solid var(--t-border);border-radius:9px;color:var(--t-ink);background:var(--t-input);padding:11px 8px}
+@media(max-width:560px){.lab-payer-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -399,7 +408,16 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <div class="schedule-fields">
 <div class="formline wide"><label for="charge-name">Nom de la charge</label><input id="charge-name" maxlength="90" required placeholder="Ex. Assurance logement"></div>
 <div class="formline"><label for="charge-amount">Montant habituel (€)</label><input id="charge-amount" type="text" inputmode="decimal" required placeholder="194,34"></div>
-<div class="formline"><label for="charge-owner">Attribution</label><select id="charge-owner"><option value="common">Commune (prorata)</option><option value="p1">Perso Personne 1 (100 %)</option><option value="p2">Perso Personne 2 (100 %)</option></select></div>
+<div class="formline"><label for="charge-owner">Répartition de la charge</label><select id="charge-owner"><option value="common">Commune (selon la répartition du foyer)</option><option value="p1">Perso Personne 1 (100 %)</option><option value="p2">Perso Personne 2 (100 %)</option></select></div>
+<div class="formline wide lab-payer-fields">
+<h3>Compte de prélèvement</h3>
+<p class="note">Le compte qui paie peut être différent de la personne qui supporte la dépense. Les deux modes conservent leurs propres comptes de prélèvement.</p>
+<div class="lab-payer-grid">
+<div class="lab-payer-item" id="lab-charge-joint-wrap"><label for="lab-charge-payer-joint">Avec compte joint</label>
+<select id="lab-charge-payer-joint"><option value="joint">Compte joint</option><option value="p1">Compte personnel de Personne 1</option><option value="p2">Compte personnel de Personne 2</option></select></div>
+<div class="lab-payer-item" id="lab-charge-separate-wrap"><label for="lab-charge-payer-separate">Sans compte joint</label>
+<select id="lab-charge-payer-separate"><option value="">À définir…</option><option value="p1">Compte personnel de Personne 1</option><option value="p2">Compte personnel de Personne 2</option></select></div></div>
+<p class="micro-note" id="lab-charge-payer-help"></p></div>
 <div class="formline wide"><label class="default-active"><input id="charge-enabled-default" type="checkbox" checked><span>Charge activée par défaut aux échéances programmées</span></label></div>
 <div class="formline wide"><label for="schedule-type">Fréquence des prélèvements</label><select id="schedule-type"><option value="monthly">Tous les mois (12/12)</option><option value="ten">Mois sélectionnés (ex. 10/12)</option><option value="quarterly">Trimestrielle (tous les 3 mois)</option><option value="annual">Annuelle (1 mois par an)</option><option value="custom">Échéancier personnalisé (montants par mois)</option></select></div>
 <div class="formline"><label for="schedule-start">Début (facultatif)</label><input id="schedule-start" type="month"></div><div class="formline"><label for="schedule-end">Fin (facultative)</label><input id="schedule-end" type="month"></div>
@@ -738,7 +756,7 @@ function compute(){
  if(window.EQUI_LAB_TEST&&labModeAt(state.month)==='separate'){
   let paidN=0,paidA=0;
   for(const ch of state.charges){const amount=effectiveCharge(ch,state.month).amount;if(!amount)continue;
-   const payer=labPayer(ch.id,'separate');if(payer==='p1')paidN+=amount;else paidA+=amount;
+   const payer=labPayer(ch.id,'separate');if(payer==='p1')paidN+=amount;else if(payer==='p2')paidA+=amount;
   }
   const diff=paidN-cn;
   return {n,a,s,groups,count,commonN,commonA,cn,ca,bankN:'personal',bankA:'personal',extra,extraTotal,extraCount,
@@ -746,10 +764,16 @@ function compute(){
   pctN:state.lab.split==='half'?0.5:(s?n/s:0),pctA:state.lab.split==='half'?0.5:(s?a/s:0),jointKeep:0,totalIncoming:s+extraTotal,jointInitial:0,
   labPaidN:paidN,labPaidA:paidA};
  }
+ let personalPaidN=0,personalPaidA=0,jointTotal=0;
+ if(window.EQUI_LAB_TEST)for(const ch of state.charges){
+  const amount=effectiveCharge(ch,state.month).amount;if(!amount)continue;
+  const payer=labPayer(ch.id,'joint');
+  if(payer==='p1')personalPaidN+=amount;else if(payer==='p2')personalPaidA+=amount;else jointTotal+=amount;
+ }
  return {n,a,s,groups,count,commonN,commonA,cn,ca,bankN,bankA,extra,extraTotal,extraCount,
- netN:(bankN==='joint'?n:0)-cn+extra.p1,netA:(bankA==='joint'?a:0)-ca+extra.p2,
+ netN:(bankN==='joint'?n:0)-cn+extra.p1+personalPaidN,netA:(bankA==='joint'?a:0)-ca+extra.p2+personalPaidA,
  disposableN:n-cn+extra.p1,disposableA:a-ca+extra.p2,
- total,pctN:s?n/s:0,pctA:s?a/s:0,jointKeep:total+extra.common,totalIncoming:s+extraTotal,
+ total,pctN:s?n/s:0,pctA:s?a/s:0,jointKeep:(window.EQUI_LAB_TEST?jointTotal:total)+extra.common,totalIncoming:s+extraTotal,
  jointInitial:(bankN==='joint'?n:0)+(bankA==='joint'?a:0)+extraTotal};
 }
 
@@ -901,7 +925,7 @@ function renderCharges(){
   ${charges.length?charges.map(ch=>{
    const ef=effectiveCharge(ch,state.month);
    return `<div class="charge${ef.active?'':' off'}"><label class="switch" title="Activer pour ${esc(labelMonth(state.month))} seulement"><input type="checkbox" data-toggle="${esc(ch.id)}" ${ef.active?'checked':''} aria-label="Activer ${esc(ch.name)} pour ce mois"><span></span></label>
-   <div class="charge-info"><div class="charge-name">${esc(ch.name)}</div><div class="sub"><span class="schedule-badge">◷ ${scheduleDescription(ch)}</span>${ef.overridden?' · Exception ce mois':''}</div>${!ef.active?`<div class="month-note">${esc(ef.reason)}</div>`:''}</div>
+   <div class="charge-info"><div class="charge-name">${esc(ch.name)}</div><div class="sub"><span class="schedule-badge">◷ ${scheduleDescription(ch)}</span>${ef.overridden?' · Exception ce mois':''}${window.EQUI_LAB_TEST?' · <span class="schedule-badge">Prélevé sur : '+esc(labPayerLabel(ch.id,labModeAt(state.month)))+'</span>':''}</div>${!ef.active?`<div class="month-note">${esc(ef.reason)}</div>`:''}</div>
    <input class="amt" type="text" inputmode="decimal" aria-label="Montant ${esc(ch.name)} pour ce mois" data-amount="${esc(ch.id)}" value="${formatInput(ef.amount)}">
    ${ef.overridden?`<button type="button" class="charge-reset" data-reset-month="${esc(ch.id)}" aria-label="Annuler l’exception de ce mois pour ${esc(ch.name)}" title="Rétablir la programmation pour ce mois">↺</button>`:''}
    <button class="edit" data-edit="${esc(ch.id)}" aria-label="Programmer ${esc(ch.name)}" title="Modifier l’échéancier">✎</button></div>`}).join(''):'<div class="empty">Aucune charge ici. Utilise « Ajouter ».</div>'}</div>`
@@ -952,6 +976,14 @@ function openCharge(id=null){
  by('dialog-title').textContent=ch?'Modifier et programmer':'Ajouter une charge';
  by('charge-name').value=chargeDraft.name;by('charge-amount').value=ch?formatInput(ch.amount):'';
  by('charge-owner').value=chargeDraft.owner;by('charge-enabled-default').checked=chargeDraft.enabled;
+ if(window.EQUI_LAB_TEST){
+  by('lab-charge-payer-joint').value=ch?labPayer(ch.id,'joint'):'joint';
+  by('lab-charge-payer-separate').value=ch?labPayer(ch.id,'separate'):'';
+  const activeMode=labModeAt(state.month);
+  by('lab-charge-joint-wrap').classList.toggle('lab-payer-active',activeMode==='joint');
+  by('lab-charge-separate-wrap').classList.toggle('lab-payer-active',activeMode==='separate');
+  by('lab-charge-payer-help').textContent='Le mode « '+labModeName(activeMode)+' » s’applique à '+labelMonth(state.month)+'. L’autre configuration reste disponible pour une future migration.';
+ }
  by('schedule-type').value=chargeDraft.schedule.type;by('schedule-start').value=chargeDraft.schedule.start;
  by('schedule-end').value=chargeDraft.schedule.end;by('schedule-anchor').value=chargeDraft.schedule.anchor;
  by('delete-charge').classList.toggle('hidden',!ch);
@@ -964,11 +996,17 @@ function processCharge(ev){
  if(!/^\d+(?:[.,]\d{1,2})?$/.test(raw.replace(/\s/g,''))||chargeDraft.amount>100000000){toast('Indique un montant habituel valide (0 € autorisé).');return}
  if(chargeDraft.schedule.start&&chargeDraft.schedule.end&&chargeDraft.schedule.start>chargeDraft.schedule.end){toast('La date de fin doit être après la date de début.');return}
  if(chargeDraft.schedule.type==='ten'&&!chargeDraft.schedule.months.length){toast('Choisis au moins un mois pour cette charge.');return}
+ const jointPayer=by('lab-charge-payer-joint').value,separatePayer=by('lab-charge-payer-separate').value;
+ if(window.EQUI_LAB_TEST&&labModeAt(state.month)==='separate'&&!['p1','p2'].includes(separatePayer)){toast('Choisis le compte payeur en mode sans compte joint.');return}
  if(editingId){const i=state.charges.findIndex(x=>x.id===editingId);if(i<0)return;state.charges[i]=JSON.parse(JSON.stringify(chargeDraft))}
  else{chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.charges.push(JSON.parse(JSON.stringify(chargeDraft)))}
- persist();closeCharge();renderCharges();toast('Échéancier enregistré');
+ if(window.EQUI_LAB_TEST){
+  state.lab.jointPayers[chargeDraft.id]=['joint','p1','p2'].includes(jointPayer)?jointPayer:'joint';
+  state.lab.payers[chargeDraft.id]=['p1','p2'].includes(separatePayer)?separatePayer:'';
+ }
+ persist();closeCharge();renderCharges();toast('Charge et comptes de prélèvement enregistrés');
 }
-function deleteCharge(){const c=state.charges.find(x=>x.id===editingId);if(!c)return;if(!confirm(`Supprimer « ${c.name} » et tout son échéancier ?`))return;state.charges=state.charges.filter(x=>x.id!==editingId);persist();closeCharge();renderCharges();toast('Charge supprimée')}
+function deleteCharge(){const c=state.charges.find(x=>x.id===editingId);if(!c)return;if(!confirm(`Supprimer « ${c.name} » et tout son échéancier ?`))return;state.charges=state.charges.filter(x=>x.id!==editingId);if(window.EQUI_LAB_TEST){delete state.lab.payers[editingId];delete state.lab.jointPayers[editingId];}persist();closeCharge();renderCharges();toast('Charge supprimée')}
 
 function transferSentence(person,net){return net>0?`Compte joint → ${person} : ${fmt(net)}`:net<0?`${person} → Compte joint : ${fmt(-net)}`:`${person} : aucun virement`}
 function resultText(r){
@@ -1561,12 +1599,19 @@ if(!state.lab){
 }
 if(!Array.isArray(state.lab.transitions))state.lab.transitions=[];
 if(!state.lab.payers)state.lab.payers={};if(!state.lab.paid)state.lab.paid={};
+if(!state.lab.jointPayers||typeof state.lab.jointPayers!=='object')state.lab.jointPayers={};
+if(state.lab.pending?.payers){for(const [id,v] of Object.entries(state.lab.pending.payers))if(v==='p1'||v==='p2')state.lab.payers[id]=v;delete state.lab.pending.payers;persist();}
 function labModeAt(month){
  let mode=state.lab?.initial||'joint';
  for(const t of state.lab?.transitions||[])if(t.effective<=month)mode=t.to;
  return mode;
 }
-function labPayer(id,mode){return mode==='joint'?'joint':(state.lab?.payers?.[id]==='p2'?'p2':'p1')}
+function labPayer(id,mode){
+ if(mode==='joint'){const p=state.lab?.jointPayers?.[id];return ['joint','p1','p2'].includes(p)?p:'joint'}
+ const p=state.lab?.payers?.[id];return ['p1','p2'].includes(p)?p:'';
+}
+function labPayerLabel(id,mode){const p=labPayer(id,mode);return p==='joint'?'Compte joint':p==='p1'?personName('p1'):p==='p2'?personName('p2'):'À définir'}
+function labUnconfigured(mode){return mode==='separate'?state.charges.filter(ch=>ch.enabled!==false&&!labPayer(ch.id,mode)):[]}
 function labUpdateTop(){
  if(!window.EQUI_LAB_TEST)return;
  const e=by('lab-banner');if(!e)return;
@@ -1609,7 +1654,7 @@ function labRenderSeparateResults(){
  const w=by('warning');w.className='note warn';w.textContent='Mode sans compte joint : les charges sont compensées directement entre les deux personnes. Dans ce LAB, les revenus complémentaires restent illustratifs et ne sont pas encore intégrés à la compensation.';
  for(const group of ['common','p1','p2']){const el=by('g-'+group);if(el)el.textContent=fmt(r.groups[group]);const ct=by('gcount-'+group);if(ct)ct.textContent=String(state.charges.filter(c=>c.owner===group&&effectiveCharge(c,state.month).active).length)}
  by('monthly-movements').innerHTML='<h3>Virement de compensation</h3><p class="note">Total payé : '+esc(personName('p1'))+' '+fmt(r.labPaidN)+' · '+esc(personName('p2'))+' '+fmt(r.labPaidA)+'. Parts dues : '+fmt(r.cn)+' et '+fmt(r.ca)+'.</p>'+
- (remaining?'<div class="action-strip"><strong>'+esc(personName(from))+' → '+esc(personName(to))+' : '+fmt(Math.abs(remaining))+'</strong><button class="btn secondary tiny" data-lab-settle>Marquer effectué</button></div>':'<p class="note">Aucun virement restant à effectuer.</p>')+
+ (remaining?'<div class="action-strip"><strong>'+esc(personName(from))+' → '+esc(personName(to))+' : '+fmt(Math.abs(remaining))+'</strong><button class="btn secondary tiny" data-lab-settle '+(labUnconfigured('separate').length?'disabled title="Complète les comptes de prélèvement"':'')+'>Marquer effectué</button></div>':'<p class="note">Aucun virement restant à effectuer.</p>')+
  (state.lab.paid[state.month]?'<button class="btn tiny" data-lab-undo>Annuler la validation</button>':'');
  renderThemeChart(r);renderDebtQuick();
  return r;
@@ -1623,6 +1668,7 @@ function labReasons(){
   for(const who of ['p1','p2'])if(m.base[who]-m.done[who]!==0)out.push('Virement initial de '+personName(who)+' non validé');
   for(const inc of monthIncome())if(inc.enabled){const parts=bonusParts(inc);for(const [who,amount] of Object.entries(parts))if(amount&&!inc.paid?.[who])out.push('Revenu complémentaire « '+inc.name+' » non confirmé');}
  }else{
+  if(labUnconfigured('separate').length)out.push('Comptes de prélèvement incomplets dans les charges');
   if(labRemainder()!==0)out.push('Virement de compensation mensuel non confirmé');
   if(monthIncome().some(x=>x.enabled))out.push('Revenus complémentaires : traitement non finalisé dans ce prototype');
  }
@@ -1632,9 +1678,9 @@ function labSchedule(){
  const clockMonth=state.lab.clock.slice(0,7),mode=labModeAt(clockMonth);
  if(state.month!==clockMonth){toast('Sélectionne le mois courant de la simulation avant de programmer');return}
  const reasons=labReasons();if(reasons.length){toast('Régularise les mouvements avant de programmer');labRenderBanking();return}
- const to=mode==='joint'?'separate':'joint',payers={};
- for(const select of by('lab-bank-content').querySelectorAll('[data-lab-payer]'))payers[select.dataset.labPayer]=select.value;
- state.lab.pending={from:clockMonth,effective:labNextMonth(clockMonth),to,payers};
+ const to=mode==='joint'?'separate':'joint',missing=labUnconfigured(to);
+ if(missing.length){toast('Les comptes payeurs doivent être renseignés dans les fiches de charges.');labRenderBanking();return}
+ state.lab.pending={from:clockMonth,effective:labNextMonth(clockMonth),to};
  state.lab.blocked='';persist();labRenderBanking();renderResults();toast('Changement programmé pour le premier du mois suivant');
 }
 function labApplyClock(){
@@ -1642,14 +1688,15 @@ function labApplyClock(){
  if(!p||state.lab.clock.slice(0,7)<p.effective)return;
  const selected=state.month;
  if(state.month!==p.from)switchMonth(p.from);
- const blockers=labReasons();
+ const blockers=labReasons(),missing=labUnconfigured(p.to);
+ if(missing.length)blockers.push(missing.length+' charge(s) sans compte payeur pour le nouveau mode');
  if(blockers.length){state.lab.blocked=blockers.join(' · ');if(state.month!==selected)switchMonth(selected);persist();return}
  state.history=state.history.filter(x=>x.month!==p.from);
  const oldResult=compute();
  state.history.push({month:p.from,savedAt:new Date().toISOString(),result:{...oldResult,labMode:labModeAt(p.from)},charges:state.charges.map(x=>({...x})),additionalIncome:monthIncome().map(x=>({...x}))});
  state.lab.transitions.push({effective:p.effective,to:p.to});
  state.settings.bankN=p.to==='separate'?'personal':'joint';state.settings.bankA=p.to==='separate'?'personal':'joint';
- Object.assign(state.lab.payers,p.payers);state.lab.pending=null;state.lab.blocked='';
+ state.lab.pending=null;state.lab.blocked='';
  if(state.month!==selected)switchMonth(selected);
  persist();
 }
@@ -1675,7 +1722,8 @@ function labRenderBanking(){
   };
   return;
  }
- const reasons=state.month===clockMonth?labReasons():['Sélectionner le mois '+clockMonth+' en haut de l’application'];
+ const missing=labUnconfigured(to),reasons=state.month===clockMonth?labReasons():['Sélectionner le mois '+clockMonth+' en haut de l’application'];
+ if(!p&&missing.length)reasons.push(missing.length+' charge(s) à configurer dans la rubrique Charges');
  root.innerHTML='<p class="lab-hint"><strong>Environnement de démonstration indépendant.</strong> Firebase et les comptes réels ne sont jamais sollicités. Les calculs sont stockés localement dans ce navigateur.</p>'+
  '<label>Date simulée</label><input type="date" id="lab-clock" value="'+esc(state.lab.clock)+'">'+
  '<label>Partage des charges communes (mode sans joint)</label><select id="lab-split"><option value="prorata" '+(state.lab.split!=='half'?'selected':'')+'>Au prorata des salaires</option><option value="half" '+(state.lab.split==='half'?'selected':'')+'>50 / 50</option></select>'+
@@ -1683,8 +1731,8 @@ function labRenderBanking(){
  (p?'<div class="lab-hint lab-good"><strong>Changement programmé</strong><br>Vers : '+esc(labModeName(p.to))+'<br>Date : '+esc(p.effective)+'</div>'+
  '<button class="btn danger" type="button" id="lab-cancel">Annuler cette programmation</button>':
  '<h3>Programmer un nouveau mode</h3><p class="note">Passage vers <strong>'+esc(labModeName(to))+'</strong> le 1er '+esc(next)+'. L’historique des anciens mois est conservé.</p>'+
- '<h3>Qui paiera chaque charge ?</h3><p class="note">Affectations prévues à compter du changement. La personne qui paie peut être différente de celle qui doit supporter la charge.</p>'+
- '<div>'+state.charges.map(ch=>'<div class="lab-row"><label>'+esc(ch.name)+' · '+fmt(ch.amount)+'</label><select data-lab-payer="'+esc(ch.id)+'" '+(to==='joint'?'disabled':'')+'><option value="p1" '+(labPayer(ch.id,'separate')==='p1'?'selected':'')+'>'+esc(personName('p1'))+'</option><option value="p2" '+(labPayer(ch.id,'separate')==='p2'?'selected':'')+'>'+esc(personName('p2'))+'</option></select></div>').join('')+'</div>'+
+ '<div class="lab-hint"><b>Comptes de prélèvement</b><br>À définir dans la fiche de chaque charge, dans la rubrique Charges. '+(missing.length?missing.length+' charge(s) doivent encore être renseignées.':'Toutes les charges actives possèdent un compte compatible avec le nouveau mode.')+'</div>'+
+ '<button class="btn secondary" type="button" id="lab-go-charges">Configurer les charges</button>'+
  (reasons.length?'<div class="lab-hint lab-danger"><b>Programmation bloquée</b><ul>'+reasons.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>':'<div class="lab-hint lab-good">Les contrôles de migration sont satisfaits. Le changement peut être programmé.</div>')+
  '<button class="btn primary" type="button" id="lab-schedule" '+(reasons.length?'disabled':'')+'>Programmer pour le 1er '+esc(next)+'</button>')+
  (state.lab.blocked?'<div class="lab-hint lab-danger">Activation suspendue : '+esc(state.lab.blocked)+'</div>':'')+
@@ -1692,6 +1740,7 @@ function labRenderBanking(){
  '<p class="footnote">Les revenus complémentaires du mode sans compte joint ne sont pas encore pris en charge dans le calcul de compensation de ce LAB. La transition est bloquée tant qu’ils nécessitent un traitement.</p>';
  by('lab-clock').onchange=e=>labClockChange(e.target.value);
  by('lab-split').onchange=e=>{state.lab.split=e.target.value==='half'?'half':'prorata';persist();renderCharges();labRenderBanking()};
+ const chargeBtn=by('lab-go-charges');if(chargeBtn)chargeBtn.onclick=()=>{v82Close('lab-banking');setTab('charges');toast('Ouvre la fiche d’une charge pour choisir son compte payeur')};
  const b=by('lab-schedule');if(b)b.onclick=labSchedule;
  const cancel=by('lab-cancel');if(cancel)cancel.onclick=()=>{state.lab.pending=null;state.lab.blocked='';persist();labRenderBanking();renderResults();toast('Programmation annulée')};
  by('lab-next').onclick=()=>labClockChange(labNextMonth(clockMonth)+'-01');
@@ -1699,7 +1748,7 @@ function labRenderBanking(){
 }
 document.addEventListener('click',event=>{
  if(event.target.closest('[data-lab-open]')){labRenderBanking();v82Open('lab-banking')}
- if(event.target.closest('[data-lab-settle]')){state.lab.paid[state.month]=compute().netN;persist();renderResults();toast('Compensation confirmée (simulation seulement)')}
+ if(event.target.closest('[data-lab-settle]')&&!labUnconfigured('separate').length){state.lab.paid[state.month]=compute().netN;persist();renderResults();toast('Compensation confirmée (simulation seulement)')}
  if(event.target.closest('[data-lab-undo]')){state.lab.paid[state.month]=0;persist();renderResults();toast('Confirmation annulée')}
 });
 const labBanner=document.createElement('div');labBanner.id='lab-banner';labBanner.setAttribute('role','status');
