@@ -743,7 +743,7 @@ function compute(){
   const diff=paidN-cn;
   return {n,a,s,groups,count,commonN,commonA,cn,ca,bankN:'personal',bankA:'personal',extra,extraTotal,extraCount,
   netN:diff,netA:-diff,disposableN:n-cn+extra.p1,disposableA:a-ca+extra.p2,total,
-  pctN:s?n/s:0,pctA:s?a/s:0,jointKeep:0,totalIncoming:s+extraTotal,jointInitial:0,
+  pctN:state.lab.split==='half'?0.5:(s?n/s:0),pctA:state.lab.split==='half'?0.5:(s?a/s:0),jointKeep:0,totalIncoming:s+extraTotal,jointInitial:0,
   labPaidN:paidN,labPaidA:paidA};
  }
  return {n,a,s,groups,count,commonN,commonA,cn,ca,bankN,bankA,extra,extraTotal,extraCount,
@@ -1571,6 +1571,15 @@ function labUpdateTop(){
  if(!window.EQUI_LAB_TEST)return;
  const e=by('lab-banner');if(!e)return;
  const mode=labModeAt(state.month),p=state.lab?.pending;
+ let corrected=false;
+ for(const key of ['p1','p2']){const el=by('salary-bank-'+key);if(!el)continue;
+  const joint=el.querySelector('option[value="joint"]');if(joint)joint.disabled=(mode==='separate');
+  if(mode==='separate'&&el.value==='joint'){
+   el.value='personal';const prop=key==='p1'?'bankN':'bankA';state[prop]='personal';
+   if(state.monthlySalaries[state.month])state.monthlySalaries[state.month][prop]='personal';corrected=true;
+  }
+ }
+ if(corrected)persist();
  e.innerHTML='<strong>MODE DÉMONSTRATION · '+esc(labModeName(mode))+'</strong>'+
  'Application V8.3 d’origine, avec fonctionnement bancaire expérimental. Données fictives exclusivement. '+
  (p?'<div style="margin-top:6px">Transition vers '+esc(labModeName(p.to))+' programmée au '+esc(p.effective)+' (simulation).</div>':'')+
@@ -1639,6 +1648,7 @@ function labApplyClock(){
  const oldResult=compute();
  state.history.push({month:p.from,savedAt:new Date().toISOString(),result:{...oldResult,labMode:labModeAt(p.from)},charges:state.charges.map(x=>({...x})),additionalIncome:monthIncome().map(x=>({...x}))});
  state.lab.transitions.push({effective:p.effective,to:p.to});
+ state.settings.bankN=p.to==='separate'?'personal':'joint';state.settings.bankA=p.to==='separate'?'personal':'joint';
  Object.assign(state.lab.payers,p.payers);state.lab.pending=null;state.lab.blocked='';
  if(state.month!==selected)switchMonth(selected);
  persist();
@@ -1660,6 +1670,7 @@ function labRenderBanking(){
   '<button id="lab-start" class="btn primary" type="button">Créer le foyer de démonstration</button>';
   by('lab-start').onclick=()=>{
    state.lab.initial=by('lab-bank-content').querySelector('input[name="lab-first-mode"]:checked').value;
+   if(state.lab.initial==='separate'){state.settings.bankN='personal';state.settings.bankA='personal';state.bankN='personal';state.bankA='personal';state.monthlySalaries[state.month].bankN='personal';state.monthlySalaries[state.month].bankA='personal';}
    state.lab.configured=true;persist();labRenderBanking();renderCharges();toast('Foyer fictif créé — '+labModeName(state.lab.initial));
   };
   return;
