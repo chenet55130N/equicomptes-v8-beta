@@ -1,5 +1,5 @@
 // ÉquiComptes V8.3 — cache PWA dédié à la V8 uniquement.
-const CACHE='equi-v8-beta-cache-20261115-v83-qr';
+const CACHE='equi-v8-beta-cache-20261115-v83-qr-lab-safe';
 const APP_FILES=['./','./index.html','./manifest.webmanifest','./service-worker.js','./sync-v8.js?v=8.2','./firebase-config.json','./icon-192.png','./icon-512.png'];
 const FIREBASE_SDK='https://www.gstatic.com/firebasejs/13.2.0/';
 self.addEventListener('install',evt=>{
@@ -9,7 +9,7 @@ self.addEventListener('activate',evt=>{
  evt.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('equi-v8-beta-cache-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
 async function cachedOrFetch(req){const c=await caches.open(CACHE);const hit=await c.match(req);if(hit)return hit;const res=await fetch(req);if(res.ok)try{await c.put(req,res.clone())}catch{}return res;}
-async function navigation(req){try{const res=await fetch(req);if(res.ok){const c=await caches.open(CACHE);c.put('./index.html',res.clone()).catch(()=>{});}return res;}catch{return (await caches.match('./index.html'))||Response.error();}}
+async function navigation(req){const url=new URL(req.url);const scope=new URL(self.registration.scope);const official=url.pathname===scope.pathname||url.pathname===scope.pathname+'index.html';if(!official)return fetch(req);try{const res=await fetch(req);if(res.ok){const c=await caches.open(CACHE);c.put('./index.html',res.clone()).catch(()=>{});}return res;}catch{return (await caches.match('./index.html'))||Response.error();}}
 self.addEventListener('fetch',evt=>{
  const req=evt.request;if(req.method!=='GET')return;
  const url=new URL(req.url);
