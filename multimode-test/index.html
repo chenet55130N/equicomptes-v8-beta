@@ -730,7 +730,7 @@ function compute(){
  for(const ch of state.charges){const ef=effectiveCharge(ch,state.month);if(ef.active){groups[ch.owner]+=ef.amount;count++}}
  const extra={p1:0,p2:0,common:0};let extraCount=0;
  for(const inc of monthIncome()){if(inc.enabled){const parts=bonusParts(inc);extra.p1+=parts.p1;extra.p2+=parts.p2;extra.common+=parts.common;extraCount++}}
- const commonN=s?Math.round(groups.common*n/s):0;const commonA=groups.common-commonN;
+ const commonN=window.EQUI_LAB_TEST&&labModeAt(state.month)==='separate'&&state.lab.split==='half'?Math.round(groups.common/2):(s?Math.round(groups.common*n/s):0);const commonA=groups.common-commonN;
  const cn=commonN+groups.p1,ca=commonA+groups.p2;
  const bankN=normalizeBank(state.bankN),bankA=normalizeBank(state.bankA);
  const extraTotal=extra.p1+extra.p2+extra.common;
@@ -1549,7 +1549,7 @@ const labNextMonth=(m)=>{const [y,mo]=m.split('-').map(Number);const d=new Date(
 const labModeName=m=>m==='separate'?'Deux comptes personnels':'Compte joint + deux comptes personnels';
 if(!state.lab){
  const day=labToday(),current=day.slice(0,7);
- state.lab={initial:'joint',transitions:[],pending:null,payers:{},clock:day,paid:{},configured:false,blocked:''};
+ state.lab={initial:'joint',transitions:[],pending:null,payers:{},clock:day,paid:{},configured:false,blocked:'',split:'prorata'};
  state.month=current;state.settings.nameN='Camille';state.settings.nameA='Alex';
  state.settings.defaultN=210000;state.settings.defaultA=165000;
  state.settings.bankN='joint';state.settings.bankA='joint';
@@ -1652,9 +1652,22 @@ function labClockChange(value){
 function labRenderBanking(){
  const root=by('lab-bank-content'),clockMonth=state.lab.clock.slice(0,7),mode=labModeAt(clockMonth),to=mode==='joint'?'separate':'joint',p=state.lab.pending;
  const next=labNextMonth(clockMonth);
+ if(!state.lab.configured){
+  root.innerHTML='<div class="lab-hint"><strong>Bienvenue dans le laboratoire Multimode</strong><br>Voici la véritable interface V8.3 avec un foyer fictif, sans aucune connexion à votre Firebase. Choisissez votre premier fonctionnement bancaire ; vous pourrez ensuite programmer un changement.</div>'+
+  '<label class="lab-choice"><input type="radio" name="lab-first-mode" value="joint" checked> 2 comptes personnels + 1 compte joint</label>'+
+  '<label class="lab-choice"><input type="radio" name="lab-first-mode" value="separate"> 2 comptes personnels sans compte joint</label>'+
+  '<p class="note">Des salaires et cinq charges fictives sont préremplis. Vous pourrez les modifier dans les écrans habituels.</p>'+
+  '<button id="lab-start" class="btn primary" type="button">Créer le foyer de démonstration</button>';
+  by('lab-start').onclick=()=>{
+   state.lab.initial=by('lab-bank-content').querySelector('input[name="lab-first-mode"]:checked').value;
+   state.lab.configured=true;persist();labRenderBanking();renderCharges();toast('Foyer fictif créé — '+labModeName(state.lab.initial));
+  };
+  return;
+ }
  const reasons=state.month===clockMonth?labReasons():['Sélectionner le mois '+clockMonth+' en haut de l’application'];
  root.innerHTML='<p class="lab-hint"><strong>Environnement de démonstration indépendant.</strong> Firebase et les comptes réels ne sont jamais sollicités. Les calculs sont stockés localement dans ce navigateur.</p>'+
  '<label>Date simulée</label><input type="date" id="lab-clock" value="'+esc(state.lab.clock)+'">'+
+ '<label>Partage des charges communes (mode sans joint)</label><select id="lab-split"><option value="prorata" '+(state.lab.split!=='half'?'selected':'')+'>Au prorata des salaires</option><option value="half" '+(state.lab.split==='half'?'selected':'')+'>50 / 50</option></select>'+
  '<div class="lab-hint"><b>Mode actuel : '+esc(labModeName(mode))+'</b><br>Prochain changement possible : 1er '+esc(next)+'.</div>'+
  (p?'<div class="lab-hint lab-good"><strong>Changement programmé</strong><br>Vers : '+esc(labModeName(p.to))+'<br>Date : '+esc(p.effective)+'</div>'+
  '<button class="btn danger" type="button" id="lab-cancel">Annuler cette programmation</button>':
@@ -1667,6 +1680,7 @@ function labRenderBanking(){
  '<div class="btnbar"><button class="btn secondary" type="button" id="lab-next">Simuler le 1er du mois suivant</button><button class="btn ghost" type="button" id="lab-today">Date réelle</button></div>'+
  '<p class="footnote">Les revenus complémentaires du mode sans compte joint ne sont pas encore pris en charge dans le calcul de compensation de ce LAB. La transition est bloquée tant qu’ils nécessitent un traitement.</p>';
  by('lab-clock').onchange=e=>labClockChange(e.target.value);
+ by('lab-split').onchange=e=>{state.lab.split=e.target.value==='half'?'half':'prorata';persist();renderCharges();labRenderBanking()};
  const b=by('lab-schedule');if(b)b.onclick=labSchedule;
  const cancel=by('lab-cancel');if(cancel)cancel.onclick=()=>{state.lab.pending=null;state.lab.blocked='';persist();labRenderBanking();renderResults();toast('Programmation annulée')};
  by('lab-next').onclick=()=>labClockChange(labNextMonth(clockMonth)+'-01');
@@ -1682,10 +1696,7 @@ by('pane-calcul').prepend(labBanner);
 const labShow=document.createElement('div');labShow.className='v82-demo-bar';labShow.style.cssText='background:#fff2d5;padding:9px 15px;text-align:center;color:#805412;font-size:12px;font-weight:700';
 labShow.textContent='LAB MULTIMODE — SIMULATION LOCALE • aucune synchronisation Firebase • aucun changement dans votre foyer';
 by('pane-calcul').parentElement.prepend(labShow);
-if(!state.lab.configured){
- state.lab.configured=true;persist();
- setTimeout(()=>{labRenderBanking();v82Open('lab-banking')},650);
-}
+if(!state.lab.configured){setTimeout(()=>{labRenderBanking();v82Open('lab-banking')},650);}
 
 applyPeopleLabels();applyTheme();renderCharges();renderIncome();
 })();
