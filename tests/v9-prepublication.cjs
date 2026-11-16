@@ -15,6 +15,22 @@ function section(text,start,end){
  for(const script of inline)new Function(script);
  new (Object.getPrototypeOf(async function(){}).constructor)(sync);
  assert.match(html,/const seed=\(\)=>/);
+ // Régression UI : ni message de prépublication ni configuration bancaire
+ // imposée dans le calcul. Le changement de mode reste dans le menu.
+ assert.doesNotMatch(html,/candidate de prépublication/i);
+ assert.doesNotMatch(html,/document\.createElement\('div'\);labBanner/);
+ assert.doesNotMatch(html,/by\('pane-calcul'\)\.prepend\(labBanner\)/);
+ assert.match(html,/data-v82-action="banking">⇄ Changer de mode bancaire/);
+ assert.match(html,/id="v9-menu-version">ÉquiComptes V9\.0/);
+ assert.match(html,/function labUpdateTop\(\)/);
+ assert.match(html,/document\.documentElement\.dataset\.bankMode=mode/);
+ assert.match(html,/by\('lab-charge-joint-wrap'\)\.hidden=mode!=='joint'/);
+ assert.match(html,/by\('lab-charge-separate-wrap'\)\.hidden=mode!=='separate'/);
+ assert.match(html,/html\[data-bank-mode="separate"\] #pane-calcul \.account-label/);
+ assert.match(html,/id="v9-income-intro"/);
+ assert.match(html,/separate\?'Bonus commun'/);
+ assert.match(html,/id="v9-default-bank-p1-wrap"/);
+ assert.match(html,/src="\.\/sync-v8\.js\?v=9\.0-epuree"/);
  assert.match(html,/if\(!v82Demo\)setInterval\(\(\)=>\{if\(!document.hidden\)v82Snapshot\(\);\},60000\)/);
  assert.match(html,/version:v,exportedAt:new Date\(\)\.toISOString\(\)/);
  assert.match(html,/labFrozenAt\(state.month\)\?\.result\|\|state.history.find/);
