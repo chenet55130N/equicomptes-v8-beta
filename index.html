@@ -6,11 +6,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <meta name="theme-color" content="#10233f">
-<meta name="application-name" content="ÉquiComptes">
+<meta name="application-name" content="ÉquiComptes V9.0">
+<meta name="apple-mobile-web-app-title" content="ÉquiComptes V9">
 <meta name="description" content="Répartition des salaires, échéanciers photo ou manuels, revenus complémentaires et remboursements à 50/50.">
 <title>ÉquiComptes V9.0 · Multi-foyers synchronisés</title>
-<link rel="manifest" href="./manifest.webmanifest?v=9.0-icone9">
-<link rel="icon" href="./icon-192.png?v=9.0-icone9">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-v9-192.png">
+<link rel="apple-touch-icon" href="./icon-v9-192.png">
 <style>
 :root{--ink:#15243b;--muted:#64748b;--navy:#10233f;--navy2:#1a3556;--blue:#247b92;--teal:#047c80;--teal-soft:#e4f5f2;--gold:#b57a35;--gold-soft:#fff3e2;--violet:#6955a7;--violet-soft:#f0edfa;--bg:#f3f6f8;--line:#e3e9ee;--white:#fff;--red:#b53e42;--red-soft:#fff1f1;--shadow:0 9px 29px rgba(19,43,69,.065);font-synthesis:none}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;-webkit-tap-highlight-color:transparent}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #68bcca;outline-offset:2px}button:disabled{opacity:.45;cursor:not-allowed}.app{max-width:840px;min-height:100vh;margin:0 auto;padding-bottom:env(safe-area-inset-bottom)}
@@ -475,16 +477,16 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
   </div>
 </dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V8.3">
+<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V9.0">
  <div class="beta-gate-card">
-  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V8.3</strong><small>Multi-foyers • synchronisation privée</small></div></div>
+  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V9.0</strong><small>Multi-foyers • synchronisation privée</small></div></div>
   <p class="beta-gate-warn">Une anomalie de fonctionnement ? Merci de la signaler à la personne qui t’a partagé ÉquiComptes.</p>
   <p id="beta-gate-message" class="beta-gate-message" role="status" aria-live="polite">Préparation de la connexion…</p>
   <section id="beta-config-panel" hidden>
-   <label for="beta-config-text">Configuration Firebase du projet V8 (une seule fois par téléphone)</label>
-   <textarea id="beta-config-text" rows="5" spellcheck="false" placeholder='Colle le firebaseConfig du NOUVEAU projet Firebase V8 : {"apiKey":"…","authDomain":"…","projectId":"…","appId":"…"}'></textarea>
-   <p class="beta-help">Utilise uniquement le <b>projet Firebase V8</b>, jamais celui de la V7.1. La configuration Web n'est pas un mot de passe.</p>
-   <button class="beta-main-btn" id="beta-save-config" type="button">Enregistrer la configuration V8</button>
+   <label for="beta-config-text">Configuration du projet Firebase ÉquiComptes (une seule fois par téléphone)</label>
+   <textarea id="beta-config-text" rows="5" spellcheck="false" placeholder='Colle la configuration Web de ton projet Firebase ÉquiComptes : {"apiKey":"…","authDomain":"…","projectId":"…","appId":"…"}'></textarea>
+   <p class="beta-help">Utilise le <b>projet Firebase actuellement associé à ton foyer</b>, sans en créer un nouveau. La configuration Web n'est pas un mot de passe.</p>
+   <button class="beta-main-btn" id="beta-save-config" type="button">Enregistrer la configuration Firebase</button>
   </section>
   <section id="v8-auth-panel" hidden>
    <div class="v8-mode-row"><button type="button" class="v8-mode active" id="v8-mode-login">J'ai un compte</button><button type="button" class="v8-mode" id="v8-mode-register">Créer mon compte</button></div>
