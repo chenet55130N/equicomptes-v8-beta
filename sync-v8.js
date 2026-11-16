@@ -424,9 +424,17 @@ el('v8-create-form').addEventListener('submit',async e=>{
  const b=e.target.querySelector('button');b.disabled=true;
  try{
   const hid=randId(18);const batch=sdk.writeBatch(db);
-  batch.set(sdk.doc(db,'foyers',hid),{name,ownerUid:u.uid,createdAt:sdk.serverTimestamp(),version:8});
+  const banking=el('v9-create-mode')?.value==='separate'?'separate':'joint';
+  batch.set(sdk.doc(db,'foyers',hid),{name,ownerUid:u.uid,createdAt:sdk.serverTimestamp(),version:9});
   batch.set(memberPath(hid,u.uid),{role:'owner',joinedAt:sdk.serverTimestamp(),inviteId:'',email:u.email});
   batch.set(userProfile(u.uid),{hid,createdAt:sdk.serverTimestamp()});
+  batch.set(sdk.doc(db,'foyers',hid,'settings','v9-banking'),{
+   schema:9,lab:{
+    initial:banking,transitions:[],pending:null,payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},
+    clock:new Date().toISOString().slice(0,10),latestMonthSeen:new Date().toISOString().slice(0,7),
+    paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}
+   }
+  });
   await batch.commit();setHomeAndReload(u,hid);
  }catch(err){note('Création impossible : '+authError(err));}finally{b.disabled=false;}
 });
