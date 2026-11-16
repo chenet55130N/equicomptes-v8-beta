@@ -1,0 +1,138 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+const sync=fs.readFileSync(path.join(__dirname,'../sync-v8.js'),'utf8');
+function section(text,start,end){
+ const i=text.indexOf(start),j=text.indexOf(end,i);
+ assert(i>=0&&j>i,'Sections de source disponibles : '+start);
+ return text.slice(i,j).trim();
+}
+(async()=>{
+ const inline=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
+ assert.equal(inline.length,6);
+ for(const script of inline)new Function(script);
+ new (Object.getPrototypeOf(async function(){}).constructor)(sync);
+ assert.match(html,/const seed=\(\)=>/);
+ assert.match(html,/if\(!v82Demo\)setInterval\(\(\)=>\{if\(!document.hidden\)v82Snapshot\(\);\},60000\)/);
+ assert.match(html,/version:v,exportedAt:new Date\(\)\.toISOString\(\)/);
+ assert.match(html,/labFrozenAt\(state.month\)\?\.result\|\|state.history.find/);
+ assert.match(sync,/await batch.commit\(\);[\s\S]{0,600}await sdk.setDoc\(sdk.doc\(db,'foyers',hid,'settings','v9-banking'\)/);
+ assert.match(sync,/createdAt:sdk.serverTimestamp\(\),version:8/);
+ assert.match(sync,/sdk.runTransaction\(db,async transaction/);
+ const helpers={
+  monthNow:()=> '2026-11',
+  SETTINGS_DEFAULT:{defaultN:210000,defaultA:165000,rent:0,bankN:'joint',bankA:'joint',nameN:'Personne 1',nameA:'Personne 2'},
+  newSalaries:()=>({n:'2100',a:'1650',bankN:'joint',bankA:'joint'}),
+  defaultIncomeTemplates:()=>[],DEFAULTS:[],cents:n=>Math.round(n*100),
+  validMonth:m=>/^\d{4}-(0[1-9]|1[0-2])$/.test(m),
+  safeCents:n=>Number.isFinite(Number(n))?Math.round(Number(n)):0,
+  normalizeBank:b=>b==='personal'?'personal':'joint',
+  normalizeIncomeTemplates:a=>Array.isArray(a)?a:[],
+  normalizePersonName:(a,b)=>typeof a==='string'&&a?a:b,
+  formatInput:n=>(Number(n)/100).toString(),
+  normalizeSchedule:v=>v||{},
+  THEMES:[{id:'signature'}],
+  window:{EQUI_LAB_TEST:true}
+ };
+ const keys=Object.keys(helpers),values=Object.values(helpers);
+ const seed=new Function(...keys,section(html,'const seed=()=>{','function adaptOldBackup')+';return seed')(...values);
+ const validate=new Function(...keys,'seed',section(html,'function validate(data){','\nlet state;try{')+';return validate')(...values,seed);
+ let prompts=0;
+ const adapt=new Function('confirm','prompt',section(html,'function adaptOldBackup(data){','function validate(data){')+';return adaptOldBackup')(
+  ()=>{prompts++;return true},()=>{prompts++;return 'nico'});
+ let current=seed();
+ current.settings.nameN='Alex';
+ current.monthlySalaries['2026-10']={n:'2200',a:'1550',moveN:0,moveA:100,bankN:'joint',bankA:'personal'};
+ current.incomeTemplates=[{id:'tpl',name:'Prime'}];
+ current.charges=[{id:'c1',name:'Loyer',owner:'common',amount:65000,enabled:true,schedule:{overrides:{'2026-12':75000}}}];
+ current.additionalIncome=[{id:'i1',month:'2026-11',name:'Bonus',amount:30000,owner:'p1',enabled:true,paid:{p1:true}}];
+ current.expenses=[{id:'e1',label:'Courses',amount:4500,payer:'p1',repayment:'half',date:'2026-11-15',settlementId:''}];
+ current.settlements=[{id:'s1',at:'2026-11-16',amount:2250,from:'p2',to:'p1',expenseIds:['e1']}];
+ current.history=[{month:'2026-10',savedAt:'2026-11-01',result:{cn:34243,ca:22013},charges:current.charges,additionalIncome:[]}];
+ const remote={
+  settings:{main:{settings:current.settings,incomeTemplates:current.incomeTemplates}},
+  months:current.monthlySalaries,
+  charges:Object.fromEntries(current.charges.map(x=>[x.id,x])),
+  incomes:Object.fromEntries(current.additionalIncome.map(x=>[x.id,x])),
+  expenses:Object.fromEntries(current.expenses.map(x=>[x.id,x])),
+  settlements:Object.fromEntries(current.settlements.map(x=>[x.id,x])),
+  history:Object.fromEntries(current.history.map(x=>[x.month,x]))
+ };
+ const bridge=section(html,'function betaReplace(remote){','\nlet betaRenderTimer');
+ const restored=new Function('state','seed','validate','betaRefresh','remote',bridge+';betaReplace(remote);return state')(current,seed,validate,()=>{},remote);
+ assert.equal(restored.settings.nameN,'Alex');
+ assert.equal(restored.monthlySalaries['2026-10'].moveA,100);
+ assert.equal(restored.charges[0].schedule.overrides['2026-12'],75000);
+ assert.equal(restored.additionalIncome[0].paid.p1,true);
+ assert.equal(restored.expenses[0].amount,4500);
+ assert.equal(restored.settlements[0].expenseIds[0],'e1');
+ assert.equal(restored.history[0].result.cn,34243);
+ assert.equal(restored.lab.initial,'joint');
+ assert.equal(restored.lab.configured,true);
+ const bank={initial:'joint',transitions:[{effective:'2026-12',to:'separate'}],
+  pending:{from:'2026-11',effective:'2026-12',to:'separate'},payerChanges:{joint:{},separate:{}},
+  frozen:{},payers:{},jointPayers:{},paid:{},split:'prorata',splitChanges:[],clock:'2026-11-16',latestMonthSeen:'2026-11',configured:true};
+ const imported=adapt({lab:bank,charges:[{id:'c1',owner:'common'}],settlements:[{from:'p1',to:'p2'}]});
+ assert.equal(prompts,0,'La sauvegarde V9 ne doit pas déclencher la conversion des personnes V8');
+ assert.deepEqual(imported.lab,bank,'Les transitions bancaires ne doivent pas être modifiées');
+ const importedV8=adapt({charges:[{owner:'nico'}],settlements:[{from:'audrey',to:'nico'}]});
+ assert.equal(importedV8.charges[0].owner,'p1');
+ assert.equal(importedV8.settlements[0].from,'p2');
+ const roundtrip=validate({...restored,lab:bank});
+ assert.deepEqual(roundtrip.lab,bank,'Import/export V9 doit conserver le mode');
+ const stable=new Function(section(sync,'const stableBank =','const gate =')+';return stableBank')();
+ const pendingFn=section(sync,'async function syncPending(){','function reconnectSoon(){');
+ async function mockSync(doc,base,local){
+  const dirty={'settings/v9-banking':{value:local,base,rev:1,deleted:false}},
+   conflicts=new Map(),inFlight=new Set(),shadow=new Map();
+  let currentDoc=doc,writes=0;
+  const sdk={runTransaction:async(_db,fn)=>fn({
+   get:async()=>({exists:()=>currentDoc!==null,data:()=>currentDoc}),
+   set:(r,v)=>{writes++;currentDoc=v}
+  }),setDoc:async()=>{throw Error('setDoc non transactionnel')},deleteDoc:async()=>{throw Error('deleteDoc inattendu')}};
+  const ctx={onlineReady:true,navigator:{onLine:true},user:{uid:'test'},db:{},
+   dirty,inFlight,conflicts,GROUPS:['settings','months','charges','incomes','expenses','settlements','history'],
+   sdk,pathDoc:(g,id)=>g+'/'+id,saveDiskQueue:()=>{},shadow,saveBaseline:()=>{},
+   disconnected:false,note:()=>{},errorText:e=>String(e),refreshStatus:()=>{},scheduleSync:()=>{},
+   stableBank:stable,fmt:JSON.stringify};
+  const args=Object.keys(ctx);
+  await new Function(...args,pendingFn+';return syncPending()')(...args.map(x=>ctx[x]));
+  return {writes,conflicts:conflicts.size,pending:Object.keys(dirty).length};
+ }
+ const base={schema:9,lab:{initial:'joint',split:'half'}},local={schema:9,lab:{initial:'separate',split:'half'}};
+ const success=await mockSync({lab:{split:'half',initial:'joint'},schema:9},base,local);
+ const conflict=await mockSync({schema:9,lab:{initial:'joint',split:'prorata'}},base,local);
+ assert.deepEqual(success,{writes:1,conflicts:0,pending:0});
+ assert.deepEqual(conflict,{writes:0,conflicts:1,pending:1});
+ const labFns=section(html,'function labModeAt(month){','function labRenderBanking(){');
+ const makeTimeline=unpaid=>{
+  const state={month:'2026-11',charges:[],additionalIncome:[],history:[],settings:{bankN:'joint',bankA:'joint'},monthlySalaries:{'2026-11':{moveN:0,moveA:0}},lab:{
+   initial:'joint',transitions:[],pending:{from:'2026-11',effective:'2026-12',to:'separate'},
+   payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},clock:'2026-11-16',latestMonthSeen:'2026-11',
+   paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}
+  }};
+  const deps={
+   state,labToday:()=> '2026-12-01',labNextMonth:m=>{const [y,mm]=m.split('-').map(Number);const d=new Date(y,mm,1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')},
+   debtState:()=>({pending:[]}),movementState:()=>({base:{p1:unpaid,p2:0},done:{p1:0,p2:0}}),
+   monthIncome:()=>[],bonusParts:()=>({}),compute:()=>({netN:0,netA:0,groups:{common:0,p1:0,p2:0}}),
+   personName:v=>v,switchMonth:m=>{state.month=m},persist:()=>{},labRenderBanking:()=>{},
+   renderCharges:()=>{},renderHistory:()=>{},toast:()=>{},labelMonth:m=>m,effectiveCharge:()=>({active:true})};
+  const k=Object.keys(deps);
+  const clock=new Function(...k,labFns+';return labClockChange')(...k.map(x=>deps[x]));
+  clock('2026-12-01');
+  return state;
+ };
+ const ok=makeTimeline(0),blocked=makeTimeline(2500);
+ assert.equal(ok.lab.initial,'joint');
+ assert.equal(ok.lab.pending,null);
+ assert.equal(ok.lab.latestMonthSeen,'2026-12');
+ assert.equal(ok.lab.transitions[0].to,'separate');
+ assert.equal(ok.history[0].month,'2026-11');
+ assert.equal(blocked.lab.pending.to,'separate');
+ assert.equal(blocked.lab.latestMonthSeen,'2026-11');
+ assert.match(blocked.lab.blocked,/non validé/);
+ assert.equal(blocked.lab.clock,'2026-12-01','La date réelle doit avancer même si la clôture est suspendue');
+ console.log('V9 PREPUBLICATION PASS: syntaxe, 9 catégories V8, import V9, sauvegardes, conflit Firestore, passage de mois, blocages');
+})().catch(err=>{console.error(err);process.exitCode=1});

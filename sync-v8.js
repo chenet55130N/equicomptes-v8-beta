@@ -13,6 +13,9 @@ const FOYERKEY = 'equicomptes-v8-beta-foyer-id';
 const VERIFIED_KEY = 'equi-v8-verified';
 const GROUPS = ['settings','months','charges','incomes','expenses','settlements','history'];
 const fmt = x => JSON.stringify(x);
+// Comparaison canonique des objets bancaires indépendamment de l'ordre des champs.
+const stableBank = x => JSON.stringify(x,(_,v)=>v&&typeof v==='object'&&!Array.isArray(v)
+ ? Object.fromEntries(Object.keys(v).sort().map(k=>[k,v[k]])):v);
 const gate = el('beta-gate');
 const status = el('beta-sync-indicator');
 const message = el('beta-gate-message');
@@ -75,6 +78,7 @@ function pathDoc(g,id){return sdk.doc(db,...PATH,g,id);}
 function flatten(s){
  const m=new Map();
  m.set('settings/main',{settings:s.settings,incomeTemplates:s.incomeTemplates});
+ if(s.lab)m.set('settings/v9-banking',{schema:9,lab:s.lab});
  for(const [id,v] of Object.entries(s.monthlySalaries||{}))m.set(documentKey('months',id),v);
  for(const [group,field,key] of [['charges','charges','id'],['incomes','additionalIncome','id'],['expenses','expenses','id'],['settlements','settlements','id'],['history','history','month']]){
   for(const v of s[field]||[])if(v&&v[key])m.set(documentKey(group,v[key]),v);
@@ -178,10 +182,27 @@ async function readRemoteAndMerge(u){
   remote[group]={};data.forEach(d=>{remote[group][d.id]=d.data()});
  }));
  if(token!==startCloudToken||!user||user.uid!==u.uid)return;
+ const pendingModeKey='equi-v9-pending-mode:'+PATH[1];
+ const pendingMode=localStorage.getItem(pendingModeKey);
+ if(remote.settings?.['v9-banking']){
+  if(pendingMode)localStorage.removeItem(pendingModeKey);
+ }else if(pendingMode==='joint'||pendingMode==='separate'){
+  const lab={initial:pendingMode,transitions:[],pending:null,payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},
+   clock:new Date().toISOString().slice(0,10),latestMonthSeen:new Date().toISOString().slice(0,7),
+   paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}};
+  const doc={schema:9,lab};
+  await sdk.setDoc(pathDoc('settings','v9-banking'),doc);
+  remote.settings['v9-banking']=doc;
+  localStorage.removeItem(pendingModeKey);
+ }
  const savedLocal=flatten(B.state());
  // On conserve les saisies hors ligne avant la réinitialisation de l'état à partir du serveur.
  B.replaceAll(remote);
  const freshRemote=remoteDocsToMap(remote);
+ if(!freshRemote.has('settings/v9-banking')&&B.state().lab&&!dirty['settings/v9-banking']){
+  dirty['settings/v9-banking']={value:{schema:9,lab:B.state().lab},deleted:false,rev:1,base:null,at:Date.now()};
+  saveDiskQueue();
+ }
  for(const [key,op] of Object.entries(dirty)){
   const pos=key.indexOf('/'),group=key.slice(0,pos),id=key.slice(pos+1);
   if(!GROUPS.includes(group)||!id)continue;
@@ -191,6 +212,10 @@ async function readRemoteAndMerge(u){
   flagConflict(key,remoteValue);
  }
  updateObserved();shadow=freshRemote;saveBaseline();
+ // Après lecture du foyer côté serveur, appliquer la date réelle avant les
+ // abonnements temps réel. Les changements sont enregistrés par le journal
+ // de synchronisation habituel, sans écraser le serveur.
+ if(typeof B.advanceRealDate==='function')B.advanceRealDate();
  for(const group of GROUPS){
   const off=sdk.onSnapshot(pathCollection(group),{includeMetadataChanges:true},snapshot=>{
    if(snapshot.metadata.fromCache){if(!navigator.onLine)disconnected=true;refreshStatus();}
@@ -213,7 +238,9 @@ async function startCloud(u){
  else {locked();showHouse();}
  try{await readRemoteAndMerge(u)}
  catch(e){onlineReady=false;disconnected=true;
-  if(verifiedDevice()?.uid===u.uid)openOffline('Serveur momentanément inaccessible. Tu peux saisir tes dépenses hors ligne.');
+  if(localStorage.getItem('equi-v9-pending-mode:'+PATH[1])){
+   locked();note('Initialisation bancaire incomplète : '+errorText(e)+'. Recharge avec Internet pour réessayer.');
+  }else if(verifiedDevice()?.uid===u.uid)openOffline('Serveur momentanément inaccessible. Tu peux saisir tes dépenses hors ligne.');
   else{locked();showHouse();note('Le foyer n’a pas pu être chargé : '+errorText(e));}
   refreshStatus();
  }
@@ -229,7 +256,21 @@ async function syncPending(){
   inFlight.add(key);
   const rev=op.rev;
   try{
-   if(op.deleted)await sdk.deleteDoc(pathDoc(group,id));
+   if(group==='settings'&&id==='v9-banking'&&!op.deleted){
+    // Transaction optimiste : aucun écrasement silencieux d'une version modifiée
+    // entre-temps sur le deuxième appareil. Le conflit est proposé à l'utilisateur.
+    const ref=pathDoc(group,id);
+    await sdk.runTransaction(db,async transaction=>{
+     const snapshot=await transaction.get(ref);
+     const current=snapshot.exists()?snapshot.data():null;
+     if(stableBank(current)!==stableBank(op.base??null)){
+      const error=Error('Modification bancaire concurrente');
+      error.code='equi/concurrent-bank-change';error.remote=current;
+      throw error;
+     }
+     transaction.set(ref,op.value);
+    });
+   }else if(op.deleted)await sdk.deleteDoc(pathDoc(group,id));
    else await sdk.setDoc(pathDoc(group,id),op.value);
    // N'effacer le journal que si l'utilisateur n'a pas modifié l'entrée entre-temps.
    if(dirty[key]?.rev===rev){
@@ -237,7 +278,15 @@ async function syncPending(){
     if(op.deleted)shadow.delete(key);else shadow.set(key,op.value);
     saveBaseline();
    }
-  }catch(e){disconnected=String(e?.code||'').includes('unavailable')||!navigator.onLine;note('Synchronisation suspendue : '+errorText(e));}
+  }catch(e){
+   if(e?.code==='equi/concurrent-bank-change'){
+    conflicts.set(key,{remote:e.remote??null});
+    note('Paramètres bancaires modifiés sur un autre appareil : choisis la version à conserver.');
+   }else{
+    disconnected=String(e?.code||'').includes('unavailable')||!navigator.onLine;
+    note('Synchronisation suspendue : '+errorText(e));
+   }
+  }
   finally{inFlight.delete(key);refreshStatus();if(dirty[key]&&dirty[key].rev!==rev)scheduleSync();}
  }
 }
@@ -419,10 +468,32 @@ el('v8-create-form').addEventListener('submit',async e=>{
  const b=e.target.querySelector('button');b.disabled=true;
  try{
   const hid=randId(18);const batch=sdk.writeBatch(db);
+  const banking=el('v9-create-mode')?.value==='separate'?'separate':'joint';
+  const newLab={
+   initial:banking,transitions:[],pending:null,payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},
+   clock:new Date().toISOString().slice(0,10),latestMonthSeen:new Date().toISOString().slice(0,7),
+   paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}
+  };
+  // Firestore vérifie version==8 pour la création du foyer. Le schéma V9 est
+  // conservé dans un document séparé : aucune modification des règles n'est nécessaire.
   batch.set(sdk.doc(db,'foyers',hid),{name,ownerUid:u.uid,createdAt:sdk.serverTimestamp(),version:8});
   batch.set(memberPath(hid,u.uid),{role:'owner',joinedAt:sdk.serverTimestamp(),inviteId:'',email:u.email});
   batch.set(userProfile(u.uid),{hid,createdAt:sdk.serverTimestamp()});
-  await batch.commit();setHomeAndReload(u,hid);
+  await batch.commit();
+  // isMember(hid) utilise exists(), et non existsAfter(). Le document V9 doit
+  // donc être écrit APRÈS la création effective du membre.
+  try {
+   await sdk.setDoc(sdk.doc(db,'foyers',hid,'settings','v9-banking'),{schema:9,lab:newLab});
+  } catch(bankingError) {
+   // Le foyer existe déjà : ne jamais annoncer une création totalement échouée.
+   // Un nouveau chargement reprendra ce foyer, mais NE DEVRA PAS activer un
+   // autre mode implicitement : noter le choix jusqu'à l'initialisation.
+   try{localStorage.setItem('equi-v9-pending-mode:'+hid,banking);}catch{}
+   note('Le foyer a été créé, mais son mode bancaire reste à initialiser : '+authError(bankingError)+'. Recharge la page pour réessayer.');
+   setHomeAndReload(u,hid);
+   return;
+  }
+  setHomeAndReload(u,hid);
  }catch(err){note('Création impossible : '+authError(err));}finally{b.disabled=false;}
 });
 function parseInvitation(raw){
@@ -622,6 +693,9 @@ deleteForm.addEventListener('submit',async event=>{
 });
 
 window.addEventListener('offline',()=>{disconnected=true;onlineReady=false;resetListeners();openOffline('Hors connexion : tes modifications restent enregistrées localement.');refreshStatus();});
+document.addEventListener('visibilitychange',()=>{
+ if(!document.hidden&&onlineReady&&typeof B.advanceRealDate==='function')B.advanceRealDate();
+});
 window.addEventListener('online',()=>{disconnected=false;showStatus('Connexion rétablie : reprise en cours…','pending');reconnectSoon();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&navigator.onLine&&!onlineReady)reconnectSoon();});
 window.addEventListener('focus',()=>{if(navigator.onLine&&!onlineReady)reconnectSoon();});
