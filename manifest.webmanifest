@@ -1,7 +1,7 @@
 {
   "id": "./?equicomptes-v8-beta",
-  "name": "ÉquiComptes V9.0 — Multimode",
-  "short_name": "Équi V9.0",
+  "name": "ÉquiComptes V9.0",
+  "short_name": "ÉquiComptes V9",
   "description": "ÉquiComptes V9.0 : choix des comptes bancaires, charges équitables et synchronisation privée avec mode hors ligne.",
   "start_url": "./index.html",
   "scope": "./",
@@ -10,14 +10,16 @@
   "theme_color": "#184768",
   "icons": [
     {
-      "src": "icon-192.png?v=9.0-icone9",
+      "src": "icon-v9-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "icon-512.png?v=9.0-icone9",
+      "src": "icon-v9-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
