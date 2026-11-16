@@ -1,5 +1,5 @@
 // ÉquiComptes V9.0 — cache PWA officiel, identité et icônes Android actualisées.
-const CACHE='equi-v8-beta-cache-20261116-v90-identite9-r2';
+const CACHE='equi-v8-beta-cache-20261116-v90-qr-sans-url';
 const APP_FILES=['./','./index.html','./manifest.webmanifest','./service-worker.js','./sync-v8.js?v=9.0-epuree','./firebase-config.json','./icon-v9-192.png','./icon-v9-512.png'];
 const FIREBASE_SDK='https://www.gstatic.com/firebasejs/13.2.0/';
 self.addEventListener('install',evt=>{
