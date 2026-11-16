@@ -546,8 +546,8 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <button class="btn" data-v82-action="backups">↓ Sauvegardes</button>
 <button class="btn" data-v82-action="help">? Aide et suggestions</button>
 <button class="btn" data-v82-action="share">▦ Partager ÉquiComptes</button>
-<button class="btn" data-v82-action="banking">⇄ Fonctionnement bancaire</button>
-</div><p class="footnote">ÉquiComptes V8.3</p></div></dialog>
+<button class="btn" data-v82-action="banking">⇄ Changer de mode bancaire</button>
+</div><p class="footnote" id="v9-menu-version">ÉquiComptes V9.0 · Synchronisation Firebase · Données privées du foyer</p></div></dialog>
 <dialog id="v82-share" class="dialog" aria-labelledby="v82-share-title"><div class="dialog-inner">
 <div class="dialog-title"><h2 id="v82-share-title">Partager ÉquiComptes</h2><button class="close" data-v82-close="v82-share" aria-label="Fermer">×</button></div>
 <p class="note">Faites scanner ce QR code pour ouvrir l'application officielle et l'installer sur un téléphone.</p>
@@ -1746,8 +1746,8 @@ function labFreezeMonth(month){
 }
 function labUpdateTop(){
  if(!window.EQUI_LAB_TEST)return;
- const e=by('lab-banner');if(!e)return;
- const mode=labModeAt(state.month),p=state.lab?.pending;
+ const mode=labModeAt(state.month);
+ document.documentElement.dataset.bankMode=mode;
  let corrected=false;
  for(const key of ['p1','p2']){const el=by('salary-bank-'+key);if(!el)continue;
   const joint=el.querySelector('option[value="joint"]');if(joint)joint.disabled=(mode==='separate');
@@ -1757,10 +1757,6 @@ function labUpdateTop(){
   }
  }
  if(corrected)persist();
- e.innerHTML='<strong>MODE BANCAIRE · '+esc(labModeName(mode))+'</strong>'+
- 'ÉquiComptes V9.0 : paramètres bancaires de votre foyer. '+
- (p?'<div style="margin-top:6px">Changement vers '+esc(labModeName(p.to))+' programmé au '+esc(p.effective)+'.</div>':'')+
- '<button type="button" class="btn tiny secondary" data-lab-open style="margin-top:8px">Configurer les comptes</button>';
 }
 function labRemainder(){const c=compute();return c.netN-(Number(state.lab.paid[state.month])||0)}
 function labRenderSeparateResults(){
@@ -1915,11 +1911,7 @@ document.addEventListener('click',event=>{
  if(event.target.closest('[data-lab-settle]')&&!labUnconfigured('separate').length){state.lab.paid[state.month]=compute().netN;persist();renderResults();toast('Compensation confirmée')}
  if(event.target.closest('[data-lab-undo]')){state.lab.paid[state.month]=0;persist();renderResults();toast('Confirmation annulée')}
 });
-const labBanner=document.createElement('div');labBanner.id='lab-banner';labBanner.setAttribute('role','status');
-by('pane-calcul').prepend(labBanner);
-const labShow=document.createElement('div');labShow.className='v82-demo-bar';labShow.style.cssText='background:#fff2d5;padding:9px 15px;text-align:center;color:#805412;font-size:12px;font-weight:700';
-labShow.textContent='ÉquiComptes V9.0 — candidate de prépublication : synchronisation Firebase et migration à valider';
-by('pane-calcul').parentElement.prepend(labShow);
+// Version V9.0 publiée : aucun bandeau de prépublication dans le calcul.
 // Par défaut, les foyers existants restent en mode joint.
 
 applyPeopleLabels();applyTheme();renderCharges();renderIncome();
