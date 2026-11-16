@@ -29,7 +29,14 @@ function section(text,start,end){
  assert.match(html,/<strong>ÉquiComptes V9\.0<\/strong>/);
  assert.doesNotMatch(html,/<strong>ÉquiComptes V8\.3<\/strong>/);
  assert.match(html,/rel="manifest" href="\.\/manifest\.webmanifest"/);
- assert.match(serviceWorker,/equi-v8-beta-cache-20261116-v90-identite9-r2/);
+ // Le lien n'est pas affiché sous le QR, mais reste dans le DOM
+ // pour préserver les boutons Copier le lien / Partager…
+ assert.match(html,/<a id="v82-share-link" href="https:\/\/chenet55130n\.github\.io\/equicomptes-v8-beta\/" hidden aria-hidden="true" tabindex="-1"><\/a>/);
+ assert.doesNotMatch(html,/>chenet55130n\.github\.io\/equicomptes-v8-beta\/<\/a>/);
+ assert.match(html,/id="v82-share-copy"/);
+ assert.match(html,/id="v82-share-system"/);
+ assert.match(html,/const url=by\('v82-share-link'\)\.href/);
+ assert.match(serviceWorker,/equi-v8-beta-cache-20261116-v90-qr-sans-url/);
  assert.match(serviceWorker,/icon-v9-192\.png/);
  assert.match(serviceWorker,/icon-v9-512\.png/);
  // Régression UI : ni message de prépublication ni configuration bancaire
