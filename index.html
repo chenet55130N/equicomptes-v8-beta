@@ -757,7 +757,10 @@ document.addEventListener('click',e=>{
 });
 
 function compute(){
- if(window.EQUI_LAB_TEST&&labFrozenAt(state.month))return JSON.parse(JSON.stringify(labFrozenAt(state.month).result));
+ if(window.EQUI_LAB_TEST){
+ const historical=labFrozenAt(state.month)?.result||state.history.find(h=>h.month===state.month)?.result;
+ if(historical)return JSON.parse(JSON.stringify(historical));
+}
  const n=parseMoney(state.salaryN),a=parseMoney(state.salaryA),s=n+a;
  const groups={common:0,p1:0,p2:0};let count=0;
  for(const ch of labMonthCharges(state.month)){const ef=effectiveCharge(ch,state.month);if(ef.active){groups[ch.owner]+=ef.amount;count++}}
@@ -1721,15 +1724,15 @@ function labSetSplit(from,value){
 function labUnconfigured(mode,month=state.month){
  return mode==='separate'?state.charges.filter(ch=>ch.enabled!==false&&!labPayer(ch.id,mode,month)):[];
 }
-function labMonthCharges(month=state.month){return labFrozenAt(month)?.charges||state.charges}
+function labMonthCharges(month=state.month){return labFrozenAt(month)?.charges||state.history.find(h=>h.month===month)?.charges||state.charges}
 function labFreezeMonth(month){
  if(labFrozenAt(month))return;
  const original=state.month;
  if(original!==month)switchMonth(month);
  const result=compute();
  state.lab.frozen[month]={
-  mode:labModeAt(month),split:labSplitAt(month),charges:JSON.parse(JSON.stringify(state.charges)),
-  payers:Object.fromEntries(state.charges.map(ch=>[ch.id,labPayer(ch.id,labModeAt(month),month)])),
+  mode:labModeAt(month),split:labSplitAt(month),charges:JSON.parse(JSON.stringify(labMonthCharges(month))),
+  payers:Object.fromEntries(labMonthCharges(month).map(ch=>[ch.id,labPayer(ch.id,labModeAt(month),month)])),
   result:JSON.parse(JSON.stringify(result)),savedAt:new Date().toISOString()
  };
  if(!state.history.some(x=>x.month===month)){
