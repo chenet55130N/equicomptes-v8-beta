@@ -1641,6 +1641,8 @@ function labModeAt(month){
  return mode;
 }
 function labPayer(id,mode,month=state.month){
+ const archive=labFrozenAt(month);
+ if(archive&&archive.mode===mode&&Object.prototype.hasOwnProperty.call(archive.payers||{},id))return archive.payers[id];
  let v=mode==='joint'
   ?(['joint','p1','p2'].includes(state.lab.jointPayers[id])?state.lab.jointPayers[id]:'joint')
   :(['p1','p2'].includes(state.lab.payers[id])?state.lab.payers[id]:'');
@@ -1695,6 +1697,10 @@ function labFreezeMonth(month){
   payers:Object.fromEntries(state.charges.map(ch=>[ch.id,labPayer(ch.id,labModeAt(month),month)])),
   result:JSON.parse(JSON.stringify(result)),savedAt:new Date().toISOString()
  };
+ if(!state.history.some(x=>x.month===month)){
+  state.history.push({month,savedAt:new Date().toISOString(),result:{...result,labMode:labModeAt(month)},charges:JSON.parse(JSON.stringify(state.charges)),additionalIncome:monthIncome().map(x=>({...x}))});
+  state.history.sort((a,b)=>b.month.localeCompare(a.month));
+ }
  if(original!==month)switchMonth(original);
 }
 function labUpdateTop(){
