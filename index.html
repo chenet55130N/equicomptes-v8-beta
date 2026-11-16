@@ -667,7 +667,8 @@ function effectiveCharge(ch,month){
  return {amount,active:amount>0,planned,overridden:!!ov,reason:amount>0?'Prévu':(ch.enabled===false?'Désactivé':'Non prélevé')};
 }
 function chargeMonthTotal(month){return (window.EQUI_LAB_TEST?labMonthCharges(month):state.charges).reduce((a,ch)=>a+effectiveCharge(ch,month).amount,0)}
-const seed=()=>{const month=monthNow(),settings={...SETTINGS_DEFAULT},sal=newSalaries(settings);return {month,salaryN:sal.n,salaryA:sal.a,bankN:sal.bankN,bankA:sal.bankA,monthlySalaries:{[month]:{...sal}},settings,incomeTemplates:defaultIncomeTemplates(settings),additionalIncome:[],charges:DEFAULTS.map((a,i)=>({id:'initial-'+i,name:a[0],amount:cents(a[1]),owner:a[2],enabled:a[3]!==false})),history:[],theme:'signature',expenses:[],settlements:[]}};
+const seed=()=>{const month=monthNow(),settings={...SETTINGS_DEFAULT},sal=newSalaries(settings);return {month,salaryN:sal.n,salaryA:sal.a,bankN:sal.bankN,bankA:sal.bankA,monthlySalaries:{[month]:{...sal}},settings,incomeTemplates:defaultIncomeTemplates(settings),additionalIncome:[],charges:DEFAULTS.map((a,i)=>({id:'initial-'+i,name:a[0],amount:cents(a[1]),owner:a[2],enabled:a[3]!==false})),history:[],theme:'signature',expenses:[],settlements:[],
+ ...(window.EQUI_LAB_TEST?{lab:{initial:'joint',transitions:[],pending:null,payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},clock:new Date().toISOString().slice(0,10),latestMonthSeen:month,paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}}}:{})}};
 function adaptOldBackup(data){
  // Import d'une ancienne sauvegarde : demander à l'utilisateur de mapper
  // les codes historiques, sans inclure de prénom personnel dans la PWA publique.
@@ -1097,10 +1098,15 @@ function restoreMonth(month){
 }
 
 function download(content,filename,mime){const b=new Blob([content],{type:mime}),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
-function exportData(){download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.3',exportedAt:new Date().toISOString(),...state},null,2),'equicomptes_V8_3_sauvegarde_'+state.month+'.json','application/json');toast('Sauvegarde téléchargée')}
+function exportData(){const v=window.EQUI_LAB_TEST?'9.0':'8.3';download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:v,exportedAt:new Date().toISOString(),...state},null,2),'equicomptes_V'+v.replace('.','_')+'_sauvegarde_'+state.month+'.json','application/json');toast('Sauvegarde téléchargée')}
 function importData(file){if(!file)return;const reader=new FileReader();reader.onload=()=>{try{
- const data=validate(adaptOldBackup(JSON.parse(String(reader.result))));
- if(!confirm('Importer cette sauvegarde remplacera les données du foyer connecté et pourra synchroniser les changements sur tous ses appareils. Exporte une sauvegarde avant de continuer. Confirmer ?'))return;
+ const raw=adaptOldBackup(JSON.parse(String(reader.result)));
+ if(window.EQUI_LAB_TEST&&(!raw.lab||typeof raw.lab!=='object')){
+  if(!state.lab)throw Error('Paramètres bancaires V9 absents : annulation.');
+  raw.lab=JSON.parse(JSON.stringify(state.lab));
+ }
+ const data=validate(raw);
+ if(!confirm('Importer cette sauvegarde remplacera les données du foyer connecté et pourra synchroniser les changements sur tous ses appareils. Les paramètres bancaires V9 sont conservés si la sauvegarde est ancienne. Exporte une sauvegarde avant de continuer. Confirmer ?'))return;
  state=data;applyTheme();by('salary-p1').value=state.salaryN;by('salary-p2').value=state.salaryA;by('salary-bank-p1').value=state.bankN;by('salary-bank-p2').value=state.bankA;
  persist();renderResults();renderIncome();renderCharges();renderHistory();renderDebts();resetExpenseForm();toast('Sauvegarde restaurée');
  }catch(e){toast('Fichier de sauvegarde invalide')}};reader.onerror=()=>toast('Lecture du fichier impossible');reader.readAsText(file)}
@@ -1444,7 +1450,7 @@ window.EquiBetaBridge={
 
 // Extensions V8.3, dans la même portée que le moteur V8.1.
 const v82Demo = window.EQUI_V82_DEMO === true;
-const v82Contact = ''; // À renseigner après confirmation de la création de l’adresse.
+const v82Contact = 'EquiComptes.admin@gmail.com'; // Adresse de contact officielle ÉquiComptes.
 function v82Open(id) {
  const dialog=by(id);
  if(!dialog.open)dialog.showModal();
@@ -1582,7 +1588,7 @@ async function v82Snapshot(reason='automatic'){
  finally{v82BackupBusy=false;}
 }
 function v82Download(copy){
- download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:'8.3',exportedAt:copy.at,...copy.payload},null,2),'equicomptes_V8_2_'+copy.at.replace(/[:.]/g,'-')+'.json','application/json');
+ const v=window.EQUI_LAB_TEST?'9.0':'8.3';download(JSON.stringify({application:'ÉquiComptes - Partage juste',version:v,exportedAt:copy.at,...copy.payload},null,2),'equicomptes_V'+v.replace('.','_')+'_copie_'+copy.at.replace(/[:.]/g,'-')+'.json','application/json');
 }
 async function v82RenderBackups(){
  const context=v82Context();
@@ -1599,7 +1605,7 @@ async function v82RenderBackups(){
    const copy=record.copies.find(item=>item.id===(button.dataset.v82Download||button.dataset.v82Restore));
    if(button.dataset.v82Download){v82Download(copy);return;}
    if(!confirm('Restaurer cette copie remplacera les données du foyer et pourra synchroniser ce remplacement sur les autres appareils. Continuer ?'))return;
-   const restored=validate(adaptOldBackup(copy.payload));
+   const raw=adaptOldBackup(copy.payload);if(window.EQUI_LAB_TEST&&(!raw.lab||typeof raw.lab!=='object'))raw.lab=JSON.parse(JSON.stringify(state.lab));const restored=validate(raw);
    if(!await v82Snapshot('before-restore')){toast('Copie de sécurité impossible. Restauration annulée.');return;}
    if(context.scope!==v82Context()?.scope)return;
    state=restored;persist();betaRefresh();resetExpenseForm();await v82RenderBackups();toast('Copie restaurée localement. Consulte le voyant de synchronisation.');
@@ -1632,9 +1638,9 @@ window.EquiBetaBridge.clearBackups=async(uid,hid)=>{
   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
  });
 };
-if(!window.EQUI_LAB_TEST)setTimeout(()=>v82Snapshot(),2500);
-if(!window.EQUI_LAB_TEST)setInterval(()=>{if(!document.hidden)v82Snapshot();},60000);
-if(!window.EQUI_LAB_TEST)document.addEventListener('visibilitychange',()=>{if(!document.hidden)v82Snapshot();});
+if(!v82Demo)setTimeout(()=>v82Snapshot(),2500);
+if(!v82Demo)setInterval(()=>{if(!document.hidden)v82Snapshot();},60000);
+if(!v82Demo)document.addEventListener('visibilitychange',()=>{if(!document.hidden)v82Snapshot();});
 if(v82Demo){
  by('beta-gate').hidden=true;
  by('beta-sync-indicator').textContent='● Démonstration locale · aucune synchronisation Firebase';
