@@ -13,6 +13,9 @@ const FOYERKEY = 'equicomptes-v8-beta-foyer-id';
 const VERIFIED_KEY = 'equi-v8-verified';
 const GROUPS = ['settings','months','charges','incomes','expenses','settlements','history'];
 const fmt = x => JSON.stringify(x);
+// Comparaison canonique des objets bancaires indépendamment de l'ordre des champs.
+const stableBank = x => JSON.stringify(x,(_,v)=>v&&typeof v==='object'&&!Array.isArray(v)
+ ? Object.fromEntries(Object.keys(v).sort().map(k=>[k,v[k]])):v);
 const gate = el('beta-gate');
 const status = el('beta-sync-indicator');
 const message = el('beta-gate-message');
@@ -253,7 +256,21 @@ async function syncPending(){
   inFlight.add(key);
   const rev=op.rev;
   try{
-   if(op.deleted)await sdk.deleteDoc(pathDoc(group,id));
+   if(group==='settings'&&id==='v9-banking'&&!op.deleted){
+    // Transaction optimiste : aucun écrasement silencieux d'une version modifiée
+    // entre-temps sur le deuxième appareil. Le conflit est proposé à l'utilisateur.
+    const ref=pathDoc(group,id);
+    await sdk.runTransaction(db,async transaction=>{
+     const snapshot=await transaction.get(ref);
+     const current=snapshot.exists()?snapshot.data():null;
+     if(stableBank(current)!==stableBank(op.base??null)){
+      const error=Error('Modification bancaire concurrente');
+      error.code='equi/concurrent-bank-change';error.remote=current;
+      throw error;
+     }
+     transaction.set(ref,op.value);
+    });
+   }else if(op.deleted)await sdk.deleteDoc(pathDoc(group,id));
    else await sdk.setDoc(pathDoc(group,id),op.value);
    // N'effacer le journal que si l'utilisateur n'a pas modifié l'entrée entre-temps.
    if(dirty[key]?.rev===rev){
@@ -261,7 +278,15 @@ async function syncPending(){
     if(op.deleted)shadow.delete(key);else shadow.set(key,op.value);
     saveBaseline();
    }
-  }catch(e){disconnected=String(e?.code||'').includes('unavailable')||!navigator.onLine;note('Synchronisation suspendue : '+errorText(e));}
+  }catch(e){
+   if(e?.code==='equi/concurrent-bank-change'){
+    conflicts.set(key,{remote:e.remote??null});
+    note('Paramètres bancaires modifiés sur un autre appareil : choisis la version à conserver.');
+   }else{
+    disconnected=String(e?.code||'').includes('unavailable')||!navigator.onLine;
+    note('Synchronisation suspendue : '+errorText(e));
+   }
+  }
   finally{inFlight.delete(key);refreshStatus();if(dirty[key]&&dirty[key].rev!==rev)scheduleSync();}
  }
 }
