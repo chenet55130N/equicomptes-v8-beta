@@ -330,6 +330,8 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .lab-payer-item label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}
 .lab-payer-item select{width:100%;font-size:13px;border:1px solid var(--t-border);border-radius:9px;color:var(--t-ink);background:var(--t-input);padding:11px 8px}
 @media(max-width:560px){.lab-payer-grid{grid-template-columns:1fr}}
+#lab-charge-effective{width:100%;max-width:400px;padding:10px;border-radius:10px;border:1px solid var(--t-border);background:var(--t-input);color:var(--t-ink)}
+.lab-historical-readonly{padding:10px;border:1px solid #e4b3ad;border-radius:9px;background:#fff2ed;color:#80332b;font-size:12px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -417,7 +419,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <select id="lab-charge-payer-joint"><option value="joint">Compte joint</option><option value="p1">Compte personnel de Personne 1</option><option value="p2">Compte personnel de Personne 2</option></select></div>
 <div class="lab-payer-item" id="lab-charge-separate-wrap"><label for="lab-charge-payer-separate">Sans compte joint</label>
 <select id="lab-charge-payer-separate"><option value="">À définir…</option><option value="p1">Compte personnel de Personne 1</option><option value="p2">Compte personnel de Personne 2</option></select></div></div>
-<p class="micro-note" id="lab-charge-payer-help"></p></div>
+<div class="formline" style="margin-top:12px"><label for="lab-charge-effective">Appliquer ce compte de prélèvement</label><select id="lab-charge-effective"><option value="current">Au mois en cours</option><option value="next">À partir du mois suivant</option></select></div><p class="micro-note" id="lab-charge-payer-help"></p></div>
 <div class="formline wide"><label class="default-active"><input id="charge-enabled-default" type="checkbox" checked><span>Charge activée par défaut aux échéances programmées</span></label></div>
 <div class="formline wide"><label for="schedule-type">Fréquence des prélèvements</label><select id="schedule-type"><option value="monthly">Tous les mois (12/12)</option><option value="ten">Mois sélectionnés (ex. 10/12)</option><option value="quarterly">Trimestrielle (tous les 3 mois)</option><option value="annual">Annuelle (1 mois par an)</option><option value="custom">Échéancier personnalisé (montants par mois)</option></select></div>
 <div class="formline"><label for="schedule-start">Début (facultatif)</label><input id="schedule-start" type="month"></div><div class="formline"><label for="schedule-end">Fin (facultative)</label><input id="schedule-end" type="month"></div>
@@ -978,13 +980,26 @@ function openCharge(id=null){
  by('charge-name').value=chargeDraft.name;by('charge-amount').value=ch?formatInput(ch.amount):'';
  by('charge-owner').value=chargeDraft.owner;by('charge-enabled-default').checked=chargeDraft.enabled;
  if(window.EQUI_LAB_TEST){
-  by('lab-charge-payer-joint').value=ch?labPayer(ch.id,'joint'):'joint';
-  by('lab-charge-payer-separate').value=ch?labPayer(ch.id,'separate'):'';
-  const activeMode=labModeAt(state.month);
-  by('lab-charge-joint-wrap').classList.toggle('lab-payer-active',activeMode==='joint');
-  by('lab-charge-separate-wrap').classList.toggle('lab-payer-active',activeMode==='separate');
-  by('lab-charge-payer-help').textContent='Le mode « '+labModeName(activeMode)+' » s’applique à '+labelMonth(state.month)+'. L’autre configuration reste disponible pour une future migration.';
+  const current=state.lab.latestMonthSeen,next=labNextMonth(current),scope=by('lab-charge-effective');
+  scope.options[0].textContent='Mois en cours ('+labelMonth(current)+')';
+  scope.options[1].textContent='Mois suivant ('+labelMonth(next)+')';
+  scope.value=state.month===next?'next':'current';
+  scope.disabled=labIsClosed(state.month)||state.month>next;
+  const refresh=()=>{
+   const from=scope.value==='next'?next:current,mode=labModeAt(from);
+   by('lab-charge-payer-joint').value=ch?labPayer(ch.id,'joint',from):'joint';
+   by('lab-charge-payer-separate').value=ch?labPayer(ch.id,'separate',from):'';
+   by('lab-charge-joint-wrap').classList.toggle('lab-payer-active',mode==='joint');
+   by('lab-charge-separate-wrap').classList.toggle('lab-payer-active',mode==='separate');
+   by('lab-charge-payer-help').textContent=labChangeError(from)||('Comptes choisis pour '+labelMonth(from)+'. Les périodes antérieures sont préservées.');
+  };
+  scope.onchange=refresh;refresh();
+  const readOnly=labIsClosed(state.month);
+  by('charge-form').querySelectorAll('input,select,button[type="submit"],#delete-charge').forEach(el=>el.disabled=readOnly);
+  by('lab-charge-payer-help').classList.toggle('lab-historical-readonly',readOnly);
+  if(readOnly)by('lab-charge-payer-help').textContent='CONSULTATION SEULEMENT : mois précédent ou clôturé. Aucune modification autorisée.';
  }
+
  by('schedule-type').value=chargeDraft.schedule.type;by('schedule-start').value=chargeDraft.schedule.start;
  by('schedule-end').value=chargeDraft.schedule.end;by('schedule-anchor').value=chargeDraft.schedule.anchor;
  by('delete-charge').classList.toggle('hidden',!ch);
