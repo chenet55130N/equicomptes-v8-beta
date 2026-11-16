@@ -1843,8 +1843,11 @@ function labClockChange(value){
   if(pending&&next>=pending.effective)blockers.push(...labUnconfigured(pending.to,pending.effective).map(ch=>'Compte payeur à renseigner : '+ch.name));
   if(blockers.length){
    state.lab.blocked=blockers.join(' · ');
+   // La date affichée reste la date civile réelle. La clôture du mois précédent
+   // et le changement bancaire restent suspendus jusqu'à régularisation.
+   state.lab.clock=value;
    if(state.month!==selected)switchMonth(selected);
-   persist();labRenderBanking();toast('Clôture refusée : régularise les mouvements affichés dans le menu bancaire.');return;
+   persist();labRenderBanking();toast('Clôture suspendue : régularise les mouvements affichés dans le menu bancaire.');return;
   }
   labFreezeMonth(prev);state.lab.latestMonthSeen=next;
  }
