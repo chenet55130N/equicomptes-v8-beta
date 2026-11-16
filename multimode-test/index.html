@@ -739,7 +739,7 @@ function movementState(r=compute()){
 function renderMovements(r){const el=by('monthly-movements');if(!el)return;const m=movementState(r);el.innerHTML='<h3>Virements issus du calcul initial</h3><p class="note">Hors bonus, suivis séparément ci-dessus. Le récapitulatif indique le solde restant : ne réalisez pas les deux une seconde fois.</p>'+['p1','p2'].map(p=>{const remain=m.base[p]-m.done[p];return `<div class="small-transfer" style="flex-wrap:wrap;gap:10px"><div><strong>${esc(personName(p))}</strong><p class="note">Calculé : ${fmt(m.base[p])} · Déjà effectué (net) : ${fmt(m.done[p])}</p><p>${remain>0?'Compte joint → compte personnel':remain<0?'Compte personnel → compte joint':'✓ Aucun mouvement restant'}${remain?' : '+fmt(Math.abs(remain)):''}</p></div><div>${remain&&r.s?`<button class="btn" data-base-done="${p}">✓ Mouvement effectué</button>`:''}${m.done[p]?`<button class="btn tiny" data-base-undo="${p}">Annuler la validation</button>`:''}</div></div>`}).join('')+'<p class="note">Une validation confirme un mouvement réalisé dans votre banque. Si le calcul change, seul l’écart restant est proposé. Les montants négatifs indiquent un apport au compte joint.</p>'}
 document.addEventListener('click',e=>{
  const b=e.target.closest('[data-bonus-id],[data-base-done],[data-base-undo]');if(!b)return;
- if(b.dataset.bonusId){const x=state.additionalIncome.find(x=>x.id===b.dataset.bonusId&&x.month===state.month);if(!x||!x.enabled)return;const who=b.dataset.bonusPerson;if(!['p1','p2','common'].includes(who))return;const was=x.paid?.[who];if(!confirm(was?'Annuler cette confirmation ? Aucun mouvement bancaire ne sera annulé.':'Confirmer que ce mouvement de '+fmt(bonusParts(x)[who])+' a déjà été effectué ?'))return;x.paid={...x.paid,[who]:!was};}
+ if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){toast('Archive en consultation uniquement.');return}if(b.dataset.bonusId){const x=state.additionalIncome.find(x=>x.id===b.dataset.bonusId&&x.month===state.month);if(!x||!x.enabled)return;const who=b.dataset.bonusPerson;if(!['p1','p2','common'].includes(who))return;const was=x.paid?.[who];if(!confirm(was?'Annuler cette confirmation ? Aucun mouvement bancaire ne sera annulé.':'Confirmer que ce mouvement de '+fmt(bonusParts(x)[who])+' a déjà été effectué ?'))return;x.paid={...x.paid,[who]:!was};}
  else{const p=b.dataset.baseDone||b.dataset.baseUndo,r=compute(),m=movementState(r);if(!['p1','p2'].includes(p))return;if(!confirm(b.dataset.baseUndo?'Annuler le suivi des mouvements de cette personne pour ce mois ? Aucun virement bancaire ne sera annulé.':'Confirmer le mouvement restant de '+fmt(Math.abs(m.base[p]-m.done[p]))+' pour '+personName(p)+' ?'))return;const key=p==='p1'?'moveN':'moveA';state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],[key]:b.dataset.baseUndo?0:m.base[p]};}
  persist();renderResults();renderIncome();
 });
@@ -927,9 +927,9 @@ function renderCharges(){
   return `<div class="group"><div class="group-head"><div><strong><span class="group-glyph" aria-hidden="true">${themeById(state.theme).icons[owner==='common'?2:owner==='p1'?1:3]}</span> ${title}</strong><small>${subtitle} · <span id="gcount-${owner}">0</span> active(s)</small></div><div class="right"><strong id="g-${owner}">—</strong><small>Total retenu</small></div></div>
   ${charges.length?charges.map(ch=>{
    const ef=effectiveCharge(ch,state.month);
-   return `<div class="charge${ef.active?'':' off'}"><label class="switch" title="Activer pour ${esc(labelMonth(state.month))} seulement"><input type="checkbox" data-toggle="${esc(ch.id)}" ${ef.active?'checked':''} aria-label="Activer ${esc(ch.name)} pour ce mois"><span></span></label>
+   return `<div class="charge${ef.active?'':' off'}"><label class="switch" title="Activer pour ${esc(labelMonth(state.month))} seulement"><input type="checkbox" data-toggle="${esc(ch.id)}" ${ef.active?'checked':''} ${window.EQUI_LAB_TEST&&labIsClosed(state.month)?"disabled":""} aria-label="Activer ${esc(ch.name)} pour ce mois"><span></span></label>
    <div class="charge-info"><div class="charge-name">${esc(ch.name)}</div><div class="sub"><span class="schedule-badge">◷ ${scheduleDescription(ch)}</span>${ef.overridden?' · Exception ce mois':''}${window.EQUI_LAB_TEST?' · <span class="schedule-badge">Prélevé sur : '+esc(labPayerLabel(ch.id,labModeAt(state.month)))+'</span>':''}</div>${!ef.active?`<div class="month-note">${esc(ef.reason)}</div>`:''}</div>
-   <input class="amt" type="text" inputmode="decimal" aria-label="Montant ${esc(ch.name)} pour ce mois" data-amount="${esc(ch.id)}" value="${formatInput(ef.amount)}">
+   <input class="amt" type="text" inputmode="decimal" aria-label="Montant ${esc(ch.name)} pour ce mois" data-amount="${esc(ch.id)}" value="${formatInput(ef.amount)}" ${window.EQUI_LAB_TEST&&labIsClosed(state.month)?"disabled":""}>
    ${ef.overridden?`<button type="button" class="charge-reset" data-reset-month="${esc(ch.id)}" aria-label="Annuler l’exception de ce mois pour ${esc(ch.name)}" title="Rétablir la programmation pour ce mois">↺</button>`:''}
    <button class="edit" data-edit="${esc(ch.id)}" aria-label="Programmer ${esc(ch.name)}" title="Modifier l’échéancier">✎</button></div>`}).join(''):'<div class="empty">Aucune charge ici. Utilise « Ajouter ».</div>'}</div>`
  }).join('');
@@ -1012,17 +1012,27 @@ function processCharge(ev){
  if(!/^\d+(?:[.,]\d{1,2})?$/.test(raw.replace(/\s/g,''))||chargeDraft.amount>100000000){toast('Indique un montant habituel valide (0 € autorisé).');return}
  if(chargeDraft.schedule.start&&chargeDraft.schedule.end&&chargeDraft.schedule.start>chargeDraft.schedule.end){toast('La date de fin doit être après la date de début.');return}
  if(chargeDraft.schedule.type==='ten'&&!chargeDraft.schedule.months.length){toast('Choisis au moins un mois pour cette charge.');return}
- const jointPayer=by('lab-charge-payer-joint').value,separatePayer=by('lab-charge-payer-separate').value;
- if(window.EQUI_LAB_TEST&&labModeAt(state.month)==='separate'&&!['p1','p2'].includes(separatePayer)){toast('Choisis le compte payeur en mode sans compte joint.');return}
- if(editingId){const i=state.charges.findIndex(x=>x.id===editingId);if(i<0)return;state.charges[i]=JSON.parse(JSON.stringify(chargeDraft))}
- else{chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.charges.push(JSON.parse(JSON.stringify(chargeDraft)))}
  if(window.EQUI_LAB_TEST){
-  state.lab.jointPayers[chargeDraft.id]=['joint','p1','p2'].includes(jointPayer)?jointPayer:'joint';
-  state.lab.payers[chargeDraft.id]=['p1','p2'].includes(separatePayer)?separatePayer:'';
+  const current=state.lab.latestMonthSeen,next=labNextMonth(current),from=by('lab-charge-effective').value==='next'?next:current;
+  if(state.month<current||state.month>next||labIsClosed(state.month)){toast('Modification impossible : mois antérieur ou clôturé.');return}
+  const existing=editingId?state.charges.find(x=>x.id===editingId):null;
+  const financialChange=!existing||JSON.stringify({...existing,schedule:normalizeSchedule(existing.schedule)})!==JSON.stringify({...chargeDraft,schedule:normalizeSchedule(chargeDraft.schedule)});
+  if(financialChange&&(state.month!==current||labChangeError(current))){toast('Les réglages financiers ne peuvent changer que pour un mois courant non validé.');return}
+  const error=labChangeError(from);if(error){toast(error);return}
+  const joint=by('lab-charge-payer-joint').value,personal=by('lab-charge-payer-separate').value;
+  if(labModeAt(from)==='separate'&&!['p1','p2'].includes(personal)){toast('Choisis un compte personnel payeur pour '+labelMonth(from)+'.');return}
+  if(!['joint','p1','p2'].includes(joint)||!['','p1','p2'].includes(personal)){toast('Compte de prélèvement invalide.');return}
+  if(editingId){const i=state.charges.findIndex(x=>x.id===editingId);if(i<0)return;state.charges[i]=JSON.parse(JSON.stringify(chargeDraft))}
+  else{chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.charges.push(JSON.parse(JSON.stringify(chargeDraft)))}
+  for(const [mode,value] of [['joint',joint],['separate',personal]])if(labPayer(chargeDraft.id,mode,from)!==value)labSetPayer(chargeDraft.id,mode,from,value);
+ }else{
+  if(editingId){const i=state.charges.findIndex(x=>x.id===editingId);if(i<0)return;state.charges[i]=JSON.parse(JSON.stringify(chargeDraft))}
+  else{chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.charges.push(JSON.parse(JSON.stringify(chargeDraft)))}
  }
+
  persist();closeCharge();renderCharges();toast('Charge et comptes de prélèvement enregistrés');
 }
-function deleteCharge(){const c=state.charges.find(x=>x.id===editingId);if(!c)return;if(!confirm(`Supprimer « ${c.name} » et tout son échéancier ?`))return;state.charges=state.charges.filter(x=>x.id!==editingId);if(window.EQUI_LAB_TEST){delete state.lab.payers[editingId];delete state.lab.jointPayers[editingId];}persist();closeCharge();renderCharges();toast('Charge supprimée')}
+function deleteCharge(){const c=state.charges.find(x=>x.id===editingId);if(!c)return;if(window.EQUI_LAB_TEST&&(state.month!==state.lab.latestMonthSeen||labChangeError(state.month))){toast('Suppression interdite sur un mois antérieur, clôturé ou validé.');return}if(!confirm(`Supprimer « ${c.name} » et tout son échéancier ?`))return;state.charges=state.charges.filter(x=>x.id!==editingId);if(window.EQUI_LAB_TEST){delete state.lab.payers[editingId];delete state.lab.jointPayers[editingId];delete state.lab.payerChanges.joint[editingId];delete state.lab.payerChanges.separate[editingId];}persist();closeCharge();renderCharges();toast('Charge supprimée')}
 
 function transferSentence(person,net){return net>0?`Compte joint → ${person} : ${fmt(net)}`:net<0?`${person} → Compte joint : ${fmt(-net)}`:`${person} : aucun virement`}
 function resultText(r){
@@ -1043,10 +1053,11 @@ Solde cible du compte joint après transferts : ${fmt(r.jointKeep)} (${fmt(r.tot
 }
 
 async function copyResult(){const r=compute(),m=movementState(r);const t=withNames(resultText({...r,netN:m.remaining.p1,netA:m.remaining.p2}));try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(t);else{const e=document.createElement('textarea');e.value=t;e.style.position='fixed';e.style.left='-99999px';document.body.append(e);e.select();if(!document.execCommand('copy'))throw Error('Copie impossible');e.remove()}toast('Récapitulatif copié !')}catch(e){toast('Copie indisponible : utilise une sauvegarde ou une capture d’écran.')}}
-function saveMonth(){const r=compute();if(!r.s){toast('Saisis les salaires avant d’enregistrer.');return}const previous=state.history.findIndex(x=>x.month===state.month);if(previous>=0&&!confirm(`Un calcul de ${labelMonth(state.month)} existe déjà. Le remplacer ?`))return;const snapshot={month:state.month,savedAt:new Date().toISOString(),result:{...r},charges:JSON.parse(JSON.stringify(state.charges)),resolvedCharges:state.charges.map(ch=>({id:ch.id,name:ch.name,owner:ch.owner,amount:effectiveCharge(ch,state.month).amount})),additionalIncome:monthIncome().map(x=>({...x}))};if(previous>=0)state.history.splice(previous,1);state.history.push(snapshot);state.history.sort((a,b)=>b.month.localeCompare(a.month));persist();toast(`${labelMonth(state.month)} enregistré`)}
+function saveMonth(){if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){toast('Mois clôturé : impossible de remplacer les archives.');return}const r=compute();if(!r.s){toast('Saisis les salaires avant d’enregistrer.');return}const previous=state.history.findIndex(x=>x.month===state.month);if(previous>=0&&!confirm(`Un calcul de ${labelMonth(state.month)} existe déjà. Le remplacer ?`))return;const snapshot={month:state.month,savedAt:new Date().toISOString(),result:{...r},charges:JSON.parse(JSON.stringify(state.charges)),resolvedCharges:state.charges.map(ch=>({id:ch.id,name:ch.name,owner:ch.owner,amount:effectiveCharge(ch,state.month).amount})),additionalIncome:monthIncome().map(x=>({...x}))};if(previous>=0)state.history.splice(previous,1);state.history.push(snapshot);state.history.sort((a,b)=>b.month.localeCompare(a.month));if(window.EQUI_LAB_TEST)labFreezeMonth(state.month);persist();toast(`${labelMonth(state.month)} enregistré`)}
 function renderHistory(){by('history-list').innerHTML=state.history.length?state.history.map(x=>{const r=x.result;return `<article class="archive"><div class="archive-head"><h3>${esc(labelMonth(x.month))}</h3><span class="pill">${fmt(Number(r.total)||0)} de charges</span></div><p>Salaires : ${fmt(Number(r.s)||0)} · Prorata Personne 1 : ${((Number(r.pctN)||0)*100).toFixed(1).replace('.',',')} %</p><p>Répartition enregistrée (figée), indépendante des modifications ultérieures. Comptes des salaires : Personne 1 ${r.bankN==='personal'?'personnel':'joint'}, Personne 2 ${r.bankA==='personal'?'personnel':'joint'}.</p>${(Number(r.extraTotal)||0)>0?`<p>Revenus complémentaires : ${fmt(r.extraTotal)} (dont ${fmt(Number(r.extra?.common)||0)} gardés sur le compte joint)</p>`:''}<div class="two"><div><small>Compte Personne 1</small><strong>${fmt(Math.abs(Number(r.netN)||0))}</strong><small>${r.netN<0?'À apporter':'À virer'}</small></div><div><small>Compte Personne 2</small><strong>${fmt(Math.abs(Number(r.netA)||0))}</strong><small>${r.netA<0?'À apporter':'À virer'}</small></div></div><div class="buttons"><button class="btn tiny" data-restore="${esc(x.month)}">Charger le mois</button><button class="btn tiny danger" data-remove-month="${esc(x.month)}">Supprimer</button></div></article>`}).join(''):'<div class="empty">Aucun mois enregistré pour l’instant. Dans « Calcul », touche « Enregistrer ce mois » pour conserver le résultat.</div>'}
 function restoreMonth(month){
- const x=state.history.find(x=>x.month===month);if(!x)return;if(state.additionalIncome.some(i=>i.month===month&&Object.values(i.paid||{}).some(Boolean))){toast('Ce mois contient des bonus confirmés. Annule leurs confirmations avant de recharger une archive.');return}
+ const x=state.history.find(x=>x.month===month);if(!x)return;
+ if(window.EQUI_LAB_TEST){switchMonth(month);setTab('calcul');toast('Archive affichée en lecture seule, sans modifier ses données.');return}if(state.additionalIncome.some(i=>i.month===month&&Object.values(i.paid||{}).some(Boolean))){toast('Ce mois contient des bonus confirmés. Annule leurs confirmations avant de recharger une archive.');return}
  if(!confirm(`Aller en ${labelMonth(month)} et rétablir les salaires et revenus complémentaires archivés ? Les échéanciers actuels ne seront pas remplacés. Le résultat original restera visible dans l’historique.`))return;
  state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};
  state.month=x.month;state.salaryN=formatInput(Number(x.result.n)||0);state.salaryA=formatInput(Number(x.result.a)||0);state.bankN=normalizeBank(x.result.bankN);state.bankA=normalizeBank(x.result.bankA);
@@ -1166,13 +1177,14 @@ for(const [id,key] of [['salary-bank-p1','bankN'],['salary-bank-p2','bankA']]){
 by('charge-groups').addEventListener('change',e=>{
  const toggle=e.target.dataset.toggle,amt=e.target.dataset.amount;
  const ch=state.charges.find(x=>x.id===(toggle||amt));if(!ch)return;
+ if(window.EQUI_LAB_TEST&&labChangeError(state.month)){toast(labChangeError(state.month));renderCharges();return}
  ch.schedule=normalizeSchedule(ch.schedule);
  if(toggle){ch.schedule.overrides[state.month]=e.target.checked?{enabled:true,amount:Math.max(effectiveCharge(ch,state.month).amount,ch.amount)}:{enabled:false};}
  if(amt){const v=e.target.value.trim().replace(/\s/g,'');if(!/^\d+(?:[.,]\d{1,2})?$/.test(v)){toast('Montant invalide');renderCharges();return}ch.schedule.overrides[state.month]={amount:parseMoney(v),enabled:parseMoney(v)>0}}
  persist();renderCharges();
 });
 by('charge-groups').addEventListener('click',e=>{
- const reset=e.target.closest('[data-reset-month]');if(reset){const ch=state.charges.find(x=>x.id===reset.dataset.resetMonth);if(ch){delete ch.schedule.overrides[state.month];persist();renderCharges();toast('Programmation rétablie pour ce mois')}return}
+ const reset=e.target.closest('[data-reset-month]');if(reset){if(window.EQUI_LAB_TEST&&labChangeError(state.month)){toast(labChangeError(state.month));return}const ch=state.charges.find(x=>x.id===reset.dataset.resetMonth);if(ch){delete ch.schedule.overrides[state.month];persist();renderCharges();toast('Programmation rétablie pour ce mois')}return}
  const b=e.target.closest('[data-edit]');if(b)openCharge(b.dataset.edit);
 });
 by('annual-months').addEventListener('click',e=>{const b=e.target.closest('[data-annual-month]');if(b){switchMonth(b.dataset.annualMonth);renderCharges()}});
