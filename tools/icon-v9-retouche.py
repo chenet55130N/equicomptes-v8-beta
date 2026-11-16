@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ÉquiComptes V9.0 : retouche locale de la gravure 8 -> 9.
+"""ÉquiComptes V9.0 : retouche locale de la gravure 8 -> 9, version officielle.
 
 Conserve intacts les pixels hors de la petite zone de la tête citron vert.
 Traite séparément les icônes Android 512 px et 192 px.
