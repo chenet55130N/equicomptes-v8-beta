@@ -15,6 +15,23 @@ function section(text,start,end){
  for(const script of inline)new Function(script);
  new (Object.getPrototypeOf(async function(){}).constructor)(sync);
  assert.match(html,/const seed=\(\)=>/);
+ // Identité de la version installable : l'ancien libellé V8.3 ne doit pas subsister
+ // sur l'écran de connexion. Conserver le même identifiant PWA et le même lien.
+ const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../manifest.webmanifest'),'utf8'));
+ const serviceWorker=fs.readFileSync(path.join(__dirname,'../service-worker.js'),'utf8');
+ assert.equal(manifest.id,'./?equicomptes-v8-beta');
+ assert.equal(manifest.name,'ÉquiComptes V9.0');
+ assert.equal(manifest.short_name,'ÉquiComptes V9');
+ assert.deepEqual(manifest.icons.map(icon=>icon.src),['icon-v9-192.png','icon-v9-512.png']);
+ for(const icon of manifest.icons){
+  assert.ok(fs.existsSync(path.join(__dirname,'..',icon.src)),'Icône PWA absente : '+icon.src);
+ }
+ assert.match(html,/<strong>ÉquiComptes V9\.0<\/strong>/);
+ assert.doesNotMatch(html,/<strong>ÉquiComptes V8\.3<\/strong>/);
+ assert.match(html,/rel="manifest" href="\.\/manifest\.webmanifest"/);
+ assert.match(serviceWorker,/equi-v8-beta-cache-20261116-v90-identite9-r2/);
+ assert.match(serviceWorker,/icon-v9-192\.png/);
+ assert.match(serviceWorker,/icon-v9-512\.png/);
  // Régression UI : ni message de prépublication ni configuration bancaire
  // imposée dans le calcul. Le changement de mode reste dans le menu.
  assert.doesNotMatch(html,/candidate de prépublication/i);
