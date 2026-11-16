@@ -1,13 +1,14 @@
 <!doctype html>
 <html lang="fr">
 <head>
+<script>window.EQUI_V82_DEMO=false;window.EQUI_LAB_TEST=true;window.EQUI_V9_CANDIDATE=true;</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <meta name="theme-color" content="#10233f">
 <meta name="application-name" content="ÉquiComptes">
 <meta name="description" content="Répartition des salaires, échéanciers photo ou manuels, revenus complémentaires et remboursements à 50/50.">
-<title>ÉquiComptes V8.3 · Multi-foyers synchronisés</title>
+<title>ÉquiComptes V9.0 · Multi-foyers synchronisés</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <style>
@@ -304,10 +305,38 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .v82-demo-bar{padding:10px;text-align:center;background:var(--t-card2);color:var(--t-ink);font-size:12px}
 @media print{.tabs-wrap,#v82-open-menu,.v82-backup-banner,.v82-demo-bar{display:none!important}.main{padding-bottom:0}}
 </style>
+<style>
+#lab-banner{border:1px solid #9fd4cb;background:#e7f6f1;color:#145d5c;border-radius:13px;padding:12px 14px;margin:12px 0;font-size:13px}
+#lab-banner strong{display:block;margin-bottom:5px}
+#lab-banking .dialog-inner{max-height:85dvh;overflow:auto}
+#lab-banking label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px}
+#lab-banking select,#lab-banking input{width:100%;background:var(--t-input);color:var(--t-ink);border:1px solid var(--t-border);border-radius:10px;padding:9px}
+#lab-banking .lab-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;border-bottom:1px solid var(--t-line);padding:7px 0}
+#lab-banking .lab-row label{margin:0}
+#lab-banking .lab-hint{padding:10px;border-radius:10px;background:var(--t-card2);color:var(--t-ink);margin:10px 0;font-size:12px;line-height:1.5}
+#lab-banking .lab-danger{background:#fff0f0;color:#8a2333;border:1px solid #e9c2c7}
+#lab-banking .lab-good{background:#e5f4ea;color:#20614c;border:1px solid #c4dfd0}
+#lab-banking .lab-chip{display:inline-block;padding:3px 8px;border-radius:15px;background:#c0f2ea;color:#06584f;font-size:11px;font-weight:700}
+.lab-choice{display:flex;align-items:center;gap:9px;margin:8px 0}
+.lab-choice input{width:auto!important}
+#lab-banking .btnbar{flex-wrap:wrap}
+@media(max-width:420px){#lab-banking .lab-row{grid-template-columns:1fr}}
+.lab-payer-fields{background:var(--t-card2);border:1px solid var(--t-line);padding:15px;border-radius:14px}
+.lab-payer-fields h3{font-size:15px;margin:0 0 6px}
+.lab-payer-fields .note{font-size:12px;margin:0 0 12px}
+.lab-payer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lab-payer-item{border:1px solid var(--t-line);padding:10px;border-radius:10px}
+.lab-payer-item.lab-payer-active{border-color:var(--t-primary);box-shadow:inset 0 0 0 1px var(--t-primary)}
+.lab-payer-item label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}
+.lab-payer-item select{width:100%;font-size:13px;border:1px solid var(--t-border);border-radius:9px;color:var(--t-ink);background:var(--t-input);padding:11px 8px}
+@media(max-width:560px){.lab-payer-grid{grid-template-columns:1fr}}
+#lab-charge-effective{width:100%;max-width:400px;padding:10px;border-radius:10px;border:1px solid var(--t-border);background:var(--t-input);color:var(--t-ink)}
+.lab-historical-readonly{padding:10px;border:1px solid #e4b3ad;border-radius:9px;background:#fff2ed;color:#80332b;font-size:12px;margin-top:8px}
+</style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V8.3</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
+<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V9.0</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
 <div class="beta-sync-strip" aria-label="Connexion et foyer">
   <div class="beta-strip-status">
     <span id="beta-sync-indicator" role="status" aria-live="polite" data-sync-state="neutral">Connexion en cours…</span>
@@ -381,7 +410,16 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <div class="schedule-fields">
 <div class="formline wide"><label for="charge-name">Nom de la charge</label><input id="charge-name" maxlength="90" required placeholder="Ex. Assurance logement"></div>
 <div class="formline"><label for="charge-amount">Montant habituel (€)</label><input id="charge-amount" type="text" inputmode="decimal" required placeholder="194,34"></div>
-<div class="formline"><label for="charge-owner">Attribution</label><select id="charge-owner"><option value="common">Commune (prorata)</option><option value="p1">Perso Personne 1 (100 %)</option><option value="p2">Perso Personne 2 (100 %)</option></select></div>
+<div class="formline"><label for="charge-owner">Répartition de la charge</label><select id="charge-owner"><option value="common">Commune (selon la répartition du foyer)</option><option value="p1">Perso Personne 1 (100 %)</option><option value="p2">Perso Personne 2 (100 %)</option></select></div>
+<div class="formline wide lab-payer-fields">
+<h3>Compte de prélèvement</h3>
+<p class="note">Le compte qui paie peut être différent de la personne qui supporte la dépense. Les deux modes conservent leurs propres comptes de prélèvement.</p>
+<div class="lab-payer-grid">
+<div class="lab-payer-item" id="lab-charge-joint-wrap"><label for="lab-charge-payer-joint">Avec compte joint</label>
+<select id="lab-charge-payer-joint"><option value="joint">Compte joint</option><option value="p1">Compte personnel de Personne 1</option><option value="p2">Compte personnel de Personne 2</option></select></div>
+<div class="lab-payer-item" id="lab-charge-separate-wrap"><label for="lab-charge-payer-separate">Sans compte joint</label>
+<select id="lab-charge-payer-separate"><option value="">À définir…</option><option value="p1">Compte personnel de Personne 1</option><option value="p2">Compte personnel de Personne 2</option></select></div></div>
+<div class="formline" style="margin-top:12px"><label for="lab-charge-effective">Appliquer ce compte de prélèvement</label><select id="lab-charge-effective"><option value="current">Au mois en cours</option><option value="next">À partir du mois suivant</option></select></div><p class="micro-note" id="lab-charge-payer-help"></p></div>
 <div class="formline wide"><label class="default-active"><input id="charge-enabled-default" type="checkbox" checked><span>Charge activée par défaut aux échéances programmées</span></label></div>
 <div class="formline wide"><label for="schedule-type">Fréquence des prélèvements</label><select id="schedule-type"><option value="monthly">Tous les mois (12/12)</option><option value="ten">Mois sélectionnés (ex. 10/12)</option><option value="quarterly">Trimestrielle (tous les 3 mois)</option><option value="annual">Annuelle (1 mois par an)</option><option value="custom">Échéancier personnalisé (montants par mois)</option></select></div>
 <div class="formline"><label for="schedule-start">Début (facultatif)</label><input id="schedule-start" type="month"></div><div class="formline"><label for="schedule-end">Fin (facultative)</label><input id="schedule-end" type="month"></div>
@@ -508,6 +546,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <button class="btn" data-v82-action="backups">↓ Sauvegardes</button>
 <button class="btn" data-v82-action="help">? Aide et suggestions</button>
 <button class="btn" data-v82-action="share">▦ Partager ÉquiComptes</button>
+<button class="btn" data-v82-action="banking">⇄ Fonctionnement bancaire</button>
 </div><p class="footnote">ÉquiComptes V8.3</p></div></dialog>
 <dialog id="v82-share" class="dialog" aria-labelledby="v82-share-title"><div class="dialog-inner">
 <div class="dialog-title"><h2 id="v82-share-title">Partager ÉquiComptes</h2><button class="close" data-v82-close="v82-share" aria-label="Fermer">×</button></div>
@@ -519,6 +558,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <div class="btnbar" style="justify-content:center"><button class="btn primary" id="v82-share-copy" type="button">Copier le lien</button><button class="btn" id="v82-share-system" type="button">Partager…</button></div>
 <p class="note">Ce QR code partage uniquement l'adresse de l'application : aucun identifiant, code d'invitation ou donnée de votre foyer. Sur Android : menu du navigateur → Installer l'application ou Ajouter à l'écran d'accueil.</p>
 </div></dialog>
+<dialog id="lab-banking" class="dialog" aria-labelledby="lab-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="lab-title">Fonctionnement bancaire</h2><button class="close" data-v82-close="lab-banking" aria-label="Fermer">×</button></div><div id="lab-bank-content"></div></div></dialog>
 <dialog id="v82-account" class="dialog" aria-labelledby="v82-account-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-account-title">Mon compte et mon foyer</h2><button class="close" data-v82-close="v82-account" aria-label="Fermer">×</button></div><div id="v82-account-content"></div></div></dialog>
 <dialog id="v82-backups" class="dialog" aria-labelledby="v82-backup-title"><div class="dialog-inner"><div class="dialog-title"><h2 id="v82-backup-title">Sauvegardes</h2><button class="close" data-v82-close="v82-backups" aria-label="Fermer">×</button></div>
 <div class="formline"><label for="v82-frequency">Fréquence sur cet appareil</label><select id="v82-frequency"><option value="7">Tous les 7 jours</option><option value="15">Tous les 15 jours</option><option value="month">Tous les mois</option><option value="off">Désactivée</option></select></div>
@@ -538,7 +578,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 
 <script>
 (()=>{'use strict';
-const KEY=window.EQUI_V82_DEMO?'equicomptes-demo-v82-local':(()=>{let v=null;try{v=JSON.parse(localStorage.getItem('equi-v8-verified')||'null')}catch{};
+const KEY=window.EQUI_V82_DEMO?'equicomptes-multimode-final-lab-v1':(()=>{let v=null;try{v=JSON.parse(localStorage.getItem('equi-v8-verified')||'null')}catch{};
 return v?.uid&&v?.hid?'equicomptes-v8-beta-local:'+v.uid+':'+v.hid:'equicomptes-v8-beta-local:invité';})(); // Stockage dédié par membre+foyer, isolé de V7
 const DEFAULTS=[]; // Aucune charge ni donnée privée dans le code public.
 
@@ -626,7 +666,7 @@ function effectiveCharge(ch,month){
  if(sch.type==='custom'&&!ov)amount=0;
  return {amount,active:amount>0,planned,overridden:!!ov,reason:amount>0?'Prévu':(ch.enabled===false?'Désactivé':'Non prélevé')};
 }
-function chargeMonthTotal(month){return state.charges.reduce((a,ch)=>a+effectiveCharge(ch,month).amount,0)}
+function chargeMonthTotal(month){return (window.EQUI_LAB_TEST?labMonthCharges(month):state.charges).reduce((a,ch)=>a+effectiveCharge(ch,month).amount,0)}
 const seed=()=>{const month=monthNow(),settings={...SETTINGS_DEFAULT},sal=newSalaries(settings);return {month,salaryN:sal.n,salaryA:sal.a,bankN:sal.bankN,bankA:sal.bankA,monthlySalaries:{[month]:{...sal}},settings,incomeTemplates:defaultIncomeTemplates(settings),additionalIncome:[],charges:DEFAULTS.map((a,i)=>({id:'initial-'+i,name:a[0],amount:cents(a[1]),owner:a[2],enabled:a[3]!==false})),history:[],theme:'signature',expenses:[],settlements:[]}};
 function adaptOldBackup(data){
  // Import d'une ancienne sauvegarde : demander à l'utilisateur de mapper
@@ -680,6 +720,10 @@ function validate(data){
  clean.history=data.history.slice(0,120).filter(x=>x&&validMonth(x.month)&&x.result).map(x=>({month:x.month,savedAt:String(x.savedAt||''),result:x.result,charges:Array.isArray(x.charges)?x.charges.slice(0,300):[],additionalIncome:Array.isArray(x.additionalIncome)?x.additionalIncome.slice(0,500).map(v=>({...v})):null}));
  clean.expenses=Array.isArray(data.expenses)?data.expenses.slice(0,2500).filter(x=>x&&typeof x==='object').map((x,i)=>({id:String(x.id||'e-'+i).slice(0,80),label:String(x.label||'Achat partagé').slice(0,100),amount:safeCents(x.amount),payer:x.payer==='p2'?'p2':'p1',repayment:x.repayment==='full'?'full':'half',date:/^\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01])$/.test(x.date||'')?x.date:new Date().toISOString().slice(0,10),settlementId:String(x.settlementId||'').slice(0,80)})).filter(x=>x.amount>0):[];
  clean.settlements=Array.isArray(data.settlements)?data.settlements.slice(0,500).filter(x=>x&&typeof x==='object').map((x,i)=>({id:String(x.id||'s-'+i).slice(0,80),at:String(x.at||'').slice(0,50),amount:safeCents(x.amount),from:x.from==='p1'?'p1':x.from==='p2'?'p2':'aucun',to:x.to==='p1'?'p1':x.to==='p2'?'p2':'aucun',expenseIds:Array.isArray(x.expenseIds)?x.expenseIds.slice(0,2500).map(id=>String(id).slice(0,80)):[]})):[];
+ if(window.EQUI_LAB_TEST)clean.lab=(data.lab&&typeof data.lab==='object')?data.lab:{
+ initial:'joint',transitions:[],pending:null,payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},
+ clock:new Date().toISOString().slice(0,10),latestMonthSeen:monthNow(),paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}
+};
  return clean;
 }
 
@@ -689,7 +733,15 @@ function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){
 function monthIncome(){return state.additionalIncome.filter(x=>x.month===state.month)}
 
 function bonusParts(x){return {p1:x.owner==='p1'?x.amount:x.owner==='split'?Math.ceil(x.amount/2):0,p2:x.owner==='p2'?x.amount:x.owner==='split'?Math.floor(x.amount/2):0,common:x.owner==='common'?x.amount:0}}
-function bonusRows(x){if(!x.enabled)return '';return Object.entries(bonusParts(x)).filter(([p,n])=>n>0).map(([p,n])=>`<div class="small-transfer" style="flex-wrap:wrap;gap:10px"><span>${p==='common'?'À conserver sur le joint':'Compte joint → '+esc(personName(p))} · ${fmt(n)}${x.paid?.[p]?' · ✓ Effectué':''}</span><button class="btn tiny" data-bonus-id="${esc(x.id)}" data-bonus-person="${p}">${x.paid?.[p]?'Annuler la validation':p==='common'?'✓ Reçu et conservé':'✓ Virement effectué'}</button></div>`).join('')}
+function bonusRows(x){
+ if(!x.enabled)return '';
+ const separate=window.EQUI_LAB_TEST&&labModeAt(state.month)==='separate';
+ return Object.entries(bonusParts(x)).filter(([p,n])=>n>0).map(([p,n])=>{
+  const label=separate?(p==='common'?'Bonus commun (suivi indépendant)':'Bonus attribué à '+esc(personName(p))+' (hors compensation)'):(p==='common'?'À conserver sur le joint':'Compte joint → '+esc(personName(p)));
+  const action=x.paid?.[p]?'Annuler la validation':separate?'✓ Marquer le bonus traité':p==='common'?'✓ Reçu et conservé':'✓ Virement effectué';
+  return `<div class="small-transfer" style="flex-wrap:wrap;gap:10px"><span>${label} · ${fmt(n)}${x.paid?.[p]?' · ✓ Validé':''}</span><button class="btn tiny" data-bonus-id="${esc(x.id)}" data-bonus-person="${p}">${action}</button></div>`;
+ }).join('');
+}
 function movementState(r=compute()){
  const month=state.monthlySalaries[state.month]||{},base={p1:r.netN-r.extra.p1,p2:r.netA-r.extra.p2},done={p1:month.moveN||0,p2:month.moveA||0},bonusDone={p1:0,p2:0};
  for(const x of monthIncome())if(x.enabled){const p=bonusParts(x);for(const who of ['p1','p2'])if(x.paid?.[who])bonusDone[who]+=p[who]}
@@ -698,26 +750,44 @@ function movementState(r=compute()){
 function renderMovements(r){const el=by('monthly-movements');if(!el)return;const m=movementState(r);el.innerHTML='<h3>Virements issus du calcul initial</h3><p class="note">Hors bonus, suivis séparément ci-dessus. Le récapitulatif indique le solde restant : ne réalisez pas les deux une seconde fois.</p>'+['p1','p2'].map(p=>{const remain=m.base[p]-m.done[p];return `<div class="small-transfer" style="flex-wrap:wrap;gap:10px"><div><strong>${esc(personName(p))}</strong><p class="note">Calculé : ${fmt(m.base[p])} · Déjà effectué (net) : ${fmt(m.done[p])}</p><p>${remain>0?'Compte joint → compte personnel':remain<0?'Compte personnel → compte joint':'✓ Aucun mouvement restant'}${remain?' : '+fmt(Math.abs(remain)):''}</p></div><div>${remain&&r.s?`<button class="btn" data-base-done="${p}">✓ Mouvement effectué</button>`:''}${m.done[p]?`<button class="btn tiny" data-base-undo="${p}">Annuler la validation</button>`:''}</div></div>`}).join('')+'<p class="note">Une validation confirme un mouvement réalisé dans votre banque. Si le calcul change, seul l’écart restant est proposé. Les montants négatifs indiquent un apport au compte joint.</p>'}
 document.addEventListener('click',e=>{
  const b=e.target.closest('[data-bonus-id],[data-base-done],[data-base-undo]');if(!b)return;
- if(b.dataset.bonusId){const x=state.additionalIncome.find(x=>x.id===b.dataset.bonusId&&x.month===state.month);if(!x||!x.enabled)return;const who=b.dataset.bonusPerson;if(!['p1','p2','common'].includes(who))return;const was=x.paid?.[who];if(!confirm(was?'Annuler cette confirmation ? Aucun mouvement bancaire ne sera annulé.':'Confirmer que ce mouvement de '+fmt(bonusParts(x)[who])+' a déjà été effectué ?'))return;x.paid={...x.paid,[who]:!was};}
+ if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){toast('Archive en consultation uniquement.');return}if(b.dataset.bonusId){const x=state.additionalIncome.find(x=>x.id===b.dataset.bonusId&&x.month===state.month);if(!x||!x.enabled)return;const who=b.dataset.bonusPerson;if(!['p1','p2','common'].includes(who))return;const was=x.paid?.[who];if(!confirm(was?'Annuler cette confirmation ? Aucun mouvement bancaire ne sera annulé.':'Confirmer que ce mouvement de '+fmt(bonusParts(x)[who])+' a déjà été effectué ?'))return;x.paid={...x.paid,[who]:!was};}
  else{const p=b.dataset.baseDone||b.dataset.baseUndo,r=compute(),m=movementState(r);if(!['p1','p2'].includes(p))return;if(!confirm(b.dataset.baseUndo?'Annuler le suivi des mouvements de cette personne pour ce mois ? Aucun virement bancaire ne sera annulé.':'Confirmer le mouvement restant de '+fmt(Math.abs(m.base[p]-m.done[p]))+' pour '+personName(p)+' ?'))return;const key=p==='p1'?'moveN':'moveA';state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],[key]:b.dataset.baseUndo?0:m.base[p]};}
  persist();renderResults();renderIncome();
 });
 
 function compute(){
+ if(window.EQUI_LAB_TEST&&labFrozenAt(state.month))return JSON.parse(JSON.stringify(labFrozenAt(state.month).result));
  const n=parseMoney(state.salaryN),a=parseMoney(state.salaryA),s=n+a;
  const groups={common:0,p1:0,p2:0};let count=0;
- for(const ch of state.charges){const ef=effectiveCharge(ch,state.month);if(ef.active){groups[ch.owner]+=ef.amount;count++}}
+ for(const ch of labMonthCharges(state.month)){const ef=effectiveCharge(ch,state.month);if(ef.active){groups[ch.owner]+=ef.amount;count++}}
  const extra={p1:0,p2:0,common:0};let extraCount=0;
  for(const inc of monthIncome()){if(inc.enabled){const parts=bonusParts(inc);extra.p1+=parts.p1;extra.p2+=parts.p2;extra.common+=parts.common;extraCount++}}
- const commonN=s?Math.round(groups.common*n/s):0;const commonA=groups.common-commonN;
+ const commonN=window.EQUI_LAB_TEST&&labModeAt(state.month)==='separate'&&labSplitAt(state.month)==='half'?Math.round(groups.common/2):(s?Math.round(groups.common*n/s):0);const commonA=groups.common-commonN;
  const cn=commonN+groups.p1,ca=commonA+groups.p2;
  const bankN=normalizeBank(state.bankN),bankA=normalizeBank(state.bankA);
  const extraTotal=extra.p1+extra.p2+extra.common;
  const total=groups.common+groups.p1+groups.p2;
+ if(window.EQUI_LAB_TEST&&labModeAt(state.month)==='separate'){
+  let paidN=0,paidA=0;
+  for(const ch of labMonthCharges(state.month)){const amount=effectiveCharge(ch,state.month).amount;if(!amount)continue;
+   const payer=labPayer(ch.id,'separate');if(payer==='p1')paidN+=amount;else if(payer==='p2')paidA+=amount;
+  }
+  const diff=paidN-cn;
+  return {n,a,s,groups,count,commonN,commonA,cn,ca,bankN:'personal',bankA:'personal',extra,extraTotal,extraCount,
+  netN:diff,netA:-diff,disposableN:n-cn+extra.p1,disposableA:a-ca+extra.p2,total,
+  pctN:labSplitAt(state.month)==='half'?0.5:(s?n/s:0),pctA:labSplitAt(state.month)==='half'?0.5:(s?a/s:0),jointKeep:0,totalIncoming:s+extraTotal,jointInitial:0,
+  labPaidN:paidN,labPaidA:paidA};
+ }
+ let personalPaidN=0,personalPaidA=0,jointTotal=0;
+ if(window.EQUI_LAB_TEST)for(const ch of labMonthCharges(state.month)){
+  const amount=effectiveCharge(ch,state.month).amount;if(!amount)continue;
+  const payer=labPayer(ch.id,'joint');
+  if(payer==='p1')personalPaidN+=amount;else if(payer==='p2')personalPaidA+=amount;else jointTotal+=amount;
+ }
  return {n,a,s,groups,count,commonN,commonA,cn,ca,bankN,bankA,extra,extraTotal,extraCount,
- netN:(bankN==='joint'?n:0)-cn+extra.p1,netA:(bankA==='joint'?a:0)-ca+extra.p2,
+ netN:(bankN==='joint'?n:0)-cn+extra.p1+personalPaidN,netA:(bankA==='joint'?a:0)-ca+extra.p2+personalPaidA,
  disposableN:n-cn+extra.p1,disposableA:a-ca+extra.p2,
- total,pctN:s?n/s:0,pctA:s?a/s:0,jointKeep:total+extra.common,totalIncoming:s+extraTotal,
+ total,pctN:s?n/s:0,pctA:s?a/s:0,jointKeep:(window.EQUI_LAB_TEST?jointTotal:total)+extra.common,totalIncoming:s+extraTotal,
  jointInitial:(bankN==='joint'?n:0)+(bankA==='joint'?a:0)+extraTotal};
 }
 
@@ -766,6 +836,8 @@ function renderThemeChart(r){
 }
 
 function renderResults(){
+ if(window.EQUI_LAB_TEST&&labModeAt(state.month)==='separate')return labRenderSeparateResults();
+ if(window.EQUI_LAB_TEST)labUpdateTop();
  const totalResult=compute(),track=movementState(totalResult),r={...totalResult,netN:track.remaining.p1,netA:track.remaining.p2},has=r.s>0;
  by('total-income').textContent=fmt(r.s);
  by('ratio-text').textContent=has?`Personne 1 ${(r.pctN*100).toFixed(1).replace('.',',')} % · Personne 2 ${(r.pctA*100).toFixed(1).replace('.',',')} %`:'Répartition à calculer';
@@ -788,7 +860,7 @@ function renderResults(){
  if(!has){w.className='note warn';w.textContent='Saisissez les salaires pour obtenir immédiatement les virements.'}
  else if(r.disposableN<0||r.disposableA<0){w.className='note danger';w.textContent='Attention : au moins une personne doit contribuer davantage que son salaire et ses revenus complémentaires personnels. Vérifie les charges et la répartition.'}
  else{w.className='note';w.textContent=`Après les virements, le compte joint conserve ${fmt(r.jointKeep)} : ${fmt(r.total)} pour les charges et ${fmt(r.extra.common)} de revenus communs supplémentaires.`}
- for(const group of ['common','p1','p2']){const el=by('g-'+group);if(el)el.textContent=fmt(r.groups[group]);const ct=by('gcount-'+group);if(ct)ct.textContent=String(state.charges.filter(c=>c.owner===group&&effectiveCharge(c,state.month).active).length)}
+ for(const group of ['common','p1','p2']){const el=by('g-'+group);if(el)el.textContent=fmt(r.groups[group]);const ct=by('gcount-'+group);if(ct)ct.textContent=String(labMonthCharges(state.month).filter(c=>c.owner===group&&effectiveCharge(c,state.month).active).length)}
  renderMovements(totalResult);renderThemeChart(r);renderDebtQuick();return r;
 }
 
@@ -862,13 +934,13 @@ function scheduleDescription(ch){const s=ch.schedule||defSchedule();return s.typ
 function renderCharges(){
  const choices=[['common','Charges communes','Au prorata des revenus'],['p1','Charges personnelles Personne 1','À 100 % pour Personne 1'],['p2','Charges personnelles Personne 2','À 100 % pour Personne 2']];
  by('charge-groups').innerHTML=choices.map(([owner,title,subtitle])=>{
-  const charges=state.charges.filter(x=>x.owner===owner);
+  const charges=labMonthCharges(state.month).filter(x=>x.owner===owner);
   return `<div class="group"><div class="group-head"><div><strong><span class="group-glyph" aria-hidden="true">${themeById(state.theme).icons[owner==='common'?2:owner==='p1'?1:3]}</span> ${title}</strong><small>${subtitle} · <span id="gcount-${owner}">0</span> active(s)</small></div><div class="right"><strong id="g-${owner}">—</strong><small>Total retenu</small></div></div>
   ${charges.length?charges.map(ch=>{
    const ef=effectiveCharge(ch,state.month);
-   return `<div class="charge${ef.active?'':' off'}"><label class="switch" title="Activer pour ${esc(labelMonth(state.month))} seulement"><input type="checkbox" data-toggle="${esc(ch.id)}" ${ef.active?'checked':''} aria-label="Activer ${esc(ch.name)} pour ce mois"><span></span></label>
-   <div class="charge-info"><div class="charge-name">${esc(ch.name)}</div><div class="sub"><span class="schedule-badge">◷ ${scheduleDescription(ch)}</span>${ef.overridden?' · Exception ce mois':''}</div>${!ef.active?`<div class="month-note">${esc(ef.reason)}</div>`:''}</div>
-   <input class="amt" type="text" inputmode="decimal" aria-label="Montant ${esc(ch.name)} pour ce mois" data-amount="${esc(ch.id)}" value="${formatInput(ef.amount)}">
+   return `<div class="charge${ef.active?'':' off'}"><label class="switch" title="Activer pour ${esc(labelMonth(state.month))} seulement"><input type="checkbox" data-toggle="${esc(ch.id)}" ${ef.active?'checked':''} ${window.EQUI_LAB_TEST&&labIsClosed(state.month)?"disabled":""} aria-label="Activer ${esc(ch.name)} pour ce mois"><span></span></label>
+   <div class="charge-info"><div class="charge-name">${esc(ch.name)}</div><div class="sub"><span class="schedule-badge">◷ ${scheduleDescription(ch)}</span>${ef.overridden?' · Exception ce mois':''}${window.EQUI_LAB_TEST?' · <span class="schedule-badge">Prélevé sur : '+esc(labPayerLabel(ch.id,labModeAt(state.month)))+'</span>':''}</div>${!ef.active?`<div class="month-note">${esc(ef.reason)}</div>`:''}</div>
+   <input class="amt" type="text" inputmode="decimal" aria-label="Montant ${esc(ch.name)} pour ce mois" data-amount="${esc(ch.id)}" value="${formatInput(ef.amount)}" ${window.EQUI_LAB_TEST&&labIsClosed(state.month)?"disabled":""}>
    ${ef.overridden?`<button type="button" class="charge-reset" data-reset-month="${esc(ch.id)}" aria-label="Annuler l’exception de ce mois pour ${esc(ch.name)}" title="Rétablir la programmation pour ce mois">↺</button>`:''}
    <button class="edit" data-edit="${esc(ch.id)}" aria-label="Programmer ${esc(ch.name)}" title="Modifier l’échéancier">✎</button></div>`}).join(''):'<div class="empty">Aucune charge ici. Utilise « Ajouter ».</div>'}</div>`
  }).join('');
@@ -911,13 +983,34 @@ function scheduleRender(){
  by('schedule-annual-sum').innerHTML=`<span>Total prévu pour ${year}</span><strong>${fmt(total)}</strong>`;
 }
 function openCharge(id=null){
- editingId=id;const ch=state.charges.find(x=>x.id===id);
+ editingId=id;const ch=(window.EQUI_LAB_TEST?labMonthCharges(state.month):state.charges).find(x=>x.id===id);
  chargeDraft=ch?JSON.parse(JSON.stringify(ch)):{id:null,name:'',amount:0,owner:'common',enabled:true,schedule:defSchedule()};
  chargeDraft.schedule=normalizeSchedule(chargeDraft.schedule);
  scheduleYear=Number(state.month.slice(0,4));
  by('dialog-title').textContent=ch?'Modifier et programmer':'Ajouter une charge';
  by('charge-name').value=chargeDraft.name;by('charge-amount').value=ch?formatInput(ch.amount):'';
  by('charge-owner').value=chargeDraft.owner;by('charge-enabled-default').checked=chargeDraft.enabled;
+ if(window.EQUI_LAB_TEST){
+  const current=state.lab.latestMonthSeen,next=labNextMonth(current),scope=by('lab-charge-effective');
+  scope.options[0].textContent='Mois en cours ('+labelMonth(current)+')';
+  scope.options[1].textContent='Mois suivant ('+labelMonth(next)+')';
+  scope.value=state.month===next?'next':'current';
+  scope.disabled=labIsClosed(state.month)||state.month>next;
+  const refresh=()=>{
+   const from=scope.value==='next'?next:current,mode=labModeAt(from);
+   by('lab-charge-payer-joint').value=ch?labPayer(ch.id,'joint',from):'joint';
+   by('lab-charge-payer-separate').value=ch?labPayer(ch.id,'separate',from):'';
+   by('lab-charge-joint-wrap').classList.toggle('lab-payer-active',mode==='joint');
+   by('lab-charge-separate-wrap').classList.toggle('lab-payer-active',mode==='separate');
+   by('lab-charge-payer-help').textContent=labChangeError(from)||('Comptes choisis pour '+labelMonth(from)+'. Les périodes antérieures sont préservées.');
+  };
+  scope.onchange=refresh;refresh();
+  const readOnly=labIsClosed(state.month);
+  by('charge-form').querySelectorAll('input,select,button[type="submit"],#delete-charge').forEach(el=>el.disabled=readOnly);
+  by('lab-charge-payer-help').classList.toggle('lab-historical-readonly',readOnly);
+  if(readOnly)by('lab-charge-payer-help').textContent='CONSULTATION SEULEMENT : mois précédent ou clôturé. Aucune modification autorisée.';
+ }
+
  by('schedule-type').value=chargeDraft.schedule.type;by('schedule-start').value=chargeDraft.schedule.start;
  by('schedule-end').value=chargeDraft.schedule.end;by('schedule-anchor').value=chargeDraft.schedule.anchor;
  by('delete-charge').classList.toggle('hidden',!ch);
@@ -930,11 +1023,27 @@ function processCharge(ev){
  if(!/^\d+(?:[.,]\d{1,2})?$/.test(raw.replace(/\s/g,''))||chargeDraft.amount>100000000){toast('Indique un montant habituel valide (0 € autorisé).');return}
  if(chargeDraft.schedule.start&&chargeDraft.schedule.end&&chargeDraft.schedule.start>chargeDraft.schedule.end){toast('La date de fin doit être après la date de début.');return}
  if(chargeDraft.schedule.type==='ten'&&!chargeDraft.schedule.months.length){toast('Choisis au moins un mois pour cette charge.');return}
- if(editingId){const i=state.charges.findIndex(x=>x.id===editingId);if(i<0)return;state.charges[i]=JSON.parse(JSON.stringify(chargeDraft))}
- else{chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.charges.push(JSON.parse(JSON.stringify(chargeDraft)))}
- persist();closeCharge();renderCharges();toast('Échéancier enregistré');
+ if(window.EQUI_LAB_TEST){
+  const current=state.lab.latestMonthSeen,next=labNextMonth(current),from=by('lab-charge-effective').value==='next'?next:current;
+  if(state.month<current||state.month>next||labIsClosed(state.month)){toast('Modification impossible : mois antérieur ou clôturé.');return}
+  const existing=editingId?state.charges.find(x=>x.id===editingId):null;
+  const financialChange=!existing||JSON.stringify({...existing,schedule:normalizeSchedule(existing.schedule)})!==JSON.stringify({...chargeDraft,schedule:normalizeSchedule(chargeDraft.schedule)});
+  if(financialChange&&(state.month!==current||labChangeError(current))){toast('Les réglages financiers ne peuvent changer que pour un mois courant non validé.');return}
+  const error=labChangeError(from);if(error){toast(error);return}
+  const joint=by('lab-charge-payer-joint').value,personal=by('lab-charge-payer-separate').value;
+  if(labModeAt(from)==='separate'&&!['p1','p2'].includes(personal)){toast('Choisis un compte personnel payeur pour '+labelMonth(from)+'.');return}
+  if(!['joint','p1','p2'].includes(joint)||!['','p1','p2'].includes(personal)){toast('Compte de prélèvement invalide.');return}
+  if(editingId){const i=state.charges.findIndex(x=>x.id===editingId);if(i<0)return;state.charges[i]=JSON.parse(JSON.stringify(chargeDraft))}
+  else{chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.charges.push(JSON.parse(JSON.stringify(chargeDraft)))}
+  for(const [mode,value] of [['joint',joint],['separate',personal]])if(labPayer(chargeDraft.id,mode,from)!==value)labSetPayer(chargeDraft.id,mode,from,value);
+ }else{
+  if(editingId){const i=state.charges.findIndex(x=>x.id===editingId);if(i<0)return;state.charges[i]=JSON.parse(JSON.stringify(chargeDraft))}
+  else{chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.charges.push(JSON.parse(JSON.stringify(chargeDraft)))}
+ }
+
+ persist();closeCharge();renderCharges();toast('Charge et comptes de prélèvement enregistrés');
 }
-function deleteCharge(){const c=state.charges.find(x=>x.id===editingId);if(!c)return;if(!confirm(`Supprimer « ${c.name} » et tout son échéancier ?`))return;state.charges=state.charges.filter(x=>x.id!==editingId);persist();closeCharge();renderCharges();toast('Charge supprimée')}
+function deleteCharge(){const c=state.charges.find(x=>x.id===editingId);if(!c)return;if(window.EQUI_LAB_TEST&&(state.month!==state.lab.latestMonthSeen||labChangeError(state.month))){toast('Suppression interdite sur un mois antérieur, clôturé ou validé.');return}if(!confirm(`Supprimer « ${c.name} » et tout son échéancier ?`))return;state.charges=state.charges.filter(x=>x.id!==editingId);if(window.EQUI_LAB_TEST){delete state.lab.payers[editingId];delete state.lab.jointPayers[editingId];delete state.lab.payerChanges.joint[editingId];delete state.lab.payerChanges.separate[editingId];}persist();closeCharge();renderCharges();toast('Charge supprimée')}
 
 function transferSentence(person,net){return net>0?`Compte joint → ${person} : ${fmt(net)}`:net<0?`${person} → Compte joint : ${fmt(-net)}`:`${person} : aucun virement`}
 function resultText(r){
@@ -955,10 +1064,27 @@ Solde cible du compte joint après transferts : ${fmt(r.jointKeep)} (${fmt(r.tot
 }
 
 async function copyResult(){const r=compute(),m=movementState(r);const t=withNames(resultText({...r,netN:m.remaining.p1,netA:m.remaining.p2}));try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(t);else{const e=document.createElement('textarea');e.value=t;e.style.position='fixed';e.style.left='-99999px';document.body.append(e);e.select();if(!document.execCommand('copy'))throw Error('Copie impossible');e.remove()}toast('Récapitulatif copié !')}catch(e){toast('Copie indisponible : utilise une sauvegarde ou une capture d’écran.')}}
-function saveMonth(){const r=compute();if(!r.s){toast('Saisis les salaires avant d’enregistrer.');return}const previous=state.history.findIndex(x=>x.month===state.month);if(previous>=0&&!confirm(`Un calcul de ${labelMonth(state.month)} existe déjà. Le remplacer ?`))return;const snapshot={month:state.month,savedAt:new Date().toISOString(),result:{...r},charges:JSON.parse(JSON.stringify(state.charges)),resolvedCharges:state.charges.map(ch=>({id:ch.id,name:ch.name,owner:ch.owner,amount:effectiveCharge(ch,state.month).amount})),additionalIncome:monthIncome().map(x=>({...x}))};if(previous>=0)state.history.splice(previous,1);state.history.push(snapshot);state.history.sort((a,b)=>b.month.localeCompare(a.month));persist();toast(`${labelMonth(state.month)} enregistré`)}
-function renderHistory(){by('history-list').innerHTML=state.history.length?state.history.map(x=>{const r=x.result;return `<article class="archive"><div class="archive-head"><h3>${esc(labelMonth(x.month))}</h3><span class="pill">${fmt(Number(r.total)||0)} de charges</span></div><p>Salaires : ${fmt(Number(r.s)||0)} · Prorata Personne 1 : ${((Number(r.pctN)||0)*100).toFixed(1).replace('.',',')} %</p><p>Répartition enregistrée (figée), indépendante des modifications ultérieures. Comptes des salaires : Personne 1 ${r.bankN==='personal'?'personnel':'joint'}, Personne 2 ${r.bankA==='personal'?'personnel':'joint'}.</p>${(Number(r.extraTotal)||0)>0?`<p>Revenus complémentaires : ${fmt(r.extraTotal)} (dont ${fmt(Number(r.extra?.common)||0)} gardés sur le compte joint)</p>`:''}<div class="two"><div><small>Compte Personne 1</small><strong>${fmt(Math.abs(Number(r.netN)||0))}</strong><small>${r.netN<0?'À apporter':'À virer'}</small></div><div><small>Compte Personne 2</small><strong>${fmt(Math.abs(Number(r.netA)||0))}</strong><small>${r.netA<0?'À apporter':'À virer'}</small></div></div><div class="buttons"><button class="btn tiny" data-restore="${esc(x.month)}">Charger le mois</button><button class="btn tiny danger" data-remove-month="${esc(x.month)}">Supprimer</button></div></article>`}).join(''):'<div class="empty">Aucun mois enregistré pour l’instant. Dans « Calcul », touche « Enregistrer ce mois » pour conserver le résultat.</div>'}
+function saveMonth(){if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){toast('Mois clôturé : impossible de remplacer les archives.');return}const r=compute();if(!r.s){toast('Saisis les salaires avant d’enregistrer.');return}const previous=state.history.findIndex(x=>x.month===state.month);if(previous>=0&&!confirm(`Un calcul de ${labelMonth(state.month)} existe déjà. Le remplacer ?`))return;const snapshot={month:state.month,savedAt:new Date().toISOString(),result:{...r,...(window.EQUI_LAB_TEST?{labMode:labModeAt(state.month),labSplit:labSplitAt(state.month)}:{})},charges:JSON.parse(JSON.stringify(state.charges)),resolvedCharges:state.charges.map(ch=>({id:ch.id,name:ch.name,owner:ch.owner,amount:effectiveCharge(ch,state.month).amount})),additionalIncome:monthIncome().map(x=>({...x}))};if(previous>=0)state.history.splice(previous,1);state.history.push(snapshot);state.history.sort((a,b)=>b.month.localeCompare(a.month));if(window.EQUI_LAB_TEST)labFreezeMonth(state.month);persist();toast(`${labelMonth(state.month)} enregistré`)}
+function renderHistory(){
+ by('history-list').innerHTML=state.history.length?state.history.map(x=>{
+  const r=x.result,mode=r.labMode||(window.EQUI_LAB_TEST?labModeAt(x.month):'joint');
+  const ratio=mode==='separate'?(r.labSplit||labSplitAt(x.month)):'prorata';
+  const bonus=Number(r.extraTotal)||0;
+  const movement=mode==='separate'
+   ?'<p><strong>Virement initial entre comptes personnels : '+(r.netN>0?esc(personName('p2'))+' → '+esc(personName('p1')):r.netN<0?esc(personName('p1'))+' → '+esc(personName('p2')):'Aucun virement')+' · '+fmt(Math.abs(Number(r.netN)||0))+'</strong></p>'
+   :'<div class="two"><div><small>Compte Personne 1</small><strong>'+fmt(Math.abs(Number(r.netN)||0))+'</strong><small>'+(r.netN<0?'À apporter':'À virer')+'</small></div><div><small>Compte Personne 2</small><strong>'+fmt(Math.abs(Number(r.netA)||0))+'</strong><small>'+(r.netA<0?'À apporter':'À virer')+'</small></div></div>';
+  return '<article class="archive"><div class="archive-head"><h3>'+esc(labelMonth(x.month))+'</h3><span class="pill">'+fmt(Number(r.total)||0)+' de charges</span></div>'+
+   '<p><strong>'+esc(labModeName(mode))+'</strong> · répartition '+(ratio==='half'?'50/50':'au prorata')+'</p>'+
+   '<p>Salaires cumulés : '+fmt(Number(r.s)||0)+' · part Personne 1 : '+((Number(r.pctN)||0)*100).toFixed(1).replace('.',',')+' %</p>'+
+   '<p>Données de ce mois conservées : les changements ultérieurs ne modifient pas ce résultat.</p>'+
+   (bonus?'<p>Revenus complémentaires : '+fmt(bonus)+(mode==='separate'?' (suivis séparément de la compensation)':'')+'</p>':'')+
+   movement+
+   '<div class="buttons"><button class="btn tiny" data-restore="'+esc(x.month)+'">'+(window.EQUI_LAB_TEST?'Consulter le mois':'Charger le mois')+'</button><button class="btn tiny danger" data-remove-month="'+esc(x.month)+'">Supprimer</button></div></article>';
+ }).join(''):'<div class="empty">Aucun mois archivé pour l’instant. Enregistre un mois ou simule le passage au mois suivant.</div>';
+}
 function restoreMonth(month){
- const x=state.history.find(x=>x.month===month);if(!x)return;if(state.additionalIncome.some(i=>i.month===month&&Object.values(i.paid||{}).some(Boolean))){toast('Ce mois contient des bonus confirmés. Annule leurs confirmations avant de recharger une archive.');return}
+ const x=state.history.find(x=>x.month===month);if(!x)return;
+ if(window.EQUI_LAB_TEST){switchMonth(month);setTab('calcul');toast('Archive affichée en lecture seule, sans modifier ses données.');return}if(state.additionalIncome.some(i=>i.month===month&&Object.values(i.paid||{}).some(Boolean))){toast('Ce mois contient des bonus confirmés. Annule leurs confirmations avant de recharger une archive.');return}
  if(!confirm(`Aller en ${labelMonth(month)} et rétablir les salaires et revenus complémentaires archivés ? Les échéanciers actuels ne seront pas remplacés. Le résultat original restera visible dans l’historique.`))return;
  state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};
  state.month=x.month;state.salaryN=formatInput(Number(x.result.n)||0);state.salaryA=formatInput(Number(x.result.a)||0);state.bankN=normalizeBank(x.result.bankN);state.bankA=normalizeBank(x.result.bankA);
@@ -1070,21 +1196,22 @@ by('expense-list').addEventListener('click',e=>{const b=e.target.closest('button
 by('settle-debts').addEventListener('click',settleDebts);by('settlement-list').addEventListener('click',e=>{const b=e.target.closest('button[data-undo-settlement]');if(b)undoSettlement(b.dataset.undoSettlement)});
 resetExpenseForm();
 
-for(const t of document.querySelectorAll('.tab'))t.addEventListener('click',()=>setTab(t.dataset.tab));by('go-charges').addEventListener('click',()=>setTab('charges'));by('go-calcul').addEventListener('click',()=>setTab('calcul'));by('month').addEventListener('change',e=>switchMonth(e.target.value));for(const [id,key] of [['salary-p1','salaryN'],['salary-p2','salaryA']]){by(id).value=state[key];by(id).addEventListener('input',e=>{state[key]=e.target.value;state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});by(id).addEventListener('blur',e=>{if(e.target.value.trim()){state[key]=formatInput(parseMoney(e.target.value));e.target.value=state[key];state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()}})}
+for(const t of document.querySelectorAll('.tab'))t.addEventListener('click',()=>setTab(t.dataset.tab));by('go-charges').addEventListener('click',()=>setTab('charges'));by('go-calcul').addEventListener('click',()=>setTab('calcul'));by('month').addEventListener('change',e=>switchMonth(e.target.value));for(const [id,key] of [['salary-p1','salaryN'],['salary-p2','salaryA']]){by(id).value=state[key];by(id).addEventListener('input',e=>{if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){e.target.value=state[key];toast('Mois historique en lecture seule');return}state[key]=e.target.value;state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});by(id).addEventListener('blur',e=>{if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){e.target.value=state[key];return}if(e.target.value.trim()){state[key]=formatInput(parseMoney(e.target.value));e.target.value=state[key];state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()}})}
 for(const [id,key] of [['salary-bank-p1','bankN'],['salary-bank-p2','bankA']]){
  by(id).value=normalizeBank(state[key]);
- by(id).addEventListener('change',e=>{state[key]=normalizeBank(e.target.value);state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});
+ by(id).addEventListener('change',e=>{if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){e.target.value=state[key];toast('Mois historique en lecture seule');return}state[key]=normalizeBank(e.target.value);state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});
 }
 by('charge-groups').addEventListener('change',e=>{
  const toggle=e.target.dataset.toggle,amt=e.target.dataset.amount;
  const ch=state.charges.find(x=>x.id===(toggle||amt));if(!ch)return;
+ if(window.EQUI_LAB_TEST&&labChangeError(state.month)){toast(labChangeError(state.month));renderCharges();return}
  ch.schedule=normalizeSchedule(ch.schedule);
  if(toggle){ch.schedule.overrides[state.month]=e.target.checked?{enabled:true,amount:Math.max(effectiveCharge(ch,state.month).amount,ch.amount)}:{enabled:false};}
  if(amt){const v=e.target.value.trim().replace(/\s/g,'');if(!/^\d+(?:[.,]\d{1,2})?$/.test(v)){toast('Montant invalide');renderCharges();return}ch.schedule.overrides[state.month]={amount:parseMoney(v),enabled:parseMoney(v)>0}}
  persist();renderCharges();
 });
 by('charge-groups').addEventListener('click',e=>{
- const reset=e.target.closest('[data-reset-month]');if(reset){const ch=state.charges.find(x=>x.id===reset.dataset.resetMonth);if(ch){delete ch.schedule.overrides[state.month];persist();renderCharges();toast('Programmation rétablie pour ce mois')}return}
+ const reset=e.target.closest('[data-reset-month]');if(reset){if(window.EQUI_LAB_TEST&&labChangeError(state.month)){toast(labChangeError(state.month));return}const ch=state.charges.find(x=>x.id===reset.dataset.resetMonth);if(ch){delete ch.schedule.overrides[state.month];persist();renderCharges();toast('Programmation rétablie pour ce mois')}return}
  const b=e.target.closest('[data-edit]');if(b)openCharge(b.dataset.edit);
 });
 by('annual-months').addEventListener('click',e=>{const b=e.target.closest('[data-annual-month]');if(b){switchMonth(b.dataset.annualMonth);renderCharges()}});
@@ -1275,6 +1402,7 @@ function betaReplace(remote){
  const x=seed();x.month=currentMonth;x.theme=localTheme;
  x.settings=remote.settings?.main?.settings||x.settings;
  x.incomeTemplates=remote.settings?.main?.incomeTemplates||x.incomeTemplates;
+ x.lab=remote.settings?.['v9-banking']?.lab||x.lab;
  x.monthlySalaries={...x.monthlySalaries,...(remote.months||{})};
  x.charges=Object.values(remote.charges||{});
  x.additionalIncome=Object.values(remote.incomes||{});
@@ -1288,6 +1416,8 @@ let betaRenderTimer=null;
 function betaPatch(group,id,data){
  if(group==='settings'&&id==='main'){
   if(data){state.settings={...state.settings,...data.settings};state.incomeTemplates=data.incomeTemplates||[]}
+ }else if(group==='settings'&&id==='v9-banking'){
+  if(data?.lab)state.lab={...state.lab,...data.lab};
  }else if(group==='months'){
   if(data)state.monthlySalaries[id]=data;else delete state.monthlySalaries[id];
  }else{
@@ -1332,6 +1462,7 @@ document.querySelectorAll('[data-v82-action]').forEach(button=>button.onclick=()
  if(action==='backups'){v82Open('v82-backups');v82RenderBackups();}
  if(action==='help')v82Open('v82-help');
  if(action==='share'){v82RenderShare();v82Open('v82-share');}
+ if(action==='banking'){labRenderBanking();v82Open('lab-banking');}
 });
 
 // QR intégré hors ligne : matrice version 4 (33×33), marge blanche de 4 modules sur chaque bord.
@@ -1496,9 +1627,9 @@ window.EquiBetaBridge.clearBackups=async(uid,hid)=>{
   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
  });
 };
-setTimeout(()=>v82Snapshot(),2500);
-setInterval(()=>{if(!document.hidden)v82Snapshot();},60000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)v82Snapshot();});
+if(!window.EQUI_LAB_TEST)setTimeout(()=>v82Snapshot(),2500);
+if(!window.EQUI_LAB_TEST)setInterval(()=>{if(!document.hidden)v82Snapshot();},60000);
+if(!window.EQUI_LAB_TEST)document.addEventListener('visibilitychange',()=>{if(!document.hidden)v82Snapshot();});
 if(v82Demo){
  by('beta-gate').hidden=true;
  by('beta-sync-indicator').textContent='● Démonstration locale · aucune synchronisation Firebase';
@@ -1506,6 +1637,270 @@ if(v82Demo){
  by('v8-home-label').textContent='Camille et Alex';by('v8-home-label').hidden=false;by('v8-info-home-empty').hidden=true;
  ['beta-account-button','v8-delete-account-open'].forEach(id=>by(id).onclick=()=>toast('Fonction de compte disponible dans la version connectée.'));
 }
+
+
+/* ================= LAB Multimode V8.3 : données fictives, aucune connexion Firebase ================= */
+const labToday=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const labNextMonth=(m)=>{const [y,mo]=m.split('-').map(Number);const d=new Date(y,mo,1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')};
+const labModeName=m=>m==='separate'?'Deux comptes personnels':'Compte joint + deux comptes personnels';
+if(!state.lab){
+ const day=labToday();
+ state.lab={initial:'joint',transitions:[],pending:null,payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},
+  clock:day,latestMonthSeen:monthNow(),paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}};
+ persist();
+}
+if(!Array.isArray(state.lab.transitions))state.lab.transitions=[];
+if(!state.lab.payers)state.lab.payers={};if(!state.lab.paid)state.lab.paid={};
+if(!state.lab.jointPayers||typeof state.lab.jointPayers!=='object')state.lab.jointPayers={};
+if(!state.lab.payerChanges)state.lab.payerChanges={joint:{},separate:{}};
+if(!state.lab.payerChanges.joint)state.lab.payerChanges.joint={};
+if(!state.lab.payerChanges.separate)state.lab.payerChanges.separate={};
+if(!Array.isArray(state.lab.splitChanges))state.lab.splitChanges=[];
+if(!state.lab.frozen)state.lab.frozen={};
+if(!/^\d{4}-\d{2}$/.test(state.lab.latestMonthSeen||''))state.lab.latestMonthSeen=state.lab.clock.slice(0,7);
+if(state.lab.pending?.payers){for(const [id,v] of Object.entries(state.lab.pending.payers))if(v==='p1'||v==='p2')state.lab.payers[id]=v;delete state.lab.pending.payers;persist();}
+function labModeAt(month){
+ let mode=state.lab?.initial||'joint';
+ for(const t of state.lab?.transitions||[])if(t.effective<=month)mode=t.to;
+ return mode;
+}
+function labPayer(id,mode,month=state.month){
+ const archive=labFrozenAt(month);
+ if(archive&&archive.mode===mode&&Object.prototype.hasOwnProperty.call(archive.payers||{},id))return archive.payers[id];
+ let v=mode==='joint'
+  ?(['joint','p1','p2'].includes(state.lab.jointPayers[id])?state.lab.jointPayers[id]:'joint')
+  :(['p1','p2'].includes(state.lab.payers[id])?state.lab.payers[id]:'');
+ for(const row of [...(state.lab.payerChanges?.[mode]?.[id]||[])].sort((a,b)=>a.from.localeCompare(b.from)))
+  if(row.from<=month)v=row.value;
+ return v;
+}
+function labPayerLabel(id,mode,month=state.month){const p=labPayer(id,mode,month);return p==='joint'?'Compte joint':p==='p1'?personName('p1'):p==='p2'?personName('p2'):'À définir'}
+function labSplitAt(month=state.month){
+ let v=state.lab.split==='half'?'half':'prorata';
+ for(const row of [...state.lab.splitChanges].sort((a,b)=>a.from.localeCompare(b.from)))
+  if(row.from<=month)v=row.value;
+ return v;
+}
+function labFrozenAt(month=state.month){return state.lab.frozen?.[month]||null}
+function labIsClosed(month){return month<state.lab.latestMonthSeen||state.history.some(x=>x.month===month)||!!labFrozenAt(month)}
+function labHasConfirmedMovement(month){
+ const m=state.monthlySalaries[month]||{};
+ return !!(m.moveN||m.moveA||state.lab.paid?.[month]);
+}
+function labChangeError(month){
+ if(month<state.lab.latestMonthSeen)return 'Les mois précédents sont protégés : modification interdite.';
+ if(labIsClosed(month))return 'Ce mois est enregistré et clôturé : modification interdite.';
+ if(labHasConfirmedMovement(month))return 'Un mouvement est déjà validé sur ce mois. Annule sa validation avant de modifier le compte payeur ou la répartition.';
+ return '';
+}
+function labSetPayer(id,mode,from,value){
+ const error=labChangeError(from);if(error)return error;
+ if(!['joint','separate'].includes(mode))return 'Mode bancaire inconnu.';
+ if(!(mode==='joint'?['joint','p1','p2']:['p1','p2','']).includes(value))return 'Compte payeur incorrect.';
+ const timeline=state.lab.payerChanges[mode],rows=timeline[id]||[];
+ timeline[id]=[...rows.filter(x=>x.from!==from),{from,value}].sort((a,b)=>a.from.localeCompare(b.from));
+ return '';
+}
+function labSetSplit(from,value){
+ const error=labChangeError(from);if(error)return error;
+ if(!['prorata','half'].includes(value))return 'Répartition incorrecte.';
+ state.lab.splitChanges=[...state.lab.splitChanges.filter(x=>x.from!==from),{from,value}].sort((a,b)=>a.from.localeCompare(b.from));
+ return '';
+}
+function labUnconfigured(mode,month=state.month){
+ return mode==='separate'?state.charges.filter(ch=>ch.enabled!==false&&!labPayer(ch.id,mode,month)):[];
+}
+function labMonthCharges(month=state.month){return labFrozenAt(month)?.charges||state.charges}
+function labFreezeMonth(month){
+ if(labFrozenAt(month))return;
+ const original=state.month;
+ if(original!==month)switchMonth(month);
+ const result=compute();
+ state.lab.frozen[month]={
+  mode:labModeAt(month),split:labSplitAt(month),charges:JSON.parse(JSON.stringify(state.charges)),
+  payers:Object.fromEntries(state.charges.map(ch=>[ch.id,labPayer(ch.id,labModeAt(month),month)])),
+  result:JSON.parse(JSON.stringify(result)),savedAt:new Date().toISOString()
+ };
+ if(!state.history.some(x=>x.month===month)){
+  state.history.push({month,savedAt:new Date().toISOString(),result:{...result,labMode:labModeAt(month)},charges:JSON.parse(JSON.stringify(state.charges)),additionalIncome:monthIncome().map(x=>({...x}))});
+  state.history.sort((a,b)=>b.month.localeCompare(a.month));
+ }
+ if(original!==month)switchMonth(original);
+}
+function labUpdateTop(){
+ if(!window.EQUI_LAB_TEST)return;
+ const e=by('lab-banner');if(!e)return;
+ const mode=labModeAt(state.month),p=state.lab?.pending;
+ let corrected=false;
+ for(const key of ['p1','p2']){const el=by('salary-bank-'+key);if(!el)continue;
+  const joint=el.querySelector('option[value="joint"]');if(joint)joint.disabled=(mode==='separate');
+  if(mode==='separate'&&el.value==='joint'){
+   el.value='personal';const prop=key==='p1'?'bankN':'bankA';state[prop]='personal';
+   if(state.monthlySalaries[state.month])state.monthlySalaries[state.month][prop]='personal';corrected=true;
+  }
+ }
+ if(corrected)persist();
+ e.innerHTML='<strong>MODE DÉMONSTRATION · '+esc(labModeName(mode))+'</strong>'+
+ 'Application V8.3 d’origine, avec fonctionnement bancaire expérimental. Données fictives exclusivement. '+
+ (p?'<div style="margin-top:6px">Transition vers '+esc(labModeName(p.to))+' programmée au '+esc(p.effective)+' (simulation).</div>':'')+
+ '<button type="button" class="btn tiny secondary" data-lab-open style="margin-top:8px">Configurer les comptes</button>';
+}
+function labRemainder(){const c=compute();return c.netN-(Number(state.lab.paid[state.month])||0)}
+function labRenderSeparateResults(){
+ const r=compute(),has=r.s>0,remaining=labRemainder(),from=remaining>0?'p2':'p1',to=remaining>0?'p1':'p2',n=state.settings.nameN,a=state.settings.nameA;
+ labUpdateTop();
+ by('total-income').textContent=fmt(r.s);
+ by('ratio-text').textContent=has?'Répartition des dépenses : '+(100*r.pctN).toFixed(1).replace('.',',')+' % / '+(100*r.pctA).toFixed(1).replace('.',',')+' %':'Renseigner les deux salaires';
+ by('period-label').textContent=labelMonth(state.month);by('month').value=state.month;
+ by('percent-n').textContent=has?(r.pctN*100).toFixed(1).replace('.',',')+' %':'—';
+ by('percent-a').textContent=has?(r.pctA*100).toFixed(1).replace('.',',')+' %':'—';
+ by('split-n').style.width=(has?r.pctN*100:50)+'%';
+ by('transfer-p1').textContent=has?fmt(Math.abs(remaining)):'—';
+ by('transfer-p2').textContent='0,00 €';
+ by('transfer-p1-name').textContent=!has?'Renseigner les salaires':!remaining?'Comptes équilibrés':personName(from)+' → '+personName(to);
+ by('transfer-p1-label').textContent='Compensation nette entre les comptes personnels';
+ by('transfer-p2-name').textContent='Virement unique';
+ by('transfer-p2-label').textContent='Les deux comptes se compensent en une opération';
+ by('contrib-p1').textContent=has?fmt(r.cn):'—';by('contrib-p2').textContent=has?fmt(r.ca):'—';
+ by('common-total').textContent=fmt(r.groups.common);by('personal-n-total').textContent=fmt(r.groups.p1);by('personal-a-total').textContent=fmt(r.groups.p2);by('all-total').textContent=fmt(r.total);
+ by('count-selected').textContent=r.count+' charge(s) retenue(s)';
+ by('credit-p1').textContent=fmt(r.extra.p1);by('credit-p2').textContent=fmt(r.extra.p2);by('credit-common').textContent=fmt(r.extra.common);
+ by('income-impact').classList.toggle('hidden',!r.extraCount);
+ const w=by('warning');w.className='note';w.textContent='Mode sans compte joint : le virement de compensation concerne uniquement les charges. Les revenus complémentaires restent indépendants et sont suivis séparément.';
+ for(const group of ['common','p1','p2']){const el=by('g-'+group);if(el)el.textContent=fmt(r.groups[group]);const ct=by('gcount-'+group);if(ct)ct.textContent=String(labMonthCharges(state.month).filter(c=>c.owner===group&&effectiveCharge(c,state.month).active).length)}
+ by('monthly-movements').innerHTML='<h3>Virement de compensation</h3><p class="note">Total payé : '+esc(personName('p1'))+' '+fmt(r.labPaidN)+' · '+esc(personName('p2'))+' '+fmt(r.labPaidA)+'. Parts dues : '+fmt(r.cn)+' et '+fmt(r.ca)+'.</p>'+
+ (remaining?'<div class="action-strip"><strong>'+esc(personName(from))+' → '+esc(personName(to))+' : '+fmt(Math.abs(remaining))+'</strong><button class="btn secondary tiny" data-lab-settle '+(labUnconfigured('separate').length?'disabled title="Complète les comptes de prélèvement"':'')+'>Marquer effectué</button></div>':'<p class="note">Aucun virement restant à effectuer.</p>')+
+ (state.lab.paid[state.month]?'<button class="btn tiny" data-lab-undo>Annuler la validation</button>':'');
+ renderThemeChart(r);renderDebtQuick();
+ return r;
+}
+function labReasons(){
+ const out=[];const debts=debtState().pending;
+ if(debts.length)out.push(debts.length+' avance(s) ou remboursement(s) non clôturé(s)');
+ const mode=labModeAt(state.month);
+ if(mode==='joint'){
+  const r=compute(),m=movementState(r);
+  for(const who of ['p1','p2'])if(m.base[who]-m.done[who]!==0)out.push('Virement initial de '+personName(who)+' non validé');
+  for(const inc of monthIncome())if(inc.enabled){const parts=bonusParts(inc);for(const [who,amount] of Object.entries(parts))if(amount&&!inc.paid?.[who])out.push('Revenu complémentaire « '+inc.name+' » non confirmé');}
+ }else{
+  if(labUnconfigured('separate').length)out.push('Comptes de prélèvement incomplets dans les charges');
+  if(labRemainder()!==0)out.push('Virement de compensation mensuel non confirmé');
+  for(const inc of monthIncome())if(inc.enabled){const parts=bonusParts(inc);for(const [who,amount] of Object.entries(parts))if(amount&&!inc.paid?.[who])out.push('Revenu complémentaire « '+inc.name+' » non confirmé');}
+ }
+ return out;
+}
+function labSchedule(){
+ const clockMonth=state.lab.clock.slice(0,7),mode=labModeAt(clockMonth);
+ if(state.month!==clockMonth){toast('Sélectionne le mois courant de la simulation avant de programmer');return}
+ const reasons=labReasons();if(reasons.length){toast('Régularise les mouvements avant de programmer');labRenderBanking();return}
+ const to=mode==='joint'?'separate':'joint',missing=labUnconfigured(to,labNextMonth(clockMonth));
+ if(missing.length){toast('Les comptes payeurs doivent être renseignés dans les fiches de charges.');labRenderBanking();return}
+ state.lab.pending={from:clockMonth,effective:labNextMonth(clockMonth),to};
+ state.lab.blocked='';persist();labRenderBanking();renderResults();toast('Changement programmé pour le premier du mois suivant');
+}
+function labApplyClock(){
+ const p=state.lab.pending;
+ if(!p||state.lab.clock.slice(0,7)<p.effective)return;
+ const selected=state.month;
+ if(state.month!==p.from)switchMonth(p.from);
+ const blockers=labReasons(),missing=labUnconfigured(p.to,p.effective);
+ if(missing.length)blockers.push(missing.length+' charge(s) sans compte payeur pour le nouveau mode');
+ if(blockers.length){state.lab.blocked=blockers.join(' · ');if(state.month!==selected)switchMonth(selected);persist();return}
+ if(!state.history.some(x=>x.month===p.from)){
+  const frozen=labFrozenAt(p.from),oldResult=frozen?.result||compute();
+  state.history.push({month:p.from,savedAt:new Date().toISOString(),result:{...oldResult,labMode:labModeAt(p.from)},charges:JSON.parse(JSON.stringify(frozen?.charges||state.charges)),additionalIncome:monthIncome().map(x=>({...x}))});
+ }
+ state.lab.transitions.push({effective:p.effective,to:p.to});
+ state.settings.bankN=p.to==='separate'?'personal':'joint';state.settings.bankA=p.to==='separate'?'personal':'joint';
+ state.lab.pending=null;state.lab.blocked='';
+ if(state.month!==selected)switchMonth(selected);
+ persist();
+}
+function labClockChange(value){
+ if(!/^\d{4}-(0[1-9]|1[0-2])-[0-3]\d$/.test(value)){toast('Date non valide');return}
+ const prev=state.lab.latestMonthSeen,next=value.slice(0,7);
+ if(next>prev){
+  const selected=state.month;
+  if(state.month!==prev)switchMonth(prev);
+  const blockers=labReasons(),pending=state.lab.pending;
+  if(pending&&next>=pending.effective)blockers.push(...labUnconfigured(pending.to,pending.effective).map(ch=>'Compte payeur à renseigner : '+ch.name));
+  if(blockers.length){
+   state.lab.blocked=blockers.join(' · ');
+   if(state.month!==selected)switchMonth(selected);
+   persist();labRenderBanking();toast('Clôture refusée : régularise les mouvements affichés dans le menu bancaire.');return;
+  }
+  labFreezeMonth(prev);state.lab.latestMonthSeen=next;
+ }
+ state.lab.clock=value;labApplyClock();
+ const month=value.slice(0,7);if(month!==state.month)switchMonth(month);
+ persist();labRenderBanking();renderCharges();renderHistory();toast('Horloge de simulation mise à jour');
+}
+function labRenderBanking(){
+ const root=by('lab-bank-content'),clockMonth=state.lab.clock.slice(0,7),mode=labModeAt(clockMonth),to=mode==='joint'?'separate':'joint',p=state.lab.pending;
+ const next=labNextMonth(clockMonth);
+ if(!state.lab.configured){
+  root.innerHTML='<div class="lab-hint"><strong>Bienvenue dans le laboratoire Multimode</strong><br>Voici la véritable interface V8.3 avec un foyer fictif, sans aucune connexion à votre Firebase. Choisissez votre premier fonctionnement bancaire ; vous pourrez ensuite programmer un changement.</div>'+
+  '<label class="lab-choice"><input type="radio" name="lab-first-mode" value="joint" checked> 2 comptes personnels + 1 compte joint</label>'+
+  '<label class="lab-choice"><input type="radio" name="lab-first-mode" value="separate"> 2 comptes personnels sans compte joint</label>'+
+  '<p class="note">Des salaires et cinq charges fictives sont préremplis. Vous pourrez les modifier dans les écrans habituels.</p>'+
+  '<button id="lab-start" class="btn primary" type="button">Créer le foyer de démonstration</button>';
+  by('lab-start').onclick=()=>{
+   state.lab.initial=by('lab-bank-content').querySelector('input[name="lab-first-mode"]:checked').value;
+   if(state.lab.initial==='separate'){state.settings.bankN='personal';state.settings.bankA='personal';state.bankN='personal';state.bankA='personal';state.monthlySalaries[state.month].bankN='personal';state.monthlySalaries[state.month].bankA='personal';}
+   state.lab.configured=true;persist();labRenderBanking();renderCharges();toast('Foyer fictif créé — '+labModeName(state.lab.initial));
+  };
+  return;
+ }
+ const missing=labUnconfigured(to,labNextMonth(clockMonth)),reasons=state.month===clockMonth?labReasons():['Sélectionner le mois '+clockMonth+' en haut de l’application'];
+ if(!p&&missing.length)reasons.push(missing.length+' charge(s) à configurer dans la rubrique Charges');
+ root.innerHTML='<p class="lab-hint"><strong>Environnement de démonstration indépendant.</strong> Firebase et les comptes réels ne sont jamais sollicités. Les calculs sont stockés localement dans ce navigateur.</p>'+
+ '<label>Date simulée</label><input type="date" id="lab-clock" value="'+esc(state.lab.clock)+'">'+
+ '<label for="lab-split">Répartition des charges communes (mode sans joint)</label><select id="lab-split"><option value="prorata" '+(labSplitAt(state.lab.latestMonthSeen)!=='half'?'selected':'')+'>Au prorata des salaires</option><option value="half" '+(labSplitAt(state.lab.latestMonthSeen)==='half'?'selected':'')+'>50 / 50</option></select>'+
+ '<label for="lab-split-effective">Date d’effet de la répartition</label><select id="lab-split-effective"><option value="current">Ce mois ('+esc(labelMonth(state.lab.latestMonthSeen))+')</option><option value="next">Le mois suivant ('+esc(labelMonth(labNextMonth(state.lab.latestMonthSeen)))+')</option></select>'+
+ '<button class="btn secondary" id="lab-split-save" type="button">Enregistrer la répartition</button>'+
+ '<p class="micro-note" id="lab-split-msg">La répartition est conservée mois par mois.</p>'+
+ '<div class="lab-hint"><b>Mode actuel : '+esc(labModeName(mode))+'</b><br>Prochain changement possible : 1er '+esc(next)+'.</div>'+
+ (p?'<div class="lab-hint lab-good"><strong>Changement programmé</strong><br>Vers : '+esc(labModeName(p.to))+'<br>Date : '+esc(p.effective)+'</div>'+
+ '<button class="btn danger" type="button" id="lab-cancel">Annuler cette programmation</button>':
+ '<h3>Programmer un nouveau mode</h3><p class="note">Passage vers <strong>'+esc(labModeName(to))+'</strong> le 1er '+esc(next)+'. L’historique des anciens mois est conservé.</p>'+
+ '<div class="lab-hint"><b>Comptes de prélèvement</b><br>À définir dans la fiche de chaque charge, dans la rubrique Charges. '+(missing.length?missing.length+' charge(s) doivent encore être renseignées.':'Toutes les charges actives possèdent un compte compatible avec le nouveau mode.')+'</div>'+
+ '<button class="btn secondary" type="button" id="lab-go-charges">Configurer les charges</button>'+
+ (reasons.length?'<div class="lab-hint lab-danger"><b>Programmation bloquée</b><ul>'+reasons.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>':'<div class="lab-hint lab-good">Les contrôles de migration sont satisfaits. Le changement peut être programmé.</div>')+
+ '<button class="btn primary" type="button" id="lab-schedule" '+(reasons.length?'disabled':'')+'>Programmer pour le 1er '+esc(next)+'</button>')+
+ (state.lab.blocked?'<div class="lab-hint lab-danger">Activation suspendue : '+esc(state.lab.blocked)+'</div>':'')+
+ '<div class="btnbar"><button class="btn secondary" type="button" id="lab-next">Simuler le 1er du mois suivant</button><button class="btn ghost" type="button" id="lab-today">Date réelle</button></div>'+
+ '<p class="footnote">Les revenus complémentaires ne modifient jamais la compensation des charges. Leur suivi reste indépendant.</p>';
+ by('lab-clock').disabled=true;by('lab-clock').title='Date réelle — non modifiable';
+ const splitEffective=by('lab-split-effective'),splitValue=by('lab-split'),splitMsg=by('lab-split-msg');
+ const splitMonth=()=>splitEffective.value==='next'?labNextMonth(state.lab.latestMonthSeen):state.lab.latestMonthSeen;
+ splitEffective.onchange=()=>{
+  splitValue.value=labSplitAt(splitMonth());
+  splitMsg.textContent=labChangeError(splitMonth())||('Application à compter de '+labelMonth(splitMonth())+'.');
+ };
+ by('lab-split-save').onclick=()=>{
+  const from=splitMonth(),requested=splitValue.value;
+  if(labSplitAt(from)===requested){toast('Répartition déjà en vigueur pour ce mois.');return}
+  const error=labSetSplit(from,requested);if(error){toast(error);return}
+  persist();renderCharges();labRenderBanking();toast('Répartition enregistrée pour '+labelMonth(from));
+ };
+ splitEffective.onchange();
+ const chargeBtn=by('lab-go-charges');if(chargeBtn)chargeBtn.onclick=()=>{v82Close('lab-banking');setTab('charges');toast('Ouvre la fiche d’une charge pour choisir son compte payeur')};
+ const b=by('lab-schedule');if(b)b.onclick=labSchedule;
+ const cancel=by('lab-cancel');if(cancel)cancel.onclick=()=>{state.lab.pending=null;state.lab.blocked='';persist();labRenderBanking();renderResults();toast('Programmation annulée')};
+ by('lab-next').hidden=true;
+ by('lab-today').hidden=true;
+}
+document.addEventListener('click',event=>{
+ if(event.target.closest('[data-lab-open]')){labRenderBanking();v82Open('lab-banking')}
+ if(event.target.closest('[data-lab-settle]')&&!labUnconfigured('separate').length){state.lab.paid[state.month]=compute().netN;persist();renderResults();toast('Compensation confirmée (simulation seulement)')}
+ if(event.target.closest('[data-lab-undo]')){state.lab.paid[state.month]=0;persist();renderResults();toast('Confirmation annulée')}
+});
+const labBanner=document.createElement('div');labBanner.id='lab-banner';labBanner.setAttribute('role','status');
+by('pane-calcul').prepend(labBanner);
+const labShow=document.createElement('div');labShow.className='v82-demo-bar';labShow.style.cssText='background:#fff2d5;padding:9px 15px;text-align:center;color:#805412;font-size:12px;font-weight:700';
+labShow.textContent='ÉquiComptes V9.0 — CANDIDATE TECHNIQUE : essais Firebase nécessaires avant activation réelle';
+by('pane-calcul').parentElement.prepend(labShow);
+// Par défaut, les foyers existants restent en mode joint.
 
 applyPeopleLabels();applyTheme();renderCharges();renderIncome();
 })();
@@ -1562,7 +1957,7 @@ setTimeout(()=>{
  refresh();
 })();
 </script>
-<script type="module" src="./sync-v8.js?v=8.2"></script>
+<script type="module" src="./sync-v8.js?v=9.0"></script>
 <script>if("serviceWorker" in navigator && location.protocol==="https:"){navigator.serviceWorker.register("./service-worker.js",{scope:"./"}).catch(()=>{});}</script>
 <script>
 // Masquage visuel local : ne modifie jamais les données du foyer.
