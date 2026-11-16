@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#10233f">
 <meta name="application-name" content="ÉquiComptes">
 <meta name="description" content="Répartition des salaires, échéanciers photo ou manuels, revenus complémentaires et remboursements à 50/50.">
-<title>LAB Multimode · ÉquiComptes V8.3 · Multi-foyers synchronisés</title>
+<title>V9 LAB · ÉquiComptes V8.3 · Multi-foyers synchronisés</title>
 <!-- Version LAB sans installation PWA ni synchro réelle -->
 <link rel="icon" href="../icon-192.png">
 <style>
@@ -336,7 +336,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">LAB Multimode</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
+<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V9 LAB</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
 <div class="beta-sync-strip" aria-label="Connexion et foyer">
   <div class="beta-strip-status">
     <span id="beta-sync-indicator" role="status" aria-live="polite" data-sync-state="neutral">Connexion en cours…</span>
@@ -730,7 +730,15 @@ function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){
 function monthIncome(){return state.additionalIncome.filter(x=>x.month===state.month)}
 
 function bonusParts(x){return {p1:x.owner==='p1'?x.amount:x.owner==='split'?Math.ceil(x.amount/2):0,p2:x.owner==='p2'?x.amount:x.owner==='split'?Math.floor(x.amount/2):0,common:x.owner==='common'?x.amount:0}}
-function bonusRows(x){if(!x.enabled)return '';return Object.entries(bonusParts(x)).filter(([p,n])=>n>0).map(([p,n])=>`<div class="small-transfer" style="flex-wrap:wrap;gap:10px"><span>${p==='common'?'À conserver sur le joint':'Compte joint → '+esc(personName(p))} · ${fmt(n)}${x.paid?.[p]?' · ✓ Effectué':''}</span><button class="btn tiny" data-bonus-id="${esc(x.id)}" data-bonus-person="${p}">${x.paid?.[p]?'Annuler la validation':p==='common'?'✓ Reçu et conservé':'✓ Virement effectué'}</button></div>`).join('')}
+function bonusRows(x){
+ if(!x.enabled)return '';
+ const separate=window.EQUI_LAB_TEST&&labModeAt(state.month)==='separate';
+ return Object.entries(bonusParts(x)).filter(([p,n])=>n>0).map(([p,n])=>{
+  const label=separate?(p==='common'?'Bonus commun (suivi indépendant)':'Bonus attribué à '+esc(personName(p))+' (hors compensation)'):(p==='common'?'À conserver sur le joint':'Compte joint → '+esc(personName(p)));
+  const action=x.paid?.[p]?'Annuler la validation':separate?'✓ Marquer le bonus traité':p==='common'?'✓ Reçu et conservé':'✓ Virement effectué';
+  return `<div class="small-transfer" style="flex-wrap:wrap;gap:10px"><span>${label} · ${fmt(n)}${x.paid?.[p]?' · ✓ Validé':''}</span><button class="btn tiny" data-bonus-id="${esc(x.id)}" data-bonus-person="${p}">${action}</button></div>`;
+ }).join('');
+}
 function movementState(r=compute()){
  const month=state.monthlySalaries[state.month]||{},base={p1:r.netN-r.extra.p1,p2:r.netA-r.extra.p2},done={p1:month.moveN||0,p2:month.moveA||0},bonusDone={p1:0,p2:0};
  for(const x of monthIncome())if(x.enabled){const p=bonusParts(x);for(const who of ['p1','p2'])if(x.paid?.[who])bonusDone[who]+=p[who]}
@@ -1054,7 +1062,23 @@ Solde cible du compte joint après transferts : ${fmt(r.jointKeep)} (${fmt(r.tot
 
 async function copyResult(){const r=compute(),m=movementState(r);const t=withNames(resultText({...r,netN:m.remaining.p1,netA:m.remaining.p2}));try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(t);else{const e=document.createElement('textarea');e.value=t;e.style.position='fixed';e.style.left='-99999px';document.body.append(e);e.select();if(!document.execCommand('copy'))throw Error('Copie impossible');e.remove()}toast('Récapitulatif copié !')}catch(e){toast('Copie indisponible : utilise une sauvegarde ou une capture d’écran.')}}
 function saveMonth(){if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){toast('Mois clôturé : impossible de remplacer les archives.');return}const r=compute();if(!r.s){toast('Saisis les salaires avant d’enregistrer.');return}const previous=state.history.findIndex(x=>x.month===state.month);if(previous>=0&&!confirm(`Un calcul de ${labelMonth(state.month)} existe déjà. Le remplacer ?`))return;const snapshot={month:state.month,savedAt:new Date().toISOString(),result:{...r,...(window.EQUI_LAB_TEST?{labMode:labModeAt(state.month),labSplit:labSplitAt(state.month)}:{})},charges:JSON.parse(JSON.stringify(state.charges)),resolvedCharges:state.charges.map(ch=>({id:ch.id,name:ch.name,owner:ch.owner,amount:effectiveCharge(ch,state.month).amount})),additionalIncome:monthIncome().map(x=>({...x}))};if(previous>=0)state.history.splice(previous,1);state.history.push(snapshot);state.history.sort((a,b)=>b.month.localeCompare(a.month));if(window.EQUI_LAB_TEST)labFreezeMonth(state.month);persist();toast(`${labelMonth(state.month)} enregistré`)}
-function renderHistory(){by('history-list').innerHTML=state.history.length?state.history.map(x=>{const r=x.result;return `<article class="archive"><div class="archive-head"><h3>${esc(labelMonth(x.month))}</h3><span class="pill">${fmt(Number(r.total)||0)} de charges</span></div><p>Salaires : ${fmt(Number(r.s)||0)} · Prorata Personne 1 : ${((Number(r.pctN)||0)*100).toFixed(1).replace('.',',')} %</p><p>Répartition enregistrée (figée), indépendante des modifications ultérieures. Comptes des salaires : Personne 1 ${r.bankN==='personal'?'personnel':'joint'}, Personne 2 ${r.bankA==='personal'?'personnel':'joint'}.</p>${(Number(r.extraTotal)||0)>0?`<p>Revenus complémentaires : ${fmt(r.extraTotal)} (dont ${fmt(Number(r.extra?.common)||0)} gardés sur le compte joint)</p>`:''}<div class="two"><div><small>Compte Personne 1</small><strong>${fmt(Math.abs(Number(r.netN)||0))}</strong><small>${r.netN<0?'À apporter':'À virer'}</small></div><div><small>Compte Personne 2</small><strong>${fmt(Math.abs(Number(r.netA)||0))}</strong><small>${r.netA<0?'À apporter':'À virer'}</small></div></div><div class="buttons"><button class="btn tiny" data-restore="${esc(x.month)}">Charger le mois</button><button class="btn tiny danger" data-remove-month="${esc(x.month)}">Supprimer</button></div></article>`}).join(''):'<div class="empty">Aucun mois enregistré pour l’instant. Dans « Calcul », touche « Enregistrer ce mois » pour conserver le résultat.</div>'}
+function renderHistory(){
+ by('history-list').innerHTML=state.history.length?state.history.map(x=>{
+  const r=x.result,mode=r.labMode||(window.EQUI_LAB_TEST?labModeAt(x.month):'joint');
+  const ratio=mode==='separate'?(r.labSplit||labSplitAt(x.month)):'prorata';
+  const bonus=Number(r.extraTotal)||0;
+  const movement=mode==='separate'
+   ?'<p><strong>Virement initial entre comptes personnels : '+(r.netN>0?esc(personName('p2'))+' → '+esc(personName('p1')):r.netN<0?esc(personName('p1'))+' → '+esc(personName('p2')):'Aucun virement')+' · '+fmt(Math.abs(Number(r.netN)||0))+'</strong></p>'
+   :'<div class="two"><div><small>Compte Personne 1</small><strong>'+fmt(Math.abs(Number(r.netN)||0))+'</strong><small>'+(r.netN<0?'À apporter':'À virer')+'</small></div><div><small>Compte Personne 2</small><strong>'+fmt(Math.abs(Number(r.netA)||0))+'</strong><small>'+(r.netA<0?'À apporter':'À virer')+'</small></div></div>';
+  return '<article class="archive"><div class="archive-head"><h3>'+esc(labelMonth(x.month))+'</h3><span class="pill">'+fmt(Number(r.total)||0)+' de charges</span></div>'+
+   '<p><strong>'+esc(labModeName(mode))+'</strong> · répartition '+(ratio==='half'?'50/50':'au prorata')+'</p>'+
+   '<p>Salaires cumulés : '+fmt(Number(r.s)||0)+' · part Personne 1 : '+((Number(r.pctN)||0)*100).toFixed(1).replace('.',',')+' %</p>'+
+   '<p>Données de ce mois conservées : les changements ultérieurs ne modifient pas ce résultat.</p>'+
+   (bonus?'<p>Revenus complémentaires : '+fmt(bonus)+(mode==='separate'?' (suivis séparément de la compensation)':'')+'</p>':'')+
+   movement+
+   '<div class="buttons"><button class="btn tiny" data-restore="'+esc(x.month)+'">'+(window.EQUI_LAB_TEST?'Consulter le mois':'Charger le mois')+'</button><button class="btn tiny danger" data-remove-month="'+esc(x.month)+'">Supprimer</button></div></article>';
+ }).join(''):'<div class="empty">Aucun mois archivé pour l’instant. Enregistre un mois ou simule le passage au mois suivant.</div>';
+}
 function restoreMonth(month){
  const x=state.history.find(x=>x.month===month);if(!x)return;
  if(window.EQUI_LAB_TEST){switchMonth(month);setTab('calcul');toast('Archive affichée en lecture seule, sans modifier ses données.');return}if(state.additionalIncome.some(i=>i.month===month&&Object.values(i.paid||{}).some(Boolean))){toast('Ce mois contient des bonus confirmés. Annule leurs confirmations avant de recharger une archive.');return}
@@ -1874,7 +1898,7 @@ document.addEventListener('click',event=>{
 const labBanner=document.createElement('div');labBanner.id='lab-banner';labBanner.setAttribute('role','status');
 by('pane-calcul').prepend(labBanner);
 const labShow=document.createElement('div');labShow.className='v82-demo-bar';labShow.style.cssText='background:#fff2d5;padding:9px 15px;text-align:center;color:#805412;font-size:12px;font-weight:700';
-labShow.textContent='LAB MULTIMODE — SIMULATION LOCALE • aucune synchronisation Firebase • aucun changement dans votre foyer';
+labShow.textContent='V9 LAB — SIMULATION LOCALE • aucune synchronisation Firebase • aucun changement dans votre foyer';
 by('pane-calcul').parentElement.prepend(labShow);
 if(!state.lab.configured){setTimeout(()=>{labRenderBanking();v82Open('lab-banking')},650);}
 
