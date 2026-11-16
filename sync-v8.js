@@ -209,6 +209,10 @@ async function readRemoteAndMerge(u){
   flagConflict(key,remoteValue);
  }
  updateObserved();shadow=freshRemote;saveBaseline();
+ // Après lecture du foyer côté serveur, appliquer la date réelle avant les
+ // abonnements temps réel. Les changements sont enregistrés par le journal
+ // de synchronisation habituel, sans écraser le serveur.
+ if(typeof B.advanceRealDate==='function')B.advanceRealDate();
  for(const group of GROUPS){
   const off=sdk.onSnapshot(pathCollection(group),{includeMetadataChanges:true},snapshot=>{
    if(snapshot.metadata.fromCache){if(!navigator.onLine)disconnected=true;refreshStatus();}
@@ -664,6 +668,9 @@ deleteForm.addEventListener('submit',async event=>{
 });
 
 window.addEventListener('offline',()=>{disconnected=true;onlineReady=false;resetListeners();openOffline('Hors connexion : tes modifications restent enregistrées localement.');refreshStatus();});
+document.addEventListener('visibilitychange',()=>{
+ if(!document.hidden&&onlineReady&&typeof B.advanceRealDate==='function')B.advanceRealDate();
+});
 window.addEventListener('online',()=>{disconnected=false;showStatus('Connexion rétablie : reprise en cours…','pending');reconnectSoon();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&navigator.onLine&&!onlineReady)reconnectSoon();});
 window.addEventListener('focus',()=>{if(navigator.onLine&&!onlineReady)reconnectSoon();});
