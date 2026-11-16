@@ -75,6 +75,7 @@ function pathDoc(g,id){return sdk.doc(db,...PATH,g,id);}
 function flatten(s){
  const m=new Map();
  m.set('settings/main',{settings:s.settings,incomeTemplates:s.incomeTemplates});
+ if(s.lab)m.set('settings/v9-banking',{schema:9,lab:s.lab});
  for(const [id,v] of Object.entries(s.monthlySalaries||{}))m.set(documentKey('months',id),v);
  for(const [group,field,key] of [['charges','charges','id'],['incomes','additionalIncome','id'],['expenses','expenses','id'],['settlements','settlements','id'],['history','history','month']]){
   for(const v of s[field]||[])if(v&&v[key])m.set(documentKey(group,v[key]),v);
@@ -182,6 +183,10 @@ async function readRemoteAndMerge(u){
  // On conserve les saisies hors ligne avant la réinitialisation de l'état à partir du serveur.
  B.replaceAll(remote);
  const freshRemote=remoteDocsToMap(remote);
+ if(!freshRemote.has('settings/v9-banking')&&B.state().lab&&!dirty['settings/v9-banking']){
+  dirty['settings/v9-banking']={value:{schema:9,lab:B.state().lab},deleted:false,rev:1,base:null,at:Date.now()};
+  saveDiskQueue();
+ }
  for(const [key,op] of Object.entries(dirty)){
   const pos=key.indexOf('/'),group=key.slice(0,pos),id=key.slice(pos+1);
   if(!GROUPS.includes(group)||!id)continue;
