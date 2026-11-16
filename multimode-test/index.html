@@ -1169,10 +1169,10 @@ by('expense-list').addEventListener('click',e=>{const b=e.target.closest('button
 by('settle-debts').addEventListener('click',settleDebts);by('settlement-list').addEventListener('click',e=>{const b=e.target.closest('button[data-undo-settlement]');if(b)undoSettlement(b.dataset.undoSettlement)});
 resetExpenseForm();
 
-for(const t of document.querySelectorAll('.tab'))t.addEventListener('click',()=>setTab(t.dataset.tab));by('go-charges').addEventListener('click',()=>setTab('charges'));by('go-calcul').addEventListener('click',()=>setTab('calcul'));by('month').addEventListener('change',e=>switchMonth(e.target.value));for(const [id,key] of [['salary-p1','salaryN'],['salary-p2','salaryA']]){by(id).value=state[key];by(id).addEventListener('input',e=>{state[key]=e.target.value;state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});by(id).addEventListener('blur',e=>{if(e.target.value.trim()){state[key]=formatInput(parseMoney(e.target.value));e.target.value=state[key];state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()}})}
+for(const t of document.querySelectorAll('.tab'))t.addEventListener('click',()=>setTab(t.dataset.tab));by('go-charges').addEventListener('click',()=>setTab('charges'));by('go-calcul').addEventListener('click',()=>setTab('calcul'));by('month').addEventListener('change',e=>switchMonth(e.target.value));for(const [id,key] of [['salary-p1','salaryN'],['salary-p2','salaryA']]){by(id).value=state[key];by(id).addEventListener('input',e=>{if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){e.target.value=state[key];toast('Mois historique en lecture seule');return}state[key]=e.target.value;state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});by(id).addEventListener('blur',e=>{if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){e.target.value=state[key];return}if(e.target.value.trim()){state[key]=formatInput(parseMoney(e.target.value));e.target.value=state[key];state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()}})}
 for(const [id,key] of [['salary-bank-p1','bankN'],['salary-bank-p2','bankA']]){
  by(id).value=normalizeBank(state[key]);
- by(id).addEventListener('change',e=>{state[key]=normalizeBank(e.target.value);state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});
+ by(id).addEventListener('change',e=>{if(window.EQUI_LAB_TEST&&labIsClosed(state.month)){e.target.value=state[key];toast('Mois historique en lecture seule');return}state[key]=normalizeBank(e.target.value);state.monthlySalaries[state.month]={...state.monthlySalaries[state.month],n:state.salaryN,a:state.salaryA,bankN:state.bankN,bankA:state.bankA};persist();renderResults()});
 }
 by('charge-groups').addEventListener('change',e=>{
  const toggle=e.target.dataset.toggle,amt=e.target.dataset.amount;
@@ -1795,7 +1795,18 @@ function labApplyClock(){
 function labClockChange(value){
  if(!/^\d{4}-(0[1-9]|1[0-2])-[0-3]\d$/.test(value)){toast('Date non valide');return}
  const prev=state.lab.latestMonthSeen,next=value.slice(0,7);
- if(next>prev){labFreezeMonth(prev);state.lab.latestMonthSeen=next;}
+ if(next>prev){
+  const selected=state.month;
+  if(state.month!==prev)switchMonth(prev);
+  const blockers=labReasons(),pending=state.lab.pending;
+  if(pending&&next>=pending.effective)blockers.push(...labUnconfigured(pending.to,pending.effective).map(ch=>'Compte payeur à renseigner : '+ch.name));
+  if(blockers.length){
+   state.lab.blocked=blockers.join(' · ');
+   if(state.month!==selected)switchMonth(selected);
+   persist();labRenderBanking();toast('Clôture refusée : régularise les mouvements affichés dans le menu bancaire.');return;
+  }
+  labFreezeMonth(prev);state.lab.latestMonthSeen=next;
+ }
  state.lab.clock=value;labApplyClock();
  const month=value.slice(0,7);if(month!==state.month)switchMonth(month);
  persist();labRenderBanking();renderCharges();renderHistory();toast('Horloge de simulation mise à jour');
