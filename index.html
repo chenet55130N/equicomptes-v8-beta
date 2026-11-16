@@ -677,6 +677,9 @@ function adaptOldBackup(data){
  const scan=v=>{
    if(Array.isArray(v)){v.forEach(scan);return}
    if(v&&typeof v==='object')for(const [k,x] of Object.entries(v)){
+     // Le bloc lab V9 contient des dates et des modes dans ses champs from/to :
+     // ce ne sont jamais des identifiants de personnes historiques.
+     if(k==='lab')continue;
      if(['owner','payer','from','to'].includes(k)&&typeof x==='string'&&!['common','p1','p2','aucun','split'].includes(x))codes.add(x);
      scan(x)
    }
@@ -694,7 +697,7 @@ function adaptOldBackup(data){
  }
  const convert=v=>{
    if(Array.isArray(v))return v.map(convert);
-   if(v&&typeof v==='object')return Object.fromEntries(Object.entries(v).map(([k,x])=>[aliases[k]||k,convert(x)]));
+   if(v&&typeof v==='object')return Object.fromEntries(Object.entries(v).map(([k,x])=>k==='lab'?[k,x]:[aliases[k]||k,convert(x)]));
    return typeof v==='string'&&aliases[v]?aliases[v]:v;
  };
  return convert(data);
