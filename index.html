@@ -1433,6 +1433,11 @@ function betaPatch(group,id,data){
 window.EquiBetaBridge={
  state:()=>JSON.parse(JSON.stringify(state)),
  replaceAll:betaReplace,patch:betaPatch,
+ advanceRealDate:()=>{
+  if(!window.EQUI_V9_CANDIDATE||!state.lab)return;
+  const today=labToday(),now=today.slice(0,7),last=state.lab.latestMonthSeen;
+  if(now>last||(state.lab.pending&&state.lab.pending.effective<=now))labClockChange(today);
+ },
  resetLocal:()=>{state=seed();try{localStorage.removeItem(KEY)}catch{};betaRefresh()},
  render:betaRefresh
 };
@@ -1740,9 +1745,9 @@ function labUpdateTop(){
   }
  }
  if(corrected)persist();
- e.innerHTML='<strong>MODE DÉMONSTRATION · '+esc(labModeName(mode))+'</strong>'+
- 'Application V8.3 d’origine, avec fonctionnement bancaire expérimental. Données fictives exclusivement. '+
- (p?'<div style="margin-top:6px">Transition vers '+esc(labModeName(p.to))+' programmée au '+esc(p.effective)+' (simulation).</div>':'')+
+ e.innerHTML='<strong>MODE BANCAIRE · '+esc(labModeName(mode))+'</strong>'+
+ 'ÉquiComptes V9.0 : paramètres bancaires de votre foyer. '+
+ (p?'<div style="margin-top:6px">Changement vers '+esc(labModeName(p.to))+' programmé au '+esc(p.effective)+'.</div>':'')+
  '<button type="button" class="btn tiny secondary" data-lab-open style="margin-top:8px">Configurer les comptes</button>';
 }
 function labRemainder(){const c=compute();return c.netN-(Number(state.lab.paid[state.month])||0)}
@@ -1791,7 +1796,7 @@ function labReasons(){
 }
 function labSchedule(){
  const clockMonth=state.lab.clock.slice(0,7),mode=labModeAt(clockMonth);
- if(state.month!==clockMonth){toast('Sélectionne le mois courant de la simulation avant de programmer');return}
+ if(state.month!==clockMonth){toast('Sélectionne le mois courant avant de programmer');return}
  const reasons=labReasons();if(reasons.length){toast('Régularise les mouvements avant de programmer');labRenderBanking();return}
  const to=mode==='joint'?'separate':'joint',missing=labUnconfigured(to,labNextMonth(clockMonth));
  if(missing.length){toast('Les comptes payeurs doivent être renseignés dans les fiches de charges.');labRenderBanking();return}
@@ -1833,28 +1838,28 @@ function labClockChange(value){
  }
  state.lab.clock=value;labApplyClock();
  const month=value.slice(0,7);if(month!==state.month)switchMonth(month);
- persist();labRenderBanking();renderCharges();renderHistory();toast('Horloge de simulation mise à jour');
+ persist();labRenderBanking();renderCharges();renderHistory();toast('Date bancaire actualisée');
 }
 function labRenderBanking(){
  const root=by('lab-bank-content'),clockMonth=state.lab.clock.slice(0,7),mode=labModeAt(clockMonth),to=mode==='joint'?'separate':'joint',p=state.lab.pending;
  const next=labNextMonth(clockMonth);
  if(!state.lab.configured){
-  root.innerHTML='<div class="lab-hint"><strong>Bienvenue dans le laboratoire Multimode</strong><br>Voici la véritable interface V8.3 avec un foyer fictif, sans aucune connexion à votre Firebase. Choisissez votre premier fonctionnement bancaire ; vous pourrez ensuite programmer un changement.</div>'+
+  root.innerHTML='<div class="lab-hint"><strong>Choisir le fonctionnement bancaire</strong><br>Ce choix s’applique au foyer. Les modifications futures pourront être programmées au premier jour du mois suivant.</div>'+
   '<label class="lab-choice"><input type="radio" name="lab-first-mode" value="joint" checked> 2 comptes personnels + 1 compte joint</label>'+
   '<label class="lab-choice"><input type="radio" name="lab-first-mode" value="separate"> 2 comptes personnels sans compte joint</label>'+
-  '<p class="note">Des salaires et cinq charges fictives sont préremplis. Vous pourrez les modifier dans les écrans habituels.</p>'+
-  '<button id="lab-start" class="btn primary" type="button">Créer le foyer de démonstration</button>';
+  '<p class="note">Vous pourrez ensuite renseigner les revenus et charges du foyer.</p>'+
+  '<button id="lab-start" class="btn primary" type="button">Valider le fonctionnement bancaire</button>';
   by('lab-start').onclick=()=>{
    state.lab.initial=by('lab-bank-content').querySelector('input[name="lab-first-mode"]:checked').value;
    if(state.lab.initial==='separate'){state.settings.bankN='personal';state.settings.bankA='personal';state.bankN='personal';state.bankA='personal';state.monthlySalaries[state.month].bankN='personal';state.monthlySalaries[state.month].bankA='personal';}
-   state.lab.configured=true;persist();labRenderBanking();renderCharges();toast('Foyer fictif créé — '+labModeName(state.lab.initial));
+   state.lab.configured=true;persist();labRenderBanking();renderCharges();toast('Fonctionnement bancaire enregistré — '+labModeName(state.lab.initial));
   };
   return;
  }
  const missing=labUnconfigured(to,labNextMonth(clockMonth)),reasons=state.month===clockMonth?labReasons():['Sélectionner le mois '+clockMonth+' en haut de l’application'];
  if(!p&&missing.length)reasons.push(missing.length+' charge(s) à configurer dans la rubrique Charges');
- root.innerHTML='<p class="lab-hint"><strong>Environnement de démonstration indépendant.</strong> Firebase et les comptes réels ne sont jamais sollicités. Les calculs sont stockés localement dans ce navigateur.</p>'+
- '<label>Date simulée</label><input type="date" id="lab-clock" value="'+esc(state.lab.clock)+'">'+
+ root.innerHTML='<p class="lab-hint"><strong>Paramètres du foyer</strong> · Les modifications sont synchronisées avec les autres membres connectés de ce foyer.</p>'+
+ '<label>Date réelle (automatique)</label><input type="date" id="lab-clock" value="'+esc(state.lab.clock)+'">'+
  '<label for="lab-split">Répartition des charges communes (mode sans joint)</label><select id="lab-split"><option value="prorata" '+(labSplitAt(state.lab.latestMonthSeen)!=='half'?'selected':'')+'>Au prorata des salaires</option><option value="half" '+(labSplitAt(state.lab.latestMonthSeen)==='half'?'selected':'')+'>50 / 50</option></select>'+
  '<label for="lab-split-effective">Date d’effet de la répartition</label><select id="lab-split-effective"><option value="current">Ce mois ('+esc(labelMonth(state.lab.latestMonthSeen))+')</option><option value="next">Le mois suivant ('+esc(labelMonth(labNextMonth(state.lab.latestMonthSeen)))+')</option></select>'+
  '<button class="btn secondary" id="lab-split-save" type="button">Enregistrer la répartition</button>'+
@@ -1868,7 +1873,7 @@ function labRenderBanking(){
  (reasons.length?'<div class="lab-hint lab-danger"><b>Programmation bloquée</b><ul>'+reasons.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>':'<div class="lab-hint lab-good">Les contrôles de migration sont satisfaits. Le changement peut être programmé.</div>')+
  '<button class="btn primary" type="button" id="lab-schedule" '+(reasons.length?'disabled':'')+'>Programmer pour le 1er '+esc(next)+'</button>')+
  (state.lab.blocked?'<div class="lab-hint lab-danger">Activation suspendue : '+esc(state.lab.blocked)+'</div>':'')+
- '<div class="btnbar"><button class="btn secondary" type="button" id="lab-next">Simuler le 1er du mois suivant</button><button class="btn ghost" type="button" id="lab-today">Date réelle</button></div>'+
+ '<div class="btnbar"><button class="btn secondary" type="button" id="lab-next">Avancer au mois suivant (mode laboratoire uniquement)</button><button class="btn ghost" type="button" id="lab-today">Date réelle</button></div>'+
  '<p class="footnote">Les revenus complémentaires ne modifient jamais la compensation des charges. Leur suivi reste indépendant.</p>';
  by('lab-clock').disabled=true;by('lab-clock').title='Date réelle — non modifiable';
  const splitEffective=by('lab-split-effective'),splitValue=by('lab-split'),splitMsg=by('lab-split-msg');
@@ -1892,13 +1897,13 @@ function labRenderBanking(){
 }
 document.addEventListener('click',event=>{
  if(event.target.closest('[data-lab-open]')){labRenderBanking();v82Open('lab-banking')}
- if(event.target.closest('[data-lab-settle]')&&!labUnconfigured('separate').length){state.lab.paid[state.month]=compute().netN;persist();renderResults();toast('Compensation confirmée (simulation seulement)')}
+ if(event.target.closest('[data-lab-settle]')&&!labUnconfigured('separate').length){state.lab.paid[state.month]=compute().netN;persist();renderResults();toast('Compensation confirmée')}
  if(event.target.closest('[data-lab-undo]')){state.lab.paid[state.month]=0;persist();renderResults();toast('Confirmation annulée')}
 });
 const labBanner=document.createElement('div');labBanner.id='lab-banner';labBanner.setAttribute('role','status');
 by('pane-calcul').prepend(labBanner);
 const labShow=document.createElement('div');labShow.className='v82-demo-bar';labShow.style.cssText='background:#fff2d5;padding:9px 15px;text-align:center;color:#805412;font-size:12px;font-weight:700';
-labShow.textContent='ÉquiComptes V9.0 — CANDIDATE TECHNIQUE : essais Firebase nécessaires avant activation réelle';
+labShow.textContent='ÉquiComptes V9.0 — candidate de prépublication : synchronisation Firebase et migration à valider';
 by('pane-calcul').parentElement.prepend(labShow);
 // Par défaut, les foyers existants restent en mode joint.
 
