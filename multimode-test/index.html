@@ -1814,7 +1814,10 @@ function labRenderBanking(){
  if(!p&&missing.length)reasons.push(missing.length+' charge(s) à configurer dans la rubrique Charges');
  root.innerHTML='<p class="lab-hint"><strong>Environnement de démonstration indépendant.</strong> Firebase et les comptes réels ne sont jamais sollicités. Les calculs sont stockés localement dans ce navigateur.</p>'+
  '<label>Date simulée</label><input type="date" id="lab-clock" value="'+esc(state.lab.clock)+'">'+
- '<label>Partage des charges communes (mode sans joint)</label><select id="lab-split"><option value="prorata" '+(state.lab.split!=='half'?'selected':'')+'>Au prorata des salaires</option><option value="half" '+(state.lab.split==='half'?'selected':'')+'>50 / 50</option></select>'+
+ '<label for="lab-split">Répartition des charges communes (mode sans joint)</label><select id="lab-split"><option value="prorata" '+(labSplitAt(state.lab.latestMonthSeen)!=='half'?'selected':'')+'>Au prorata des salaires</option><option value="half" '+(labSplitAt(state.lab.latestMonthSeen)==='half'?'selected':'')+'>50 / 50</option></select>'+
+ '<label for="lab-split-effective">Date d’effet de la répartition</label><select id="lab-split-effective"><option value="current">Ce mois ('+esc(labelMonth(state.lab.latestMonthSeen))+')</option><option value="next">Le mois suivant ('+esc(labelMonth(labNextMonth(state.lab.latestMonthSeen)))+')</option></select>'+
+ '<button class="btn secondary" id="lab-split-save" type="button">Enregistrer la répartition</button>'+
+ '<p class="micro-note" id="lab-split-msg">La répartition est conservée mois par mois.</p>'+
  '<div class="lab-hint"><b>Mode actuel : '+esc(labModeName(mode))+'</b><br>Prochain changement possible : 1er '+esc(next)+'.</div>'+
  (p?'<div class="lab-hint lab-good"><strong>Changement programmé</strong><br>Vers : '+esc(labModeName(p.to))+'<br>Date : '+esc(p.effective)+'</div>'+
  '<button class="btn danger" type="button" id="lab-cancel">Annuler cette programmation</button>':
@@ -1827,7 +1830,19 @@ function labRenderBanking(){
  '<div class="btnbar"><button class="btn secondary" type="button" id="lab-next">Simuler le 1er du mois suivant</button><button class="btn ghost" type="button" id="lab-today">Date réelle</button></div>'+
  '<p class="footnote">Les revenus complémentaires ne modifient jamais la compensation des charges. Leur suivi reste indépendant.</p>';
  by('lab-clock').onchange=e=>labClockChange(e.target.value);
- by('lab-split').onchange=e=>{state.lab.split=e.target.value==='half'?'half':'prorata';persist();renderCharges();labRenderBanking()};
+ const splitEffective=by('lab-split-effective'),splitValue=by('lab-split'),splitMsg=by('lab-split-msg');
+ const splitMonth=()=>splitEffective.value==='next'?labNextMonth(state.lab.latestMonthSeen):state.lab.latestMonthSeen;
+ splitEffective.onchange=()=>{
+  splitValue.value=labSplitAt(splitMonth());
+  splitMsg.textContent=labChangeError(splitMonth())||('Application à compter de '+labelMonth(splitMonth())+'.');
+ };
+ by('lab-split-save').onclick=()=>{
+  const from=splitMonth(),requested=splitValue.value;
+  if(labSplitAt(from)===requested){toast('Répartition déjà en vigueur pour ce mois.');return}
+  const error=labSetSplit(from,requested);if(error){toast(error);return}
+  persist();renderCharges();labRenderBanking();toast('Répartition enregistrée pour '+labelMonth(from));
+ };
+ splitEffective.onchange();
  const chargeBtn=by('lab-go-charges');if(chargeBtn)chargeBtn.onclick=()=>{v82Close('lab-banking');setTab('charges');toast('Ouvre la fiche d’une charge pour choisir son compte payeur')};
  const b=by('lab-schedule');if(b)b.onclick=labSchedule;
  const cancel=by('lab-cancel');if(cancel)cancel.onclick=()=>{state.lab.pending=null;state.lab.blocked='';persist();labRenderBanking();renderResults();toast('Programmation annulée')};
