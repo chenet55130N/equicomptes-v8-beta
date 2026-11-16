@@ -17,7 +17,8 @@
 - Aucune donnée de foyer réel n'a été utilisée pour les calculs.
 
 ## Conditions bloquantes AVANT fusion sur main
-- [ ] Connecter et contrôler le projet Firebase/Firestore réel, règles d'accès du document `settings/v9-banking`.
+- [x] Contrôler la compatibilité théorique des règles Firestore fournies : l'accès à `settings/v9-banking` est autorisé pour les membres vérifiés du foyer. La règle de création du foyer impose `version == 8` ; le candidat crée désormais le document V9 après le lot créant foyer et membre.
+- [ ] Vérifier ces permissions par un essai réel authentifié sur foyer fictif (pas encore réalisé).
 - [ ] Vérifier le premier démarrage d'un foyer V8.3 et la récupération exacte de ses données, sans les modifier.
 - [ ] Vérifier la création d'un nouveau foyer dans les deux modes.
 - [ ] Vérifier l'ajout/mise à jour de `settings/v9-banking` avec deux appareils et les conflits hors ligne.
