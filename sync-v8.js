@@ -425,17 +425,31 @@ el('v8-create-form').addEventListener('submit',async e=>{
  try{
   const hid=randId(18);const batch=sdk.writeBatch(db);
   const banking=el('v9-create-mode')?.value==='separate'?'separate':'joint';
-  batch.set(sdk.doc(db,'foyers',hid),{name,ownerUid:u.uid,createdAt:sdk.serverTimestamp(),version:9});
+  const newLab={
+   initial:banking,transitions:[],pending:null,payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},
+   clock:new Date().toISOString().slice(0,10),latestMonthSeen:new Date().toISOString().slice(0,7),
+   paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}
+  };
+  // Firestore vérifie version==8 pour la création du foyer. Le schéma V9 est
+  // conservé dans un document séparé : aucune modification des règles n'est nécessaire.
+  batch.set(sdk.doc(db,'foyers',hid),{name,ownerUid:u.uid,createdAt:sdk.serverTimestamp(),version:8});
   batch.set(memberPath(hid,u.uid),{role:'owner',joinedAt:sdk.serverTimestamp(),inviteId:'',email:u.email});
   batch.set(userProfile(u.uid),{hid,createdAt:sdk.serverTimestamp()});
-  batch.set(sdk.doc(db,'foyers',hid,'settings','v9-banking'),{
-   schema:9,lab:{
-    initial:banking,transitions:[],pending:null,payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},
-    clock:new Date().toISOString().slice(0,10),latestMonthSeen:new Date().toISOString().slice(0,7),
-    paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}
-   }
-  });
-  await batch.commit();setHomeAndReload(u,hid);
+  await batch.commit();
+  // isMember(hid) utilise exists(), et non existsAfter(). Le document V9 doit
+  // donc être écrit APRÈS la création effective du membre.
+  try {
+   await sdk.setDoc(sdk.doc(db,'foyers',hid,'settings','v9-banking'),{schema:9,lab:newLab});
+  } catch(bankingError) {
+   // Le foyer existe déjà : ne jamais annoncer une création totalement échouée.
+   // Un nouveau chargement reprendra ce foyer, mais NE DEVRA PAS activer un
+   // autre mode implicitement : noter le choix jusqu'à l'initialisation.
+   try{localStorage.setItem('equi-v9-pending-mode:'+hid,banking);}catch{}
+   note('Le foyer a été créé, mais son mode bancaire reste à initialiser : '+authError(bankingError)+'. Recharge la page pour réessayer.');
+   setHomeAndReload(u,hid);
+   return;
+  }
+  setHomeAndReload(u,hid);
  }catch(err){note('Création impossible : '+authError(err));}finally{b.disabled=false;}
 });
 function parseInvitation(raw){
