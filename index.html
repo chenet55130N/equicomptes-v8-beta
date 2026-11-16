@@ -559,7 +559,7 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
 <div style="max-width:296px;margin:14px auto;padding:13px;border:1px solid var(--t-line);border-radius:15px;background:#fff;text-align:center">
 <svg id="v82-share-qr" role="img" aria-label="QR code d'installation ÉquiComptes" viewBox="0 0 41 41" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto;max-width:250px;margin:auto;image-rendering:pixelated"><rect width="41" height="41" fill="#fff"/></svg>
 </div>
-<p class="note" style="text-align:center;overflow-wrap:anywhere"><a id="v82-share-link" href="https://chenet55130n.github.io/equicomptes-v8-beta/" target="_blank" rel="noopener noreferrer">chenet55130n.github.io/equicomptes-v8-beta/</a></p>
+<a id="v82-share-link" href="https://chenet55130n.github.io/equicomptes-v8-beta/" hidden aria-hidden="true" tabindex="-1"></a>
 <div class="btnbar" style="justify-content:center"><button class="btn primary" id="v82-share-copy" type="button">Copier le lien</button><button class="btn" id="v82-share-system" type="button">Partager…</button></div>
 <p class="note">Ce QR code partage uniquement l'adresse de l'application : aucun identifiant, code d'invitation ou donnée de votre foyer. Sur Android : menu du navigateur → Installer l'application ou Ajouter à l'écran d'accueil.</p>
 </div></dialog>
@@ -1508,12 +1508,12 @@ function v82RenderShare(){
 by('v82-share-copy').addEventListener('click',async()=>{
  const url=by('v82-share-link').href;
  try{await navigator.clipboard.writeText(url);toast('Lien d’installation copié');}
- catch{const t=document.createElement('textarea');t.value=url;t.style.position='fixed';t.style.left='-9999px';document.body.appendChild(t);t.select();const ok=document.execCommand('copy');t.remove();toast(ok?'Lien copié':'Sélectionne le lien affiché pour le copier');}
+ catch{const t=document.createElement('textarea');t.value=url;t.style.position='fixed';t.style.left='-9999px';document.body.appendChild(t);t.select();const ok=document.execCommand('copy');t.remove();toast(ok?'Lien copié':'Copie impossible sur cet appareil');}
 });
 by('v82-share-system').addEventListener('click',async()=>{
  const url=by('v82-share-link').href;
  if(navigator.share){try{await navigator.share({title:'ÉquiComptes',text:'Installer ÉquiComptes',url});}catch(e){if(e.name!=='AbortError')toast('Partage indisponible : utilise Copier le lien');}}
- else{try{await navigator.clipboard.writeText(url);toast('Lien copié : partage-le dans ton application de messagerie');}catch{toast('Utilise Copier le lien ou le lien affiché');}}
+ else{try{await navigator.clipboard.writeText(url);toast('Lien copié : partage-le dans ton application de messagerie');}catch{toast('Utilise le bouton Copier le lien');}}
 });
 // Déplacer les contrôles existants conserve leurs gestionnaires Firebase.
 ['v8-info-email','v8-home-label','v8-info-home-empty','v8-info-sync','v8-invite-button','beta-account-button','v8-delete-account-open'].forEach(id=>by('v82-account-content').append(by(id)));
