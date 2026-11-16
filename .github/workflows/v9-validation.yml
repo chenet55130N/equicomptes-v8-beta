@@ -1,0 +1,28 @@
+name: Vérifications ÉquiComptes V9
+
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "sync-v8.js"
+      - "service-worker.js"
+      - "tests/v9-prepublication.cjs"
+      - ".github/workflows/v9-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compatibilite:
+    name: Préservation des données et sécurité bancaire
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Exécuter les tests de non-régression
+        run: node tests/v9-prepublication.cjs
