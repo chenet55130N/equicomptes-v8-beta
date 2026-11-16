@@ -179,6 +179,19 @@ async function readRemoteAndMerge(u){
   remote[group]={};data.forEach(d=>{remote[group][d.id]=d.data()});
  }));
  if(token!==startCloudToken||!user||user.uid!==u.uid)return;
+ const pendingModeKey='equi-v9-pending-mode:'+PATH[1];
+ const pendingMode=localStorage.getItem(pendingModeKey);
+ if(remote.settings?.['v9-banking']){
+  if(pendingMode)localStorage.removeItem(pendingModeKey);
+ }else if(pendingMode==='joint'||pendingMode==='separate'){
+  const lab={initial:pendingMode,transitions:[],pending:null,payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},
+   clock:new Date().toISOString().slice(0,10),latestMonthSeen:new Date().toISOString().slice(0,7),
+   paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}};
+  const doc={schema:9,lab};
+  await sdk.setDoc(pathDoc('settings','v9-banking'),doc);
+  remote.settings['v9-banking']=doc;
+  localStorage.removeItem(pendingModeKey);
+ }
  const savedLocal=flatten(B.state());
  // On conserve les saisies hors ligne avant la réinitialisation de l'état à partir du serveur.
  B.replaceAll(remote);
@@ -218,7 +231,9 @@ async function startCloud(u){
  else {locked();showHouse();}
  try{await readRemoteAndMerge(u)}
  catch(e){onlineReady=false;disconnected=true;
-  if(verifiedDevice()?.uid===u.uid)openOffline('Serveur momentanément inaccessible. Tu peux saisir tes dépenses hors ligne.');
+  if(localStorage.getItem('equi-v9-pending-mode:'+PATH[1])){
+   locked();note('Initialisation bancaire incomplète : '+errorText(e)+'. Recharge avec Internet pour réessayer.');
+  }else if(verifiedDevice()?.uid===u.uid)openOffline('Serveur momentanément inaccessible. Tu peux saisir tes dépenses hors ligne.');
   else{locked();showHouse();note('Le foyer n’a pas pu être chargé : '+errorText(e));}
   refreshStatus();
  }
