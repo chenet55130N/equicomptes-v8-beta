@@ -309,6 +309,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 #lab-banner{border:1px solid #9fd4cb;background:#e7f6f1;color:#145d5c;border-radius:13px;padding:12px 14px;margin:12px 0;font-size:13px}
 #lab-banner strong{display:block;margin-bottom:5px}
 #lab-banking .dialog-inner{max-height:85dvh;overflow:auto}
+html[data-bank-mode="separate"] #pane-calcul .account-label,html[data-bank-mode="separate"] #pane-calcul .salary-account{display:none!important}
 #lab-banking label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px}
 #lab-banking select,#lab-banking input{width:100%;background:var(--t-input);color:var(--t-ink);border:1px solid var(--t-border);border-radius:10px;padding:9px}
 #lab-banking .lab-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;border-bottom:1px solid var(--t-line);padding:7px 0}
@@ -324,7 +325,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 .lab-payer-fields{background:var(--t-card2);border:1px solid var(--t-line);padding:15px;border-radius:14px}
 .lab-payer-fields h3{font-size:15px;margin:0 0 6px}
 .lab-payer-fields .note{font-size:12px;margin:0 0 12px}
-.lab-payer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lab-payer-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
 .lab-payer-item{border:1px solid var(--t-line);padding:10px;border-radius:10px}
 .lab-payer-item.lab-payer-active{border-color:var(--t-primary);box-shadow:inset 0 0 0 1px var(--t-primary)}
 .lab-payer-item label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}
@@ -358,20 +359,20 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <nav class="tabs-wrap" aria-label="Navigation"><div class="tabs"><button class="tab" data-tab="calcul" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 11h1m6 0h1m-8 4h1m6 0h1m-8 3h1m6 0h1"/></svg><span>Calcul</span></button><button class="tab" data-tab="charges" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg><span>Charges</span></button><button class="tab" data-tab="partage" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h15m-4-4 4 4-4 4M20 16H5m4-4-4 4 4 4"/></svg><span>Avances</span></button><button class="tab" data-tab="historique" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6M12 7v5l3 2"/></svg><span>Historique</span></button></div></nav>
 <main class="main">
 <section id="pane-calcul" class="pane active">
-<div class="section-top"><h2>Vos revenus</h2><span class="hint">Compte de réception au choix pour chaque salaire</span></div>
+<div class="section-top"><h2>Vos revenus</h2><span class="hint" id="v9-salary-hint">Compte de réception au choix pour chaque salaire</span></div>
 <div class="card"><div class="salary-grid"><div class="salary-item"><label for="salary-p1" class="field-label">Salaire de Personne 1</label><div class="input-wrap"><input id="salary-p1" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="unit">€</span></div><label for="salary-bank-p1" class="account-label">Salaire reçu sur</label><select id="salary-bank-p1" class="salary-account" aria-label="Compte recevant le salaire de Personne 1"><option value="joint">Le compte joint</option><option value="personal">Compte personnel</option></select></div><div class="salary-item"><label for="salary-p2" class="field-label">Salaire de Personne 2</label><div class="input-wrap"><input id="salary-p2" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"><span class="unit">€</span></div><label for="salary-bank-p2" class="account-label">Salaire reçu sur</label><select id="salary-bank-p2" class="salary-account" aria-label="Compte recevant le salaire de Personne 2"><option value="joint">Le compte joint</option><option value="personal">Compte personnel</option></select></div></div><div class="pills"><span class="pill">Total des salaires : <strong id="total-income">—</strong></span><span class="pill" id="ratio-text">Répartition : —</span></div><p class="helper">Salaires et comptes habituels personnalisables dans Paramètres. Seuls les salaires servent au prorata des charges. <button type="button" class="inline-link" id="apply-default-salaries">↺ Rétablir les valeurs habituelles</button></p></div>
-<div class="highlight"><div class="mini-title"><span data-theme-icon="resultat" aria-hidden="true">✦</span> Résultat instantané</div><h2>Virements restant à effectuer</h2><p>Solde net restant, bonus inclus. Confirmez les mouvements réalisés dans les détails ci-dessous.</p><div class="transfers"><div class="transfer"><div class="name" id="transfer-p1-name">Personne 1</div><div class="amount" id="transfer-p1">—</div><div class="desc" id="transfer-p1-label">Saisir les salaires</div><div class="small-transfer"><span>Contribution : Personne 1</span><strong id="contrib-p1">—</strong></div></div><div class="transfer gold"><div class="name" id="transfer-p2-name">Personne 2</div><div class="amount" id="transfer-p2">—</div><div class="desc" id="transfer-p2-label">Saisir les salaires</div><div class="small-transfer"><span>Contribution : Personne 2</span><strong id="contrib-p2">—</strong></div></div></div><div class="split-meter" aria-label="Proportion des revenus"><div class="n" id="split-n" style="width:50%"></div><div class="a"></div></div><div class="theme-chart" id="theme-chart" aria-live="off"></div><div class="legend"><span><i class="dot"></i> Personne 1 <strong id="percent-n">—</strong></span><span><i class="dot a"></i> Personne 2 <strong id="percent-a">—</strong></span></div><div id="warning"></div><div class="income-impact hidden" id="income-impact"><div class="impact-head">↳ Revenus complémentaires intégrés</div><div class="impact-grid"><span>Personne 1 <strong id="credit-p1">0,00 €</strong></span><span>Personne 2 <strong id="credit-p2">0,00 €</strong></span><span>Compte joint <strong id="credit-common">0,00 €</strong></span></div></div></div>
+<div class="highlight"><div class="mini-title"><span data-theme-icon="resultat" aria-hidden="true">✦</span> Résultat instantané</div><h2>Virements restant à effectuer</h2><p id="v9-transfer-intro">Solde net restant, bonus inclus. Confirmez les mouvements réalisés dans les détails ci-dessous.</p><div class="transfers"><div class="transfer"><div class="name" id="transfer-p1-name">Personne 1</div><div class="amount" id="transfer-p1">—</div><div class="desc" id="transfer-p1-label">Saisir les salaires</div><div class="small-transfer"><span>Contribution : Personne 1</span><strong id="contrib-p1">—</strong></div></div><div class="transfer gold"><div class="name" id="transfer-p2-name">Personne 2</div><div class="amount" id="transfer-p2">—</div><div class="desc" id="transfer-p2-label">Saisir les salaires</div><div class="small-transfer"><span>Contribution : Personne 2</span><strong id="contrib-p2">—</strong></div></div></div><div class="split-meter" aria-label="Proportion des revenus"><div class="n" id="split-n" style="width:50%"></div><div class="a"></div></div><div class="theme-chart" id="theme-chart" aria-live="off"></div><div class="legend"><span><i class="dot"></i> Personne 1 <strong id="percent-n">—</strong></span><span><i class="dot a"></i> Personne 2 <strong id="percent-a">—</strong></span></div><div id="warning"></div><div class="income-impact hidden" id="income-impact"><div class="impact-head" id="v9-income-impact-title">↳ Revenus complémentaires intégrés</div><div class="impact-grid"><span>Personne 1 <strong id="credit-p1">0,00 €</strong></span><span>Personne 2 <strong id="credit-p2">0,00 €</strong></span><span><span id="v9-credit-common-label">Compte joint</span> <strong id="credit-common">0,00 €</strong></span></div></div></div>
 <div class="section-top"><h2>Revenus complémentaires</h2><span id="incomes-count" class="hint">Aucun ce mois</span></div>
-<div class="card income-card"><p class="note">Versements reçus sur le compte joint.</p>
+<div class="card income-card"><p class="note" id="v9-income-intro">Versements reçus sur le compte joint.</p>
 <div id="income-list" class="income-list"></div>
 <button class="btn secondary wide" type="button" id="add-income">＋ Ajouter un versement</button>
 <h3>Versements habituels à ajouter</h3><div id="income-template-actions" class="income-template-actions"></div>
 <p class="micro-note">Gérer les raccourcis dans Menu → Paramètres.</p>
 <div id="income-totals" class="v82-destinations"></div>
-<p class="note">Les sommes à reverser sont intégrées aux virements calculés. Ces versements ne changent pas le prorata des salaires.</p></div>
+<p class="note" id="v9-income-footer">Les sommes à reverser sont intégrées aux virements calculés. Ces versements ne changent pas le prorata des salaires.</p></div>
 <div class="section-top"><h2>Charges retenues</h2><span id="count-selected" class="hint">—</span></div><div class="card"><div class="breakdown"><div class="metric"><span>Communes</span><strong id="common-total">0 €</strong></div><div class="metric"><span>Perso Personne 1</span><strong id="personal-n-total">0 €</strong></div><div class="metric"><span>Perso Personne 2</span><strong id="personal-a-total">0 €</strong></div></div><div class="small-transfer" style="margin-top:14px"><span>À réserver pour les charges</span><strong id="all-total">0 €</strong></div><div class="btnbar"><button class="btn secondary wide" id="go-charges">☷ Choisir et ajuster les charges</button></div></div>
 <div class="card" id="monthly-movements"></div><div class="debt-quick" aria-label="Remboursements personnels"><div class="mini-title">↔ Dépenses communes payées personnellement</div><div class="debt-quick-row"><div class="debt-quick-result" id="debt-quick-result">Aucun remboursement en attente</div><button type="button" class="btn tiny" id="go-partage">Ouvrir ↗</button></div></div>
-<div class="btnbar"><button class="btn primary" id="save-month">✓ Enregistrer ce mois</button><button class="btn" id="copy-result">▤ Copier les virements</button></div><p class="footnote">La répartition des charges communes se base sur les salaires, qu’ils arrivent sur le compte joint ou sur les comptes personnels. Les revenus complémentaires déclarés arrivent sur le joint et sont attribués à leur bénéficiaire. Aucun virement bancaire n’est effectué par cette application.</p>
+<div class="btnbar"><button class="btn primary" id="save-month">✓ Enregistrer ce mois</button><button class="btn" id="copy-result">▤ Copier les virements</button></div><p class="footnote" id="v9-calcul-footer">La répartition des charges communes se base sur les salaires, qu’ils arrivent sur le compte joint ou sur les comptes personnels. Les revenus complémentaires déclarés arrivent sur le joint et sont attribués à leur bénéficiaire. Aucun virement bancaire n’est effectué par cette application.</p>
 </section>
 <section id="pane-charges" class="pane">
 <div class="section-top"><h2>Charges du mois</h2><button id="add-charge-top" class="btn primary tiny">＋ Ajouter</button></div>
@@ -389,7 +390,7 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <section id="pane-partage" class="pane" aria-labelledby="partage-heading">
   <div class="card">
     <div class="shared-heading"><div class="symbol" aria-hidden="true">↔</div><div><h2 id="partage-heading">Avances et remboursements</h2><p>Courses, loisirs, achats… payés par Personne 1 ou Personne 2 avec leurs comptes personnels, puis partagés à 50/50 ou remboursés à 100 % par l’autre personne.</p></div></div>
-    <div class="disclaimer">Indépendant des charges fixes : ces remboursements ne changent pas les virements de salaires depuis le compte joint. Les dépenses ouvertes restent suivies même lorsque tu changes de mois.</div>
+    <div class="disclaimer">Indépendant des charges fixes : ces remboursements ne modifient pas la répartition mensuelle des charges. Les dépenses ouvertes restent suivies même lorsque tu changes de mois.</div>
   </div>
   <div class="debt-hero" aria-live="polite"><div class="mini-title">SOLDE DES REMBOURSEMENTS</div><div class="debt-result"><div class="sentence" id="debt-direction">Aucune dette en cours</div><div class="money" id="debt-amount">0,00 €</div></div><p class="note" id="debt-explanation">Ajoute votre premier achat pour commencer.</p>
   <div class="debt-metrics"><div class="debt-metric"><span>Avancé par Personne 1</span><strong id="debt-paid-p1">0,00 €</strong></div><div class="debt-metric"><span>Avancé par Personne 2</span><strong id="debt-paid-p2">0,00 €</strong></div></div><div class="debt-meter" aria-label="Part des dépenses avancées par chacun"><span class="payer-n" id="debt-bar-p1" style="width:50%"></span><span class="payer-a" id="debt-bar-p2" style="width:50%"></span></div><button type="button" class="btn primary wide" id="settle-debts" disabled>✓ Marquer comme remboursé / compensé</button><div class="debt-settlement-note">Le calcul compense les achats des deux personnes : un seul remboursement final suffit. Un centime d'écart éventuel est arrondi sur le solde global.</div></div>
@@ -413,11 +414,11 @@ html[data-theme="studio"] .top{background:linear-gradient(120deg,#1d293e,#334a69
 <div class="formline"><label for="charge-owner">Répartition de la charge</label><select id="charge-owner"><option value="common">Commune (selon la répartition du foyer)</option><option value="p1">Perso Personne 1 (100 %)</option><option value="p2">Perso Personne 2 (100 %)</option></select></div>
 <div class="formline wide lab-payer-fields">
 <h3>Compte de prélèvement</h3>
-<p class="note">Le compte qui paie peut être différent de la personne qui supporte la dépense. Les deux modes conservent leurs propres comptes de prélèvement.</p>
+<p class="note">Le compte qui paie peut être différent de la personne qui supporte la dépense. Seul le fonctionnement de la période choisie est affiché.</p>
 <div class="lab-payer-grid">
-<div class="lab-payer-item" id="lab-charge-joint-wrap"><label for="lab-charge-payer-joint">Avec compte joint</label>
+<div class="lab-payer-item" id="lab-charge-joint-wrap"><label for="lab-charge-payer-joint">Compte qui règle la charge</label>
 <select id="lab-charge-payer-joint"><option value="joint">Compte joint</option><option value="p1">Compte personnel de Personne 1</option><option value="p2">Compte personnel de Personne 2</option></select></div>
-<div class="lab-payer-item" id="lab-charge-separate-wrap"><label for="lab-charge-payer-separate">Sans compte joint</label>
+<div class="lab-payer-item" id="lab-charge-separate-wrap" hidden><label for="lab-charge-payer-separate">Compte personnel payeur</label>
 <select id="lab-charge-payer-separate"><option value="">À définir…</option><option value="p1">Compte personnel de Personne 1</option><option value="p2">Compte personnel de Personne 2</option></select></div></div>
 <div class="formline" style="margin-top:12px"><label for="lab-charge-effective">Appliquer ce compte de prélèvement</label><select id="lab-charge-effective"><option value="current">Au mois en cours</option><option value="next">À partir du mois suivant</option></select></div><p class="micro-note" id="lab-charge-payer-help"></p></div>
 <div class="formline wide"><label class="default-active"><input id="charge-enabled-default" type="checkbox" checked><span>Charge activée par défaut aux échéances programmées</span></label></div>
@@ -939,7 +940,8 @@ function switchMonth(month){
 }
 function scheduleDescription(ch){const s=ch.schedule||defSchedule();return s.type==='monthly'?'Tous les mois':s.type==='ten'?`${s.months.length} mois/an`:s.type==='quarterly'?'Trimestriel':s.type==='annual'?'Annuel':'Personnalisé'}
 function renderCharges(){
- const choices=[['common','Charges communes','Au prorata des revenus'],['p1','Charges personnelles Personne 1','À 100 % pour Personne 1'],['p2','Charges personnelles Personne 2','À 100 % pour Personne 2']];
+ const commonSplit=window.EQUI_LAB_TEST&&labModeAt(state.month)==='separate'&&labSplitAt(state.month)==='half'?'À parts égales (50/50)':'Au prorata des revenus';
+ const choices=[['common','Charges communes',commonSplit],['p1','Charges personnelles Personne 1','À 100 % pour Personne 1'],['p2','Charges personnelles Personne 2','À 100 % pour Personne 2']];
  by('charge-groups').innerHTML=choices.map(([owner,title,subtitle])=>{
   const charges=labMonthCharges(state.month).filter(x=>x.owner===owner);
   return `<div class="group"><div class="group-head"><div><strong><span class="group-glyph" aria-hidden="true">${themeById(state.theme).icons[owner==='common'?2:owner==='p1'?1:3]}</span> ${title}</strong><small>${subtitle} · <span id="gcount-${owner}">0</span> active(s)</small></div><div class="right"><strong id="g-${owner}">—</strong><small>Total retenu</small></div></div>
@@ -1007,6 +1009,8 @@ function openCharge(id=null){
    const from=scope.value==='next'?next:current,mode=labModeAt(from);
    by('lab-charge-payer-joint').value=ch?labPayer(ch.id,'joint',from):'joint';
    by('lab-charge-payer-separate').value=ch?labPayer(ch.id,'separate',from):'';
+   by('lab-charge-joint-wrap').hidden=mode!=='joint';
+   by('lab-charge-separate-wrap').hidden=mode!=='separate';
    by('lab-charge-joint-wrap').classList.toggle('lab-payer-active',mode==='joint');
    by('lab-charge-separate-wrap').classList.toggle('lab-payer-active',mode==='separate');
    by('lab-charge-payer-help').textContent=labChangeError(from)||('Comptes choisis pour '+labelMonth(from)+'. Les périodes antérieures sont préservées.');
@@ -1757,6 +1761,19 @@ function labUpdateTop(){
   }
  }
  if(corrected)persist();
+ const separate=mode==='separate';
+ const copies={
+  'v9-salary-hint':separate?'Salaires perçus sur les comptes personnels':'Compte de réception au choix pour chaque salaire',
+  'v9-transfer-intro':separate?'Compensation des charges du foyer. Les bonus sont suivis séparément.':'Solde net restant, bonus inclus. Confirmez les mouvements réalisés dans les détails ci-dessous.',
+  'v9-income-impact-title':separate?'↳ Revenus complémentaires (suivi séparé)':'↳ Revenus complémentaires intégrés',
+  'v9-credit-common-label':separate?'Bonus commun':'Compte joint',
+  'v9-income-intro':separate?'Bonus attribués ou communs, indépendants des virements de compensation.':'Versements reçus sur le compte joint.',
+  'v9-income-footer':separate?'Les revenus complémentaires sont suivis sans modifier la compensation des charges.':'Les sommes à reverser sont intégrées aux virements calculés. Ces versements ne changent pas le prorata des salaires.',
+  'v9-calcul-footer':separate?'Les charges communes sont réparties selon le choix du foyer (50/50 ou prorata). Les bonus restent indépendants. Aucun virement bancaire n’est effectué par l’application.':'La répartition des charges communes se base sur les salaires, qu’ils arrivent sur le compte joint ou sur les comptes personnels. Les revenus complémentaires déclarés arrivent sur le joint et sont attribués à leur bénéficiaire. Aucun virement bancaire n’est effectué par cette application.'
+ };
+ for(const [id,value]of Object.entries(copies)){
+  const node=by(id);if(node&&node.textContent!==value)node.textContent=value;
+ }
 }
 function labRemainder(){const c=compute();return c.netN-(Number(state.lab.paid[state.month])||0)}
 function labRenderSeparateResults(){
@@ -1969,7 +1986,7 @@ setTimeout(()=>{
  refresh();
 })();
 </script>
-<script type="module" src="./sync-v8.js?v=9.0"></script>
+<script type="module" src="./sync-v8.js?v=9.0-epuree"></script>
 <script>if("serviceWorker" in navigator && location.protocol==="https:"){navigator.serviceWorker.register("./service-worker.js",{scope:"./"}).catch(()=>{});}</script>
 <script>
 // Masquage visuel local : ne modifie jamais les données du foyer.
