@@ -338,6 +338,7 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
 #lab-charge-effective{width:100%;max-width:400px;padding:10px;border-radius:10px;border:1px solid var(--t-border);background:var(--t-input);color:var(--t-ink)}
 .lab-historical-readonly{padding:10px;border:1px solid #e4b3ad;border-radius:9px;background:#fff2ed;color:#80332b;font-size:12px;margin-top:8px}
 </style>
+<link rel="stylesheet" href="./themes-v9.css?v=1">
 </head>
 <body>
 <div class="app">
@@ -471,7 +472,16 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
 <dialog id="settings-dialog" class="dialog settings-dialog" aria-labelledby="settings-heading"><form id="settings-form" class="dialog-inner"><div class="dialog-title"><div><div class="theme-eyebrow">PERSONNALISATION</div><h2 id="settings-heading">Paramètres</h2></div><button type="button" class="close" id="close-settings" aria-label="Fermer">×</button></div><p class="note">Ces valeurs serviront à préremplir les salaires lorsque tu ouvres un mois qui n'a pas encore été renseigné. Modifier les paramètres ne change pas les salaires déjà saisis.</p><div class="settings-fields"><div class="formline"><label for="person-name-p1">Prénom ou nom du compte personnel 1</label><input id="person-name-p1" type="text" maxlength="32" required placeholder="Ex. Camille" autocomplete="off"></div><div class="formline"><label for="person-name-p2">Prénom ou nom du compte personnel 2</label><input id="person-name-p2" type="text" maxlength="32" required placeholder="Ex. Alex" autocomplete="off"></div><div class="formline"><label for="default-p1">Salaire habituel de Personne 1 (€)</label><input id="default-p1" type="text" inputmode="decimal" required></div><div class="formline"><label for="default-p2">Salaire habituel de Personne 2 (€)</label><input id="default-p2" type="text" inputmode="decimal" required></div><div class="formline" id="v9-default-bank-p1-wrap"><label for="default-bank-p1">Compte recevant habituellement le salaire de Personne 1</label><select id="default-bank-p1"><option value="joint">Compte joint</option><option value="personal">Compte personnel</option></select></div><div class="formline" id="v9-default-bank-p2-wrap"><label for="default-bank-p2">Compte recevant habituellement le salaire de Personne 2</label><select id="default-bank-p2"><option value="joint">Compte joint</option><option value="personal">Compte personnel</option></select></div></div><p class="note" id="v9-settings-bank-help">Chaque mois conserve ses propres choix. Tu peux choisir deux comptes joints, deux comptes personnels ou une configuration mixte.</p><div class="template-settings"><div class="template-settings-head"><div><h3>Revenus complémentaires préenregistrés</h3><p class="note">Personnalise les raccourcis de la page Calcul. Un revenu n'est jamais ajouté automatiquement à un nouveau mois.</p></div></div><div id="settings-income-templates" class="settings-income-templates"></div><button type="button" class="btn secondary" id="add-income-template">＋ Créer un modèle de revenu</button><p class="note template-settings-help">Supprimer un modèle le retire définitivement des prochains mois, sans effacer les versements déjà enregistrés dans les anciens mois. Confirme les changements avec « Enregistrer les paramètres ».</p></div><div class="dialog-actions"><button type="button" id="cancel-settings" class="btn">Annuler</button><button type="submit" class="btn primary">✓ Enregistrer les paramètres</button></div></form></dialog>
 <dialog id="theme-dialog" class="dialog theme-dialog" aria-labelledby="theme-dialog-heading">
   <div class="dialog-inner"><div class="dialog-title"><div><div class="theme-eyebrow">PERSONNALISATION</div><h2 id="theme-dialog-heading">Choisir un univers</h2></div><button class="close" type="button" id="close-themes" aria-label="Fermer">×</button></div>
-    <p class="theme-intro">10 ambiances réellement différentes. Prévisualise les styles et touche celui qui te plaît : tes charges et tes calculs restent inchangés.</p>
+    <p class="theme-intro">16 nouveaux univers inspirés de la finance, de l’équité et de la nature. Choisis une ambiance : les données, charges et calculs ne changent pas.</p>
+    <div class="equi-theme-filters" id="equi-theme-filters" role="group" aria-label="Filtrer les univers">
+      <button type="button" class="equi-theme-filter" data-theme-filter="Tous" aria-pressed="true">Les 16 univers</button>
+      <button type="button" class="equi-theme-filter" data-theme-filter="Finance" aria-pressed="false">Finance</button>
+      <button type="button" class="equi-theme-filter" data-theme-filter="Équité" aria-pressed="false">Équité</button>
+      <button type="button" class="equi-theme-filter" data-theme-filter="Nature" aria-pressed="false">Nature</button>
+      <button type="button" class="equi-theme-filter" data-theme-filter="Créatifs" aria-pressed="false">Créatifs</button>
+      <button type="button" class="equi-theme-filter" data-theme-filter="Classiques" aria-pressed="false">Anciens thèmes</button>
+    </div>
+    <p class="equi-theme-count" id="equi-theme-count" aria-live="polite">16 univers disponibles</p>
     <div class="theme-grid" id="theme-grid" role="group" aria-label="Thèmes disponibles"></div>
     <div class="theme-dialog-foot">Le thème choisi est mémorisé sur cet appareil. Tu peux en changer à tout moment.</div>
   </div>
@@ -581,6 +591,7 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
 </form></div></dialog>
 <div id="v82-backup-offer" class="v82-backup-banner" hidden><span>Une copie automatique est prête.</span><button class="btn tiny" id="v82-download-latest">Télécharger</button><button class="btn tiny" id="v82-dismiss-backup" aria-label="Fermer la proposition de téléchargement">Plus tard</button></div>
 
+<script src="./themes-v9.js?v=1"></script>
 <script>
 (()=>{'use strict';
 const KEY=window.EQUI_V82_DEMO?'equicomptes-multimode-final-lab-v1':(()=>{let v=null;try{v=JSON.parse(localStorage.getItem('equi-v8-verified')||'null')}catch{};
@@ -600,6 +611,9 @@ const DEFAULTS=[]; // Aucune charge ni donnée privée dans le code public.
   {id:'luxe',name:'Élégance',subtitle:'Noir profond · dorures',badge:'◆',icons:['◆','◇','≡','▤','✧'],chart:'double-ring',c:['#1e1c1a','#d9ba73','#c4b7aa'],meta:'#1e1c1a'},
   {id:'studio',name:'Studio Data',subtitle:'Tableau de bord · graphiques',badge:'▥',icons:['▥','◫','≡','▩','▰'],chart:'histogram',c:['#1e293b','#36bad5','#f09350'],meta:'#1e293b'}
  ];
+ // Les 16 thèmes de l'atelier sont mis en avant. Les thèmes historiques restent
+ // accessibles et restent valides pour les appareils qui les utilisaient déjà.
+ if(Array.isArray(window.EQUI16_THEMES))THEMES.unshift(...window.EQUI16_THEMES);
  const themeById=id=>THEMES.find(t=>t.id===id)||THEMES[0];
 
  const by=id=>document.getElementById(id);
@@ -803,15 +817,26 @@ function compute(){
  jointInitial:(bankN==='joint'?n:0)+(bankA==='joint'?a:0)+extraTotal};
 }
 
+let equiThemeFilter='Tous';
 function previewThemes(){
  const current=state.theme;
- by('theme-grid').innerHTML=THEMES.map(t=>`<button type="button" class="theme-option${current===t.id?' chosen':''}" data-theme-choice="${t.id}" aria-pressed="${current===t.id}">
- <div class="theme-sample" style="--sw1:${t.c[0]};--sw2:${t.c[1]};--sw3:${t.c[2]}"><div class="sw-top"><span>${t.badge}</span><span class="sw-bars"><i></i><i></i><i></i></span></div><div class="sw-panels"><i></i><i></i></div><span class="sample-chart ${t.chart}"></span></div>
- <div class="theme-option-caption"><span><strong>${t.name}</strong><small>${t.subtitle}</small></span><b class="theme-check" aria-hidden="true">${current===t.id?'✓':'+'}</b></div></button>`).join('');
+ const available=THEMES.filter(t=>equiThemeFilter==='Classiques'
+   ? !t.equiNew
+   : t.equiNew&&(equiThemeFilter==='Tous'||t.cat===equiThemeFilter));
+ const count=by('equi-theme-count');
+ if(count)count.textContent=available.length+' thème'+(available.length>1?'s':'')+' disponible'+(available.length>1?'s':'');
+ document.querySelectorAll('[data-theme-filter]').forEach(b=>{
+  const on=b.dataset.themeFilter===equiThemeFilter;
+  b.setAttribute('aria-pressed',String(on));
+ });
+ by('theme-grid').innerHTML=available.map(t=>`<button type="button" class="theme-option${current===t.id?' chosen':''}" data-theme-choice="${t.id}" aria-pressed="${current===t.id}">
+ <div class="theme-sample" style="--sw1:${t.c[0]};--sw2:${t.c[1]};--sw3:${t.c[2]}"><div class="sw-top"><span>${esc(t.badge)}</span><span class="sw-bars"><i></i><i></i><i></i></span></div><div class="sw-panels"><i></i><i></i></div><span class="sample-chart ${t.chart}"></span></div>
+ <div class="theme-option-caption"><span><strong>${esc(t.name)}</strong><small>${esc(t.subtitle)}</small><span class="equi-theme-cat">${esc(t.cat||'Classique')}</span></span><b class="theme-check" aria-hidden="true">${current===t.id?'✓':'+'}</b></div></button>`).join('');
 }
 function applyTheme(){
  const t=themeById(state.theme);state.theme=t.id;
  document.documentElement.dataset.theme=t.id;
+ if(typeof window.EQUI16_applySkin==='function')window.EQUI16_applySkin(t);
  const themeCurrent=by('theme-current');if(themeCurrent)themeCurrent.textContent=t.name;
  by('brand-mark').textContent=t.icons[0];
  const names=['calcul','charges','historique','resultat','partage'];
@@ -1403,6 +1428,10 @@ by('ocr-apply').addEventListener('click',ocrApply);
 by('add-charge-top').addEventListener('click',()=>openCharge());by('charge-form').addEventListener('submit',processCharge);by('close-dialog').addEventListener('click',closeCharge);by('cancel-dialog').addEventListener('click',closeCharge);by('delete-charge').addEventListener('click',deleteCharge);by('save-month').addEventListener('click',saveMonth);by('copy-result').addEventListener('click',copyResult);by('history-list').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.restore)restoreMonth(b.dataset.restore);if(b.dataset.removeMonth){const m=b.dataset.removeMonth;if(confirm(`Supprimer l’archive de ${labelMonth(m)} ?`)){state.history=state.history.filter(x=>x.month!==m);persist();renderHistory();toast('Archive supprimée')}}});by('export-data').addEventListener('click',exportData);by('import-trigger').addEventListener('click',()=>by('import-file').click());by('import-file').addEventListener('change',e=>{importData(e.target.files[0]);e.target.value='' });by('print-current').addEventListener('click',()=>{setTab('calcul');setTimeout(()=>window.print(),100)});by('reset-all').addEventListener('click',resetData);
 by('open-themes').addEventListener('click',()=>{previewThemes();const d=by('theme-dialog');if(typeof d.showModal==='function')d.showModal();else d.setAttribute('open','')});
 by('close-themes').addEventListener('click',()=>{const d=by('theme-dialog');if(typeof d.close==='function')d.close();else d.removeAttribute('open')});
+by('equi-theme-filters').addEventListener('click',e=>{
+ const b=e.target.closest('[data-theme-filter]');if(!b)return;
+ equiThemeFilter=b.dataset.themeFilter;previewThemes();
+});
 by('theme-grid').addEventListener('click',e=>{const b=e.target.closest('[data-theme-choice]');if(!b)return;state.theme=b.dataset.themeChoice;applyTheme();persist();renderCharges();toast('Thème « '+themeById(state.theme).name+' » appliqué');const d=by('theme-dialog');if(typeof d.close==='function')d.close();else d.removeAttribute('open')});
 // Toutes les vues doivent réutiliser les noms sélectionnés, y compris les graphiques,
 // listes de choix, historiques, menus de revenus et crédits de remboursement.

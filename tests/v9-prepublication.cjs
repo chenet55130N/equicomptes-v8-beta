@@ -15,6 +15,46 @@ function section(text,start,end){
  for(const script of inline)new Function(script);
  new (Object.getPrototypeOf(async function(){}).constructor)(sync);
  assert.match(html,/const seed=\(\)=>/);
+ // Test des 16 univers de la maquette officielle (aucun changement financier).
+ const vm=require('node:vm');
+ const studio=fs.readFileSync(path.join(__dirname,'../themes-v9.js'),'utf8');
+ const styles=fs.readFileSync(path.join(__dirname,'../themes-v9.css'),'utf8');
+ const palette=new Map();
+ const context={window:{},document:{documentElement:{
+  style:{setProperty:(k,v)=>palette.set(k,v),removeProperty:k=>palette.delete(k)},
+  dataset:{}
+ }}};
+ vm.runInNewContext(studio,context);
+ const univers=context.window.EQUI16_THEMES;
+ assert.equal(univers.length,16,'Seize nouveaux univers devaient être installés');
+ assert.equal(new Set(univers.map(x=>x.id)).size,16,'IDs uniques');
+ assert.equal(univers.filter(x=>x.cat==='Finance').length,5);
+ assert.equal(univers.filter(x=>x.cat==='Équité').length,4);
+ assert.equal(univers.filter(x=>x.cat==='Nature').length,5);
+ assert.equal(univers.filter(x=>x.cat==='Créatifs').length,2);
+ assert.ok(univers.every(x=>x.equiNew&&x.c.length===3&&x.meta&&x.icons.length>=4&&x.chart),'Thèmes compatibles avec le moteur actuel');
+ assert.equal(univers.find(x=>x.name==='Capital Émeraude').h1,'#143c31');
+ assert.equal(univers.find(x=>x.name==='Aurore Magnétique').look,'aurora');
+ assert.equal(univers.find(x=>x.name==='Océan de Verre').id,'ocean-glass','Ne pas écraser le thème Océan historique');
+ assert.match(html,/THEMES\.unshift\(\.\.\.window\.EQUI16_THEMES\)/);
+ assert.match(html,/window\.EQUI16_applySkin\(t\)/);
+ assert.match(html,/data-theme-filter="Finance"/);
+ assert.match(html,/data-theme-filter="Classiques"/);
+ assert.match(html,/themes-v9\.css\?v=1/);
+ assert.match(html,/themes-v9\.js\?v=1/);
+ assert.ok(html.indexOf('src="./themes-v9.js?v=1"')<html.indexOf('const KEY='),'Charger les thèmes avant le moteur');
+ assert.match(fs.readFileSync(path.join(__dirname,'../service-worker.js'),'utf8'),/themes-v9\.css\?v=1/);
+ assert.match(fs.readFileSync(path.join(__dirname,'../service-worker.js'),'utf8'),/themes-v9\.js\?v=1/);
+ for(const look of new Set(univers.map(x=>x.look))){
+  assert.ok(styles.includes('data-equi-look="'+look+'"'),'Rendu spécifique manquant : '+look);
+ }
+ context.window.EQUI16_applySkin(univers[0]);
+ assert.equal(palette.get('--t-primary'),'#227e65');
+ assert.equal(context.document.documentElement.dataset.equiLook,'heritage');
+ context.window.EQUI16_applySkin(null);
+ assert.equal(palette.size,0,'Les thèmes classiques doivent récupérer leurs variables d’origine');
+ assert.equal(context.document.documentElement.dataset.equiLook,undefined);
+
  // Identité de la version installable : l'ancien libellé V8.3 ne doit pas subsister
  // sur l'écran de connexion. Conserver le même identifiant PWA et le même lien.
  const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../manifest.webmanifest'),'utf8'));
@@ -36,7 +76,7 @@ function section(text,start,end){
  assert.match(html,/id="v82-share-copy"/);
  assert.match(html,/id="v82-share-system"/);
  assert.match(html,/const url=by\('v82-share-link'\)\.href/);
- assert.match(serviceWorker,/equi-v8-beta-cache-20261116-v90-qr-sans-url/);
+ assert.match(serviceWorker,/equi-v9-16-themes-20261118-r1/);
  assert.match(serviceWorker,/icon-v9-192\.png/);
  assert.match(serviceWorker,/icon-v9-512\.png/);
  // Régression UI : ni message de prépublication ni configuration bancaire
