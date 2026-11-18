@@ -76,7 +76,7 @@ function section(text,start,end){
  assert.match(html,/id="v82-share-copy"/);
  assert.match(html,/id="v82-share-system"/);
  assert.match(html,/const url=by\('v82-share-link'\)\.href/);
- assert.match(serviceWorker,/equi-v8-beta-cache-20261116-v90-qr-sans-url/);
+ assert.match(serviceWorker,/equi-v9-16-themes-20261118-r1/);
  assert.match(serviceWorker,/icon-v9-192\.png/);
  assert.match(serviceWorker,/icon-v9-512\.png/);
  // Régression UI : ni message de prépublication ni configuration bancaire
