@@ -43,8 +43,8 @@ function section(text,start,end){
  assert.match(html,/themes-v9\.css\?v=1/);
  assert.match(html,/themes-v9\.js\?v=1/);
  assert.ok(html.indexOf('src="./themes-v9.js?v=1"')<html.indexOf('const KEY='),'Charger les thèmes avant le moteur');
- assert.match(serviceWorker,/themes-v9\.css\?v=1/);
- assert.match(serviceWorker,/themes-v9\.js\?v=1/);
+ assert.match(fs.readFileSync(path.join(__dirname,'../service-worker.js'),'utf8'),/themes-v9\.css\?v=1/);
+ assert.match(fs.readFileSync(path.join(__dirname,'../service-worker.js'),'utf8'),/themes-v9\.js\?v=1/);
  for(const look of new Set(univers.map(x=>x.look))){
   assert.ok(styles.includes('data-equi-look="'+look+'"'),'Rendu spécifique manquant : '+look);
  }
