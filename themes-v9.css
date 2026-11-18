@@ -1,0 +1,217 @@
+/* ÉquiComptes V9.0 · univers conçus dans l'atelier des 16 thèmes.
+   Actif uniquement si l'utilisateur choisit l'un des nouveaux univers. */
+html[data-equi-look] {
+ color-scheme:normal;
+ --equi-glass: color-mix(in srgb,var(--t-card), transparent 2%);
+}
+html[data-equi-look] body{background:var(--t-bg);color:var(--t-ink)}
+html[data-equi-look] .app{background:var(--t-bg)}
+html[data-equi-look] .top{
+ background:radial-gradient(ellipse at 88% 0%,var(--equi-glow),transparent 48%),
+            linear-gradient(128deg,var(--equi-h1),var(--equi-h2))!important;
+ border-bottom:1px solid #ffffff22;
+ color:#fff;isolation:isolate;
+}
+html[data-equi-look] .top:after{
+ content:"";position:absolute;width:270px;height:270px;right:-85px;top:-125px;
+ border:34px solid #ffffff11;border-radius:45%;box-shadow:0 0 0 28px #ffffff0a;
+ pointer-events:none;z-index:-1;
+}
+html[data-equi-look] .top .brand-mark{
+ background:linear-gradient(145deg,#ffffff30,#ffffff09)!important;
+ color:#fff!important;border:1px solid #ffffff58;
+ border-radius:calc(var(--t-radius) * .72);
+ box-shadow:0 8px 30px #00000026, inset 0 1px 0 #ffffff69;
+ font-family:var(--t-heading);
+}
+html[data-equi-look] .brand-identity h1,
+html[data-equi-look] .period{
+ font-family:var(--t-heading);
+ font-weight:740;letter-spacing:-.045em;
+}
+html[data-equi-look] .top .theme-launch,
+html[data-equi-look] .top .settings-launch,
+html[data-equi-look] .top .btn{
+ background:#ffffff14;color:#fff;border-color:#ffffff70;
+ backdrop-filter:blur(12px);box-shadow:0 7px 24px #00000020;
+}
+html[data-equi-look] .beta-label{
+ background:#ffffff16;color:#fff;border:1px solid #ffffff70;
+}
+html[data-equi-look] .tabs-wrap{background:var(--equi-h2);border-color:#ffffff23}
+html[data-equi-look] .tab[aria-selected="true"]{border-bottom-color:var(--equi-accent2);color:#fff}
+html[data-equi-look] .main{background:var(--t-bg)}
+html[data-equi-look] .card,
+html[data-equi-look] .group,
+html[data-equi-look] .archive,
+html[data-equi-look] .highlight,
+html[data-equi-look] .debt-card,
+html[data-equi-look] .income-card{
+ border-radius:var(--t-radius);
+ border:1px solid var(--t-line);
+ background:var(--t-card);
+ color:var(--t-ink);box-shadow:var(--t-shadow);
+}
+html[data-equi-look] .highlight{
+ background:linear-gradient(130deg,color-mix(in srgb,var(--t-primary),var(--t-card) 87%),var(--t-card) 65%);
+ border-color:color-mix(in srgb,var(--t-primary),var(--t-line) 73%);
+ position:relative;overflow:hidden;
+}
+html[data-equi-look] .highlight:before{
+ content:"";position:absolute;right:-46px;top:-65px;width:180px;height:180px;
+ border:27px solid color-mix(in srgb,var(--t-primary),transparent 91%);
+ border-radius:50%;pointer-events:none;
+}
+html[data-equi-look] .highlight .transfer,
+html[data-equi-look] .highlight .metric{
+ border-radius:calc(var(--t-radius) * .66);
+ background:var(--t-card);border-color:var(--t-line);color:var(--t-ink);
+}
+html[data-equi-look] .highlight h2,
+html[data-equi-look] .section-top h2,
+html[data-equi-look] .group-head strong,
+html[data-equi-look] .archive h3{
+ font-family:var(--t-heading);letter-spacing:-.035em;color:var(--t-ink);
+}
+html[data-equi-look] .group-head,
+html[data-equi-look] .group-title{
+ background:var(--t-card2);color:var(--t-ink);border-bottom-color:var(--t-line);
+}
+html[data-equi-look] .group-head strong,
+html[data-equi-look] .charge-name{color:var(--t-ink)}
+html[data-equi-look] .charge{border-bottom-color:var(--t-line)}
+html[data-equi-look] .charge .amt,
+html[data-equi-look] .input-wrap,
+html[data-equi-look] input,
+html[data-equi-look] select,
+html[data-equi-look] textarea{
+ border-color:var(--t-border);color:var(--t-ink);background:var(--t-input);
+}
+html[data-equi-look] .btn.primary{box-shadow:0 7px 22px color-mix(in srgb,var(--t-primary),transparent 78%)}
+html[data-equi-look] .section-top .hint,
+html[data-equi-look] .note,
+html[data-equi-look] .footnote{color:var(--t-muted)}
+html[data-equi-look] .dialog{
+ background:var(--t-card);color:var(--t-ink);border-radius:calc(var(--t-radius) * 1.1);
+ border:1px solid var(--t-line);box-shadow:0 24px 80px #0005;
+}
+html[data-equi-look] .dialog .dialog-inner{background:var(--t-card);color:var(--t-ink)}
+html[data-equi-look] .dialog .close{background:var(--t-card2);color:var(--t-ink)}
+html[data-equi-look] .action-strip,
+html[data-equi-look] .v82-income,
+html[data-equi-look] .debt-item{
+ border-color:var(--t-line);background:var(--t-card);color:var(--t-ink);
+ border-radius:calc(var(--t-radius) * .8);
+}
+html[data-equi-look] .pill{background:var(--t-card2);color:var(--t-ink)}
+html[data-equi-look] .theme-chart{color:var(--t-ink)}
+/* Décors et matériaux — reprise de l'atelier. */
+html[data-equi-look="night"] .top{
+ background-image:linear-gradient(90deg,#ffffff0a 1px,transparent 1px),
+ linear-gradient(0deg,#ffffff0a 1px,transparent 1px),
+ radial-gradient(ellipse at 92% 8%,var(--equi-glow),transparent 58%),
+ linear-gradient(120deg,var(--equi-h1),var(--equi-h2))!important;
+ background-size:25px 25px,25px 25px,auto,auto;
+}
+html[data-equi-look="night"] .highlight,
+html[data-equi-look="futurist"] .highlight{
+ box-shadow:0 0 0 1px color-mix(in srgb,var(--t-primary),transparent 60%),
+ 0 0 30px color-mix(in srgb,var(--t-primary),transparent 84%);
+}
+html[data-equi-look="heritage"] .card,
+html[data-equi-look="heritage"] .highlight,
+html[data-equi-look="heritage"] .group{
+ outline:1px solid color-mix(in srgb,var(--t-primary),transparent 70%);outline-offset:-7px;
+}
+html[data-equi-look="heritage"] .top:after{
+ width:185px;height:185px;border-radius:50%;top:-65px;right:-60px;
+ box-shadow:0 0 0 13px #ffffff0b,0 0 0 30px #ffffff0a;
+}
+html[data-equi-look="nature"] .top:after{
+ width:260px;height:210px;top:-75px;right:-80px;
+ border-radius:0 94% 0 94%;transform:rotate(18deg);
+ border:34px solid #ffffff0b;box-shadow:0 0 0 26px #ffffff06;
+}
+html[data-equi-look="nature"] .card{border-radius:36px 13px 32px 14px}
+html[data-equi-look="waves"] .top:after{
+ width:330px;height:210px;border-radius:47%;top:-100px;right:-100px;
+ transform:rotate(-14deg);border:25px solid #ffffff0f;
+ box-shadow:0 25px 0 20px #ffffff09,0 45px 0 34px #ffffff08;
+}
+html[data-equi-look="warm"] .top{
+ background-image:radial-gradient(ellipse at 90% 8%,var(--equi-glow),transparent 48%),
+ repeating-linear-gradient(110deg,transparent 0 18px,#ffffff05 18px 19px),
+ linear-gradient(125deg,var(--equi-h1),var(--equi-h2))!important;
+}
+html[data-equi-look="warm"] .brand-mark{border-radius:50%}
+html[data-equi-look="warm"] .card{border-radius:9px 27px 9px 27px}
+html[data-equi-look="futurist"] .top{
+ background-image:linear-gradient(135deg,transparent 43%,#ffffff0f 43% 46%,transparent 46% 56%,#ffffff09 56% 59%,transparent 59%),
+ radial-gradient(ellipse at 80% 10%,var(--equi-glow),transparent 48%),
+ linear-gradient(120deg,var(--equi-h1),var(--equi-h2))!important;
+}
+html[data-equi-look="futurist"] .card,
+html[data-equi-look="futurist"] .highlight{border-radius:12px}
+html[data-equi-look="soft"] .top:after{
+ width:220px;height:220px;top:-120px;right:-63px;border-width:40px;
+ border-radius:40%;box-shadow:0 0 0 22px #ffffff09;
+}
+html[data-equi-look="soft"] .card{border-radius:28px}
+html[data-equi-look="bold"] .top:after{
+ width:225px;height:225px;top:-88px;right:-70px;
+ border:30px solid #ffffff18;border-radius:24px;transform:rotate(38deg);
+}
+html[data-equi-look="bold"] .section-top h2{text-transform:uppercase;letter-spacing:-.6px}
+html[data-equi-look="aurora"] .top:before{
+ content:"";position:absolute;inset:-20px;pointer-events:none;z-index:-1;
+ background:radial-gradient(ellipse at 64% 10%,#58ffd56c,transparent 40%),
+ radial-gradient(ellipse at 90% 70%,#d888ff66,transparent 58%),
+ radial-gradient(ellipse at 15% 110%,#48adf965,transparent 58%);
+ filter:blur(13px);animation:equiAurora 9s ease-in-out infinite alternate;
+}
+@keyframes equiAurora{to{transform:translateX(-8%) scale(1.16);opacity:.92}}
+html[data-equi-look="aurora"] .highlight{
+ border-color:color-mix(in srgb,var(--t-primary),transparent 25%);
+ box-shadow:0 0 25px color-mix(in srgb,var(--t-primary),transparent 80%);
+}
+html[data-equi-look="minimal"] .top:after{
+ width:140px;height:140px;top:-45px;right:-36px;border:1px solid #ffffff69;
+ border-radius:50%;box-shadow:0 0 0 27px #ffffff12,0 0 0 54px #ffffff0e;
+}
+html[data-equi-look="minimal"] .card,
+html[data-equi-look="minimal"] .highlight{box-shadow:none}
+/* Sélecteur visuel — 16 univers + accès séparé aux thèmes historiques. */
+.equi-theme-filters{display:flex;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;
+ padding:3px 1px 12px;margin:12px 0 3px;scrollbar-width:thin}
+.equi-theme-filter{white-space:nowrap;min-height:36px;border-radius:99px;
+ border:1px solid var(--t-line);background:var(--t-card2);color:var(--t-ink);
+ padding:7px 11px;font-size:12px;font-weight:750}
+.equi-theme-filter[aria-pressed="true"]{background:var(--t-primary);
+ color:var(--t-primary-text);border-color:var(--t-primary)}
+.theme-option{overflow:hidden;min-height:143px}
+.theme-option .theme-sample{height:100px;background:
+ radial-gradient(circle at 84% 18%,#ffffff27 0,transparent 55%),
+ linear-gradient(135deg,var(--sw1),color-mix(in srgb,var(--sw1),var(--sw2) 38%));
+ border-radius:10px}
+.theme-option .theme-sample:after{
+ content:"";width:115px;height:115px;position:absolute;top:-70px;right:-35px;
+ border:15px solid #ffffff14;border-radius:50%;pointer-events:none;
+}
+.theme-option .theme-sample .sw-top{z-index:1}
+.theme-option .theme-sample .sw-bars,
+.theme-option .theme-sample .sw-panels{z-index:1}
+.theme-option-caption{align-items:flex-start}
+.theme-option-caption small{line-height:1.3}
+.theme-option .equi-theme-cat{display:block;font-size:9px;font-weight:850;letter-spacing:1px;
+ text-transform:uppercase;color:var(--t-muted);margin-top:5px}
+.theme-option.chosen{box-shadow:0 0 0 2px color-mix(in srgb,var(--t-primary),transparent 35%)}
+.equi-theme-count{font-size:11px;color:var(--t-muted);margin:0 0 12px}
+@media(max-width:430px){
+ .equi-theme-filter{padding:7px 10px;font-size:11px}
+ .theme-grid{gap:9px}
+ .theme-option{min-height:130px}
+ .theme-option .theme-sample{height:78px}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-equi-look="aurora"] .top:before{animation:none}
+}
