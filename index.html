@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <meta name="theme-color" content="#10233f">
-<meta name="application-name" content="ÉquiComptes V9.0.2">
+<meta name="application-name" content="ÉquiComptes V9.0.3">
 <meta name="apple-mobile-web-app-title" content="ÉquiComptes V9">
 <meta name="description" content="Répartition des salaires, échéanciers photo ou manuels, revenus complémentaires et remboursements à 50/50.">
-<title>ÉquiComptes V9.0.2 · Multi-foyers synchronisés</title>
+<title>ÉquiComptes V9.0.3 · Multi-foyers synchronisés</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-v9-192.png">
 <link rel="apple-touch-icon" href="./icon-v9-192.png">
@@ -345,7 +345,7 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V9.0.2</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
+<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V9.0.3</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
 <div class="beta-sync-strip" aria-label="Connexion et foyer">
   <div class="beta-strip-status">
     <span id="beta-sync-indicator" role="status" aria-live="polite" data-sync-state="neutral">Connexion en cours…</span>
@@ -428,7 +428,7 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
 <select id="lab-charge-payer-joint"><option value="joint">Compte joint</option><option value="p1">Compte personnel de Personne 1</option><option value="p2">Compte personnel de Personne 2</option></select></div>
 <div class="lab-payer-item" id="lab-charge-separate-wrap" hidden><label for="lab-charge-payer-separate">Compte personnel payeur</label>
 <select id="lab-charge-payer-separate"><option value="">À définir…</option><option value="p1">Compte personnel de Personne 1</option><option value="p2">Compte personnel de Personne 2</option></select></div></div>
-<div class="formline" style="margin-top:12px"><label for="lab-charge-effective">Appliquer ce compte de prélèvement</label><select id="lab-charge-effective"><option value="current">Au mois en cours</option><option value="next">À partir du mois suivant</option></select></div><p class="micro-note" id="lab-charge-payer-help"></p></div>
+<div class="formline" style="margin-top:12px"><label for="lab-charge-effective">Appliquer les changements à partir du mois</label><input id="lab-charge-effective" type="month" required><p class="micro-note">Choisis librement une période future : les échéances antérieures et les résultats déjà validés restent préservés.</p></div><p class="micro-note" id="lab-charge-payer-help"></p></div>
 <div class="formline wide"><label class="default-active"><input id="charge-enabled-default" type="checkbox" checked><span>Charge activée par défaut aux échéances programmées</span></label></div>
 <div class="formline wide"><label for="schedule-type">Fréquence des prélèvements</label><select id="schedule-type"><option value="monthly">Tous les mois (12/12)</option><option value="ten">Mois sélectionnés (ex. 10/12)</option><option value="quarterly">Trimestrielle (tous les 3 mois)</option><option value="annual">Annuelle (1 mois par an)</option><option value="custom">Échéancier personnalisé (montants par mois)</option></select></div>
 <div class="formline"><label for="schedule-start">Début (facultatif)</label><input id="schedule-start" type="month"></div><div class="formline"><label for="schedule-end">Fin (facultative)</label><input id="schedule-end" type="month"></div>
@@ -490,9 +490,9 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
   </div>
 </dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V9.0.2">
+<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V9.0.3">
  <div class="beta-gate-card">
-  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V9.0.2</strong><small>Multi-foyers • synchronisation privée</small></div></div>
+  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V9.0.3</strong><small>Multi-foyers • synchronisation privée</small></div></div>
   <p class="beta-gate-warn">Une anomalie de fonctionnement ? Merci de la signaler à la personne qui t’a partagé ÉquiComptes.</p>
   <p id="beta-gate-message" class="beta-gate-message" role="status" aria-live="polite">Préparation de la connexion…</p>
   <section id="beta-config-panel" hidden>
@@ -565,7 +565,7 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
 <button class="btn" data-v82-action="help">? Aide et suggestions</button>
 <button class="btn" data-v82-action="share">▦ Partager ÉquiComptes</button>
 <button class="btn" data-v82-action="banking">⇄ Changer de mode bancaire</button>
-</div><p class="footnote" id="v9-menu-version">ÉquiComptes V9.0.2 · Synchronisation Firebase · Données privées du foyer</p></div></dialog>
+</div><p class="footnote" id="v9-menu-version">ÉquiComptes V9.0.3 · Synchronisation Firebase · Données privées du foyer</p></div></dialog>
 <dialog id="v82-share" class="dialog" aria-labelledby="v82-share-title"><div class="dialog-inner">
 <div class="dialog-title"><h2 id="v82-share-title">Partager ÉquiComptes</h2><button class="close" data-v82-close="v82-share" aria-label="Fermer">×</button></div>
 <p class="note">Faites scanner ce QR code pour ouvrir l'application officielle et l'installer sur un téléphone.</p>
@@ -673,7 +673,33 @@ function normalizeSchedule(raw){const d=defSchedule();if(!raw||typeof raw!=='obj
  }
  return d;
 }
+// V9.0.3 : plusieurs programmations datées par charge, un ID Firebase stable.
+function chargeVersionForMonth(ch,month){
+ let v=ch;for(const row of Array.isArray(ch.revisions)?ch.revisions:[])
+  if(validMonth(row.from)&&row.from<=month&&(v===ch||row.from>=v.from))v=row;
+ return v;
+}
+function chargeAt(ch,month){
+ if(!ch)return null;
+ const v=chargeVersionForMonth(ch,month);
+ if(v.removed)return null;
+ return {id:ch.id,name:v.name,amount:v.amount,owner:v.owner,enabled:v.enabled,schedule:v.schedule};
+}
+function chargeRevision(ch,from,removed=false){
+ const schedule=normalizeSchedule(ch.schedule);
+ return {from,removed,name:String(ch.name||'Charge').slice(0,90),amount:safeCents(ch.amount),
+ owner:['common','p1','p2'].includes(ch.owner)?ch.owner:'common',
+ enabled:removed?false:ch.enabled!==false,schedule:removed?{...schedule,overrides:{}}:schedule};
+}
+function chargeProtection(from){
+ const months=new Set([...Object.keys(state.monthlySalaries||{}),...state.history.map(h=>h.month),
+ ...Object.keys(state.lab?.frozen||{}),...Object.keys(state.lab?.paid||{})]);
+ const blocked=[...months].filter(m=>validMonth(m)&&m>=from&&(labIsClosed(m)||labHasConfirmedMovement(m))).sort()[0];
+ return blocked?'Un mois concerné est déjà validé : '+labelMonth(blocked)+'. Choisis une date après cette période, ou annule sa validation.':'';
+}
 function effectiveCharge(ch,month){
+ ch=chargeAt(ch,month);
+ if(!ch)return {amount:0,active:false,planned:0,overridden:false,reason:'Charge supprimée'};
  const sch=ch.schedule||defSchedule(),m=Number(month.slice(5)),inRange=(!sch.start||month>=sch.start)&&(!sch.end||month<=sch.end);
  const due=sch.type==='monthly'||(sch.type==='ten'&&sch.months.includes(m))||(sch.type==='quarterly'&&(m-sch.anchor+12)%3===0)||(sch.type==='annual'&&m===sch.anchor);
  const ov=sch.overrides?.[month]||null;
@@ -688,7 +714,7 @@ function effectiveCharge(ch,month){
  if(sch.type==='custom'&&!ov)amount=0;
  return {amount,active:amount>0,planned,overridden:!!ov,reason:amount>0?'Prévu':(ch.enabled===false?'Désactivé':'Non prélevé')};
 }
-function chargeMonthTotal(month){return (window.EQUI_LAB_TEST?labMonthCharges(month):state.charges).reduce((a,ch)=>a+effectiveCharge(ch,month).amount,0)}
+function chargeMonthTotal(month){return labMonthCharges(month).reduce((a,ch)=>a+effectiveCharge(ch,month).amount,0)}
 const seed=()=>{const month=monthNow(),settings={...SETTINGS_DEFAULT},sal=newSalaries(settings);return {month,salaryN:sal.n,salaryA:sal.a,bankN:sal.bankN,bankA:sal.bankA,monthlySalaries:{[month]:{...sal}},settings,incomeTemplates:defaultIncomeTemplates(settings),additionalIncome:[],charges:DEFAULTS.map((a,i)=>({id:'initial-'+i,name:a[0],amount:cents(a[1]),owner:a[2],enabled:a[3]!==false})),history:[],theme:'signature',expenses:[],settlements:[],
  ...(window.EQUI_LAB_TEST?{lab:{initial:'joint',transitions:[],pending:null,payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},clock:new Date().toISOString().slice(0,10),latestMonthSeen:month,paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}}}:{})}};
 function adaptOldBackup(data){
@@ -742,7 +768,14 @@ function validate(data){
  else {clean.salaryN=clean.monthlySalaries[clean.month].n;clean.salaryA=clean.monthlySalaries[clean.month].a;clean.bankN=clean.monthlySalaries[clean.month].bankN;clean.bankA=clean.monthlySalaries[clean.month].bankA}
  clean.additionalIncome=Array.isArray(data.additionalIncome)?data.additionalIncome.slice(0,2000).filter(x=>x&&validMonth(x.month)).map((x,i)=>({id:String(x.id||'inc-'+i).slice(0,90),month:x.month,name:String(x.name||'Revenu complémentaire').slice(0,100),amount:safeCents(x.amount),owner:['p1','p2','common','split'].includes(x.owner)?x.owner:'common',paid:{p1:x.paid?.p1===true,p2:x.paid?.p2===true,common:x.paid?.common===true},templateId:String(x.templateId||'').slice(0,80),enabled:x.enabled!==false})):[];
  clean.theme=THEMES.some(t=>t.id===data.theme)?data.theme:'signature';
- clean.charges=data.charges.slice(0,300).map((x,i)=>({id:String(x.id||'item-'+i).slice(0,80),name:String(x.name||'Charge').slice(0,90),amount:safeCents(x.amount),owner:['common','p1','p2'].includes(x.owner)?x.owner:'common',enabled:x.enabled!==false,schedule:normalizeSchedule(x.schedule)}));
+ clean.charges=data.charges.slice(0,300).map((x,i)=>({
+ id:String(x.id||'item-'+i).slice(0,80),name:String(x.name||'Charge').slice(0,90),
+ amount:safeCents(x.amount),owner:['common','p1','p2'].includes(x.owner)?x.owner:'common',
+ enabled:x.enabled!==false,schedule:normalizeSchedule(x.schedule),
+ revisions:Array.isArray(x.revisions)?x.revisions.filter(v=>v&&validMonth(v.from)).slice(0,240)
+  .map(v=>chargeRevision(v,v.from,v.removed===true)).sort((a,b)=>a.from.localeCompare(b.from))
+  .filter((v,i,all)=>i===all.length-1||v.from!==all[i+1].from):[]
+}));
  clean.history=data.history.slice(0,120).filter(x=>x&&validMonth(x.month)&&x.result).map(x=>({month:x.month,savedAt:String(x.savedAt||''),result:x.result,charges:Array.isArray(x.charges)?x.charges.slice(0,300):[],additionalIncome:Array.isArray(x.additionalIncome)?x.additionalIncome.slice(0,500).map(v=>({...v})):null}));
  clean.expenses=Array.isArray(data.expenses)?data.expenses.slice(0,2500).filter(x=>x&&typeof x==='object').map((x,i)=>({id:String(x.id||'e-'+i).slice(0,80),label:String(x.label||'Achat partagé').slice(0,100),amount:safeCents(x.amount),payer:x.payer==='p2'?'p2':'p1',repayment:x.repayment==='full'?'full':'half',date:/^\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01])$/.test(x.date||'')?x.date:new Date().toISOString().slice(0,10),settlementId:String(x.settlementId||'').slice(0,80)})).filter(x=>x.amount>0):[];
  clean.settlements=Array.isArray(data.settlements)?data.settlements.slice(0,500).filter(x=>x&&typeof x==='object').map((x,i)=>({id:String(x.id||'s-'+i).slice(0,80),at:String(x.at||'').slice(0,50),amount:safeCents(x.amount),from:x.from==='p1'?'p1':x.from==='p2'?'p2':'aucun',to:x.to==='p1'?'p1':x.to==='p2'?'p2':'aucun',expenseIds:Array.isArray(x.expenseIds)?x.expenseIds.slice(0,2500).map(id=>String(id).slice(0,80)):[]})):[];
@@ -1020,96 +1053,118 @@ function scheduleRender(){
  by('schedule-months').innerHTML=MONTHS.map((label,i)=>`<button type="button" class="month-pick" data-pick-month="${i+1}" aria-pressed="${sch.months.includes(i+1)}">${label}</button>`).join('');
  by('chosen-months-count').textContent=`${sch.months.length} mois sélectionnés. Pour une assurance sur 10 mois, choisis les dix mois réellement prélevés.`;
  let total=0;
- by('schedule-grid').innerHTML=MONTHS.map((label,i)=>{const m=`${year}-${String(i+1).padStart(2,'0')}`,e=schedulePart(chargeDraft,m),ov=sch.overrides[m];total+=e.amount;
+ const from=by('lab-charge-effective').value||state.month;
+ const previous=editingId?state.charges.find(x=>x.id===editingId):null;
+ by('schedule-grid').innerHTML=MONTHS.map((label,i)=>{
+ const m=`${year}-${String(i+1).padStart(2,'0')}`,past=!!(previous&&m<from);
+ const ch=past?chargeAt(previous,m):chargeDraft;
+ const e=ch?schedulePart(ch,m):{amount:0,planned:0,active:false,overridden:false};
+ const ov=ch?.schedule?.overrides?.[m];total+=e.amount;
  const placeholder=e.planned>0?formatInput(e.planned):'0,00';
  return `<div class="schedule-month-cell${e.active?' due':''}${ov?' exception':''}">
  <div class="month-name">${label} ${year}${ov?'<span title="Exception">✎</span>':''}</div>
  <div class="month-state">${ov?e.amount?'Montant ajusté':'Dispensé / 0 €':e.amount?'Échéance prévue':'Sans prélèvement'}</div>
- <input type="text" inputmode="decimal" data-schedule-month="${m}" value="${ov&&Object.prototype.hasOwnProperty.call(ov,'amount')?formatInput(ov.amount):''}" placeholder="${placeholder}" aria-label="${label} ${year}, montant exceptionnel" autocomplete="off">
+ <input type="text" inputmode="decimal" data-schedule-month="${m}" value="${ov&&Object.prototype.hasOwnProperty.call(ov,'amount')?formatInput(ov.amount):''}" placeholder="${placeholder}" aria-label="${label} ${year}, montant exceptionnel" autocomplete="off" ${m<from?'disabled title="Période antérieure conservée"':''}>
  ${ov?`<button type="button" data-restore-schedule="${m}">↺ Rétablir</button>`:'<span style="display:block;height:27px"></span>'}</div>`}).join('');
  by('schedule-annual-sum').innerHTML=`<span>Total prévu pour ${year}</span><strong>${fmt(total)}</strong>`;
 }
+function chargeFillForm(ch){
+ by('charge-name').value=ch.name;by('charge-amount').value=ch.id?formatInput(ch.amount):'';
+ by('charge-owner').value=ch.owner;by('charge-enabled-default').checked=ch.enabled!==false;
+ by('schedule-type').value=ch.schedule.type;by('schedule-start').value=ch.schedule.start;
+ by('schedule-end').value=ch.schedule.end;by('schedule-anchor').value=ch.schedule.anchor;
+ scheduleRender();
+}
 function openCharge(id=null){
- editingId=id;const ch=(window.EQUI_LAB_TEST?labMonthCharges(state.month):state.charges).find(x=>x.id===id);
- const chargeNotice=by('charge-error');chargeNotice.textContent='';chargeNotice.hidden=true;
- chargeDraft=ch?JSON.parse(JSON.stringify(ch)):{id:null,name:'',amount:0,owner:'common',enabled:true,schedule:defSchedule()};
+ editingId=id;
+ const existing=id?state.charges.find(x=>x.id===id):null;
+ if(id&&!existing){toast('Charge introuvable. Actualise la page.');return}
+ const current=state.lab.latestMonthSeen;
+ let from=state.month>=current?state.month:current;
+ for(let i=0;i<240&&labChangeError(from);i++)from=labNextMonth(from);
+ const currentData=existing?chargeAt(existing,from):null;
+ chargeDraft=JSON.parse(JSON.stringify(currentData||{id:null,name:'',amount:0,owner:'common',enabled:true,schedule:defSchedule()}));
  chargeDraft.schedule=normalizeSchedule(chargeDraft.schedule);
+ if(!existing&&(!chargeDraft.schedule.start||chargeDraft.schedule.start<from))chargeDraft.schedule.start=from;
  scheduleYear=Number(state.month.slice(0,4));
- by('dialog-title').textContent=ch?'Modifier et programmer':'Ajouter une charge';
- by('charge-name').value=chargeDraft.name;by('charge-amount').value=ch?formatInput(ch.amount):'';
- by('charge-owner').value=chargeDraft.owner;by('charge-enabled-default').checked=chargeDraft.enabled;
- if(window.EQUI_LAB_TEST){
-  const current=state.lab.latestMonthSeen,next=labNextMonth(current),scope=by('lab-charge-effective');
-  scope.options[0].textContent='Mois en cours ('+labelMonth(current)+')';
-  scope.options[1].textContent='Mois suivant ('+labelMonth(next)+')';
-  scope.value=(state.month===next||((!ch||(ch.schedule?.start||'')>=next)&&state.month===current&&labIsClosed(current)))?'next':'current';
-  // Les nouvelles charges et les charges déjà programmées dans le futur
-  // restent modifiables au mois suivant, sans toucher au mois courant validé.
-  if(!ch&&scope.value==='next'&&(!chargeDraft.schedule.start||chargeDraft.schedule.start<next))chargeDraft.schedule.start=next;
-  const futureEditable=scope.value==='next'&&(!ch||(ch.schedule?.start||'')>=next)
-    &&(state.month===current||state.month===next)&&!labChangeError(next);
-  scope.disabled=state.month<current||state.month>next||(labIsClosed(state.month)&&!futureEditable);
-  const refresh=()=>{
-   const from=scope.value==='next'?next:current,mode=labModeAt(from);
-   by('lab-charge-payer-joint').value=ch?labPayer(ch.id,'joint',from):'joint';
-   by('lab-charge-payer-separate').value=ch?labPayer(ch.id,'separate',from):'';
-   by('lab-charge-joint-wrap').hidden=mode!=='joint';
-   by('lab-charge-separate-wrap').hidden=mode!=='separate';
-   by('lab-charge-joint-wrap').classList.toggle('lab-payer-active',mode==='joint');
-   by('lab-charge-separate-wrap').classList.toggle('lab-payer-active',mode==='separate');
-   by('lab-charge-payer-help').textContent=labChangeError(from)||('Comptes choisis pour '+labelMonth(from)+'. Les périodes antérieures sont préservées.');
-  };
-  scope.onchange=()=>{refresh();if(scope.value==='next'&&(!ch||(ch.schedule?.start||'')>=next)&&(!by('schedule-start').value||by('schedule-start').value<next)){by('schedule-start').value=next;scheduleRender();}};refresh();
-  const readOnly=state.month<current||state.month>next||(labIsClosed(state.month)&&!futureEditable);
-  by('charge-form').querySelectorAll('input,select,button[type="submit"],#delete-charge').forEach(el=>el.disabled=readOnly);
-  by('lab-charge-payer-help').classList.toggle('lab-historical-readonly',readOnly);
-  if(readOnly)by('lab-charge-payer-help').textContent='CONSULTATION SEULEMENT : mois précédent ou clôturé. Aucune modification autorisée.';
+ by('dialog-title').textContent=existing?'Modifier et programmer':'Ajouter une charge';
+ by('charge-error').hidden=true;by('charge-error').textContent='';
+ const scope=by('lab-charge-effective');scope.min=current;scope.value=from;
+ const readOnly=state.month<current;
+ by('charge-form').querySelectorAll('input,select,button[type="submit"],#delete-charge').forEach(el=>el.disabled=readOnly);
+ function refreshPayer(){
+  const month=scope.value,mode=labModeAt(month);
+  by('lab-charge-payer-joint').value=existing?labPayer(existing.id,'joint',month):'joint';
+  by('lab-charge-payer-separate').value=existing?labPayer(existing.id,'separate',month):'';
+  by('lab-charge-joint-wrap').hidden=mode!=='joint';
+  by('lab-charge-separate-wrap').hidden=mode!=='separate';
+  by('lab-charge-joint-wrap').classList.toggle('lab-payer-active',mode==='joint');
+  by('lab-charge-separate-wrap').classList.toggle('lab-payer-active',mode==='separate');
+  by('lab-charge-payer-help').textContent=readOnly?'Mois passé : consultation seulement.':
+   chargeProtection(month)||('Modifications valables à partir de '+labelMonth(month)+'. Les périodes antérieures sont préservées.');
  }
-
- by('schedule-type').value=chargeDraft.schedule.type;by('schedule-start').value=chargeDraft.schedule.start;
- by('schedule-end').value=chargeDraft.schedule.end;by('schedule-anchor').value=chargeDraft.schedule.anchor;
- by('delete-charge').classList.toggle('hidden',!ch);
- scheduleRender();const dialog=by('charge-dialog');if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
+ scope.onchange=()=>{
+  if(!validMonth(scope.value)||scope.value<current){chargeError('Choisis un mois actuel ou futur.');return}
+  if(!confirm('Changer le mois rechargera les paramètres de cette période. Les saisies non enregistrées seront abandonnées. Continuer ?')){scope.value=from;return}
+  from=scope.value;
+  const updated=existing?chargeAt(existing,from):null;
+  chargeDraft=JSON.parse(JSON.stringify(updated||{id:null,name:'',amount:0,owner:'common',enabled:true,schedule:defSchedule()}));
+  chargeDraft.schedule=normalizeSchedule(chargeDraft.schedule);
+  if(!existing&&(!chargeDraft.schedule.start||chargeDraft.schedule.start<from))chargeDraft.schedule.start=from;
+  by('charge-error').hidden=true;chargeFillForm(chargeDraft);refreshPayer();
+ };
+ by('delete-charge').classList.toggle('hidden',!existing);
+ chargeFillForm(chargeDraft);refreshPayer();
+ const dialog=by('charge-dialog');if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
 }
 function closeCharge(){const d=by('charge-dialog');if(typeof d.close==='function')d.close();else d.removeAttribute('open');chargeDraft=null}
-function chargeError(message){const node=by('charge-error');node.textContent=message;node.hidden=false;}
+function chargeError(message){const el=by('charge-error');el.textContent=message;el.hidden=false;el.scrollIntoView({block:'nearest'});}
 function processCharge(ev){
- ev.preventDefault();readChargeDraftFields();const name=chargeDraft.name,raw=by('charge-amount').value.trim();
- if(!name){chargeError('Indique le nom de la charge.');return}
- if(!/^\d+(?:[.,]\d{1,2})?$/.test(raw.replace(/\s/g,''))||chargeDraft.amount>100000000){chargeError('Indique un montant habituel valide (0 € autorisé).');return}
+ ev.preventDefault();readChargeDraftFields();
+ const from=by('lab-charge-effective').value,current=state.lab.latestMonthSeen;
+ if(state.month<current){chargeError('Mois passé : ouvre une période actuelle ou future.');return}
+ if(!validMonth(from)||from<current){chargeError('Choisis un mois actuel ou futur.');return}
+ const raw=by('charge-amount').value.trim();
+ if(!chargeDraft.name){chargeError('Indique le nom de la charge.');return}
+ if(!/^\d+(?:[.,]\d{1,2})?$/.test(raw.replace(/\s/g,''))||chargeDraft.amount>100000000){chargeError('Montant habituel invalide.');return}
  if(chargeDraft.schedule.start&&chargeDraft.schedule.end&&chargeDraft.schedule.start>chargeDraft.schedule.end){chargeError('La date de fin doit être après la date de début.');return}
- if(chargeDraft.schedule.type==='ten'&&!chargeDraft.schedule.months.length){chargeError('Choisis au moins un mois pour cette charge.');return}
- if(window.EQUI_LAB_TEST){
-  const current=state.lab.latestMonthSeen,next=labNextMonth(current),from=by('lab-charge-effective').value==='next'?next:current;
-  const existing=editingId?state.charges.find(x=>x.id===editingId):null;
-  if(editingId&&!existing){chargeError('Charge introuvable : actualise la liste avant de recommencer.');return}
-  const futureOnly=from===next&&(!existing||(existing.schedule?.start||'')>=next);
-  if(state.month<current||state.month>next||(labIsClosed(state.month)&&!futureOnly)){chargeError('Modification impossible : mois antérieur ou clôturé.');return}
-  const financialChange=!existing||JSON.stringify({...existing,schedule:normalizeSchedule(existing.schedule)})!==JSON.stringify({...chargeDraft,schedule:normalizeSchedule(chargeDraft.schedule)});
-  // Une charge déjà effective avant décembre ne peut pas être réécrite globalement
-  // sous le prétexte d'un effet futur : ses mois précédents doivent rester intacts.
-  if(existing&&from===next&&!futureOnly&&financialChange){chargeError('Cette charge comporte des échéances antérieures. Sa programmation complète ne peut pas être modifiée depuis le mois suivant sans altérer les périodes précédentes.');return}
-  if(financialChange&&!futureOnly&&(state.month!==current||labChangeError(current))){chargeError('Les réglages financiers du mois courant sont verrouillés. Pour modifier une charge déjà existante, ses échéances antérieures doivent être préservées.');return}
-  const error=labChangeError(from);if(error){chargeError(error);return}
-  if(futureOnly){
-   if(chargeDraft.schedule.end&&chargeDraft.schedule.end<from){chargeError('La date de fin doit être postérieure au début d’application ('+labelMonth(from)+').');return}
-   if(!chargeDraft.schedule.start||chargeDraft.schedule.start<from)chargeDraft.schedule.start=from;
-  }
-  const joint=by('lab-charge-payer-joint').value,personal=by('lab-charge-payer-separate').value;
-  if(labModeAt(from)==='separate'&&!['p1','p2'].includes(personal)){chargeError('Choisis un compte personnel payeur pour '+labelMonth(from)+'.');return}
-  if(!['joint','p1','p2'].includes(joint)||!['','p1','p2'].includes(personal)){chargeError('Compte de prélèvement invalide.');return}
-  if(editingId){const i=state.charges.findIndex(x=>x.id===editingId);if(i<0)return;state.charges[i]=JSON.parse(JSON.stringify(chargeDraft))}
-  else{chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.charges.push(JSON.parse(JSON.stringify(chargeDraft)))}
-  for(const [mode,value] of [['joint',joint],['separate',personal]])if(labPayer(chargeDraft.id,mode,from)!==value)labSetPayer(chargeDraft.id,mode,from,value);
+ if(chargeDraft.schedule.type==='ten'&&!chargeDraft.schedule.months.length){chargeError('Choisis au moins un mois de prélèvement.');return}
+ if(chargeDraft.schedule.end&&chargeDraft.schedule.end<from){chargeError('La date de fin précède le mois d’application.');return}
+ const existing=editingId?state.charges.find(ch=>ch.id===editingId):null;
+ if(editingId&&!existing){chargeError('Cette charge ne figure plus dans les données.');return}
+ const err=chargeProtection(from);
+ if(err){chargeError(err);return}
+ const joint=by('lab-charge-payer-joint').value,personal=by('lab-charge-payer-separate').value;
+ if(labModeAt(from)==='separate'&&!['p1','p2'].includes(personal)){chargeError('Choisis un compte personnel payeur.');return}
+ if(!['joint','p1','p2'].includes(joint)||!['','p1','p2'].includes(personal)){chargeError('Compte payeur invalide.');return}
+ if(!existing&&(!chargeDraft.schedule.start||chargeDraft.schedule.start<from))chargeDraft.schedule.start=from;
+ const change=chargeRevision(chargeDraft,from);
+ if(existing){
+  const old=chargeAt(existing,from);
+  const data=x=>JSON.stringify(x&&{name:x.name,amount:x.amount,owner:x.owner,enabled:x.enabled,schedule:normalizeSchedule(x.schedule)});
+  if(data(old)!==data(change))
+   existing.revisions=[...(existing.revisions||[]).filter(v=>v.from!==from),change].sort((a,b)=>a.from.localeCompare(b.from));
  }else{
-  if(editingId){const i=state.charges.findIndex(x=>x.id===editingId);if(i<0)return;state.charges[i]=JSON.parse(JSON.stringify(chargeDraft))}
-  else{chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.charges.push(JSON.parse(JSON.stringify(chargeDraft)))}
+  chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+  state.charges.push({...change,id:chargeDraft.id,revisions:[]});
  }
-
- persist();closeCharge();renderCharges();toast('Charge et comptes de prélèvement enregistrés');
+ for(const [mode,value] of [['joint',joint],['separate',personal]]){
+  if(labPayer(chargeDraft.id,mode,from)!==value){
+   const err=labSetPayer(chargeDraft.id,mode,from,value);
+   if(err){chargeError(err);return}
+  }
+ }
+ persist();closeCharge();renderCharges();toast('Charge enregistrée à partir de '+labelMonth(from));
 }
-function deleteCharge(){const c=state.charges.find(x=>x.id===editingId);if(!c)return;if(window.EQUI_LAB_TEST&&(state.month!==state.lab.latestMonthSeen||labChangeError(state.month))){toast('Suppression interdite sur un mois antérieur, clôturé ou validé.');return}if(!confirm(`Supprimer « ${c.name} » et tout son échéancier ?`))return;state.charges=state.charges.filter(x=>x.id!==editingId);if(window.EQUI_LAB_TEST){delete state.lab.payers[editingId];delete state.lab.jointPayers[editingId];delete state.lab.payerChanges.joint[editingId];delete state.lab.payerChanges.separate[editingId];}persist();closeCharge();renderCharges();toast('Charge supprimée')}
-
+function deleteCharge(){
+ const ch=state.charges.find(x=>x.id===editingId),from=by('lab-charge-effective').value;
+ if(!ch)return;
+ if(!validMonth(from)||from<state.lab.latestMonthSeen){chargeError('Choisis un mois actuel ou futur.');return}
+ const err=chargeProtection(from);if(err){chargeError(err);return}
+ if(!confirm('Supprimer « '+ch.name+' » à partir de '+labelMonth(from)+' ? Les périodes antérieures restent conservées.'))return;
+ ch.revisions=[...(ch.revisions||[]).filter(v=>v.from<from),chargeRevision(chargeAt(ch,from)||ch,from,true)].sort((a,b)=>a.from.localeCompare(b.from));
+ persist();closeCharge();renderCharges();toast('Charge supprimée à partir de '+labelMonth(from));
+}
 function transferSentence(person,net){return net>0?`Compte joint → ${person} : ${fmt(net)}`:net<0?`${person} → Compte joint : ${fmt(-net)}`:`${person} : aucun virement`}
 function resultText(r){
  if(!r.s)return 'Renseignez les salaires pour calculer les virements.';
@@ -1275,13 +1330,13 @@ by('charge-groups').addEventListener('change',e=>{
  const toggle=e.target.dataset.toggle,amt=e.target.dataset.amount;
  const ch=state.charges.find(x=>x.id===(toggle||amt));if(!ch)return;
  if(window.EQUI_LAB_TEST&&labChangeError(state.month)){toast(labChangeError(state.month));renderCharges();return}
- ch.schedule=normalizeSchedule(ch.schedule);
- if(toggle){ch.schedule.overrides[state.month]=e.target.checked?{enabled:true,amount:Math.max(effectiveCharge(ch,state.month).amount,ch.amount)}:{enabled:false};}
- if(amt){const v=e.target.value.trim().replace(/\s/g,'');if(!/^\d+(?:[.,]\d{1,2})?$/.test(v)){toast('Montant invalide');renderCharges();return}ch.schedule.overrides[state.month]={amount:parseMoney(v),enabled:parseMoney(v)>0}}
+ const active=chargeVersionForMonth(ch,state.month);active.schedule=normalizeSchedule(active.schedule);
+ if(toggle){active.schedule.overrides[state.month]=e.target.checked?{enabled:true,amount:Math.max(effectiveCharge(ch,state.month).amount,active.amount)}:{enabled:false};}
+ if(amt){const v=e.target.value.trim().replace(/\s/g,'');if(!/^\d+(?:[.,]\d{1,2})?$/.test(v)){toast('Montant invalide');renderCharges();return}active.schedule.overrides[state.month]={amount:parseMoney(v),enabled:parseMoney(v)>0}}
  persist();renderCharges();
 });
 by('charge-groups').addEventListener('click',e=>{
- const reset=e.target.closest('[data-reset-month]');if(reset){if(window.EQUI_LAB_TEST&&labChangeError(state.month)){toast(labChangeError(state.month));return}const ch=state.charges.find(x=>x.id===reset.dataset.resetMonth);if(ch){delete ch.schedule.overrides[state.month];persist();renderCharges();toast('Programmation rétablie pour ce mois')}return}
+ const reset=e.target.closest('[data-reset-month]');if(reset){if(window.EQUI_LAB_TEST&&labChangeError(state.month)){toast(labChangeError(state.month));return}const ch=state.charges.find(x=>x.id===reset.dataset.resetMonth);if(ch){const active=chargeVersionForMonth(ch,state.month);if(active.schedule?.overrides)delete active.schedule.overrides[state.month];persist();renderCharges();toast('Programmation rétablie pour ce mois')}return}
  const b=e.target.closest('[data-edit]');if(b)openCharge(b.dataset.edit);
 });
 by('annual-months').addEventListener('click',e=>{const b=e.target.closest('[data-annual-month]');if(b){switchMonth(b.dataset.annualMonth);renderCharges()}});
@@ -1290,7 +1345,7 @@ by('charge-amount').addEventListener('input',scheduleRender);
 for(const id of ['charge-enabled-default','schedule-type','schedule-start','schedule-end','schedule-anchor'])by(id).addEventListener('change',scheduleRender);
 by('schedule-months').addEventListener('click',e=>{const b=e.target.closest('[data-pick-month]');if(!b)return;readChargeDraftFields();const n=Number(b.dataset.pickMonth),set=new Set(chargeDraft.schedule.months);set.has(n)?set.delete(n):set.add(n);chargeDraft.schedule.months=[...set].sort((a,b)=>a-b);scheduleRender()});
 by('schedule-grid').addEventListener('change',e=>{const key=e.target.dataset.scheduleMonth;if(!key)return;
- const raw=e.target.value.trim().replace(/\s/g,'');if(raw&&!/^\d+(?:[.,]\d{1,2})?$/.test(raw)){toast('Montant invalide pour '+key);scheduleRender();return}
+ const raw=e.target.value.trim().replace(/\s/g,'');if(key<by('lab-charge-effective').value){toast('Période antérieure protégée');scheduleRender();return}if(raw&&!/^\d+(?:[.,]\d{1,2})?$/.test(raw)){toast('Montant invalide pour '+key);scheduleRender();return}
  readChargeDraftFields();if(raw)chargeDraft.schedule.overrides[key]={amount:parseMoney(raw),enabled:parseMoney(raw)>0};else delete chargeDraft.schedule.overrides[key];scheduleRender();
 });
 by('schedule-grid').addEventListener('click',e=>{const b=e.target.closest('[data-restore-schedule]');if(!b)return;delete chargeDraft.schedule.overrides[b.dataset.restoreSchedule];scheduleRender()});
@@ -1787,9 +1842,12 @@ function labSetSplit(from,value){
  return '';
 }
 function labUnconfigured(mode,month=state.month){
- return mode==='separate'?state.charges.filter(ch=>ch.enabled!==false&&!labPayer(ch.id,mode,month)):[];
+ return mode==='separate'?labMonthCharges(month).filter(ch=>ch.enabled!==false&&!labPayer(ch.id,mode,month)):[];
 }
-function labMonthCharges(month=state.month){return labFrozenAt(month)?.charges||state.history.find(h=>h.month===month)?.charges||state.charges}
+function labMonthCharges(month=state.month){
+ const src=labFrozenAt(month)?.charges||state.history.find(h=>h.month===month)?.charges||state.charges;
+ return src.map(ch=>chargeAt(ch,month)).filter(Boolean);
+}
 function labFreezeMonth(month){
  if(labFrozenAt(month))return;
  const original=state.month;
