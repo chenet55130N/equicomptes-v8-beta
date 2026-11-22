@@ -1,5 +1,5 @@
-// ÉquiComptes V9.0.2 — cache PWA officiel, identité et icônes Android actualisées.
-const CACHE='equi-v9-0-2-fix-future-edits-20261122';
+// ÉquiComptes V9.0.3 — cache PWA officiel, identité et icônes Android actualisées.
+const CACHE='equi-v9-0-3-versions-dated-20261122';
 const APP_FILES=['./','./index.html','./manifest.webmanifest','./service-worker.js','./themes-v9.css?v=1','./themes-v9.js?v=1','./sync-v8.js?v=9.0-epuree','./firebase-config.json','./icon-v9-192.png','./icon-v9-512.png'];
 const FIREBASE_SDK='https://www.gstatic.com/firebasejs/13.2.0/';
 self.addEventListener('install',evt=>{
