@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <meta name="theme-color" content="#10233f">
-<meta name="application-name" content="ÉquiComptes V9.0">
+<meta name="application-name" content="ÉquiComptes V9.0.1">
 <meta name="apple-mobile-web-app-title" content="ÉquiComptes V9">
 <meta name="description" content="Répartition des salaires, échéanciers photo ou manuels, revenus complémentaires et remboursements à 50/50.">
-<title>ÉquiComptes V9.0 · Multi-foyers synchronisés</title>
+<title>ÉquiComptes V9.0.1 · Multi-foyers synchronisés</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-v9-192.png">
 <link rel="apple-touch-icon" href="./icon-v9-192.png">
@@ -339,10 +339,13 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
 .lab-historical-readonly{padding:10px;border:1px solid #e4b3ad;border-radius:9px;background:#fff2ed;color:#80332b;font-size:12px;margin-top:8px}
 </style>
 <link rel="stylesheet" href="./themes-v9.css?v=1">
+<style id="equi-v901-charge-fix">
+.charge-error{margin:14px 0;padding:13px 15px;border:1px solid #dc8b9d;border-radius:12px;background:#44252f;color:#fff0f2;font-size:13px;font-weight:650;line-height:1.5}
+</style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V9.0</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
+<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true" id="brand-mark">⚖</div><div class="brand-identity"><h1>ÉquiComptes <span class="beta-label">V9.0.1</span></h1><p>Un partage juste, en un clin d’œil</p></div><button id="v82-open-menu" type="button" class="btn" aria-haspopup="dialog" aria-controls="v82-menu" aria-expanded="false">☰ Menu</button><button class="theme-launch" type="button" id="open-themes" aria-haspopup="dialog" aria-label="Changer le thème"><span aria-hidden="true">◐</span><span class="theme-launch-text">Thèmes</span><span class="theme-current" id="theme-current">Signature</span></button><button class="settings-launch" id="open-settings" type="button" aria-label="Ouvrir les paramètres" title="Paramètres">⚙</button></div><div class="period-row"><div><div class="eyebrow">Répartition du mois</div><div class="period" id="period-label">—</div></div><label aria-label="Choisir le mois"><input id="month" class="month-input" type="month"></label></div></header>
 <div class="beta-sync-strip" aria-label="Connexion et foyer">
   <div class="beta-strip-status">
     <span id="beta-sync-indicator" role="status" aria-live="polite" data-sync-state="neutral">Connexion en cours…</span>
@@ -437,7 +440,7 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
 <div class="schedule-grid" id="schedule-grid"></div>
 <div class="schedule-sum" id="schedule-annual-sum"></div>
 <div class="schedule-help"><strong>À retenir :</strong> les cases du calendrier créent des exceptions pour l'année affichée. Elles n'affectent pas les autres années. Une case laissée vide reprend la programmation habituelle. Les mois à 0 € ne sont pas ajoutés aux charges.</div>
-<div class="dialog-actions"><button type="button" id="delete-charge" class="btn danger hidden">Supprimer</button><div class="right"><button type="button" id="cancel-dialog" class="btn">Annuler</button><button type="submit" class="btn primary">✓ Enregistrer</button></div></div>
+<p id="charge-error" class="charge-error" role="alert" aria-live="assertive" hidden></p><div class="dialog-actions"><button type="button" id="delete-charge" class="btn danger hidden">Supprimer</button><div class="right"><button type="button" id="cancel-dialog" class="btn">Annuler</button><button type="submit" class="btn primary">✓ Enregistrer</button></div></div>
 </form></dialog>
 
 
@@ -487,9 +490,9 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
   </div>
 </dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V9.0">
+<div id="beta-gate" class="beta-gate" role="dialog" aria-modal="true" aria-label="Accès ÉquiComptes V9.0.1">
  <div class="beta-gate-card">
-  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V9.0</strong><small>Multi-foyers • synchronisation privée</small></div></div>
+  <div class="beta-gate-head"><div class="beta-gate-logo">⚖</div><div><strong>ÉquiComptes V9.0.1</strong><small>Multi-foyers • synchronisation privée</small></div></div>
   <p class="beta-gate-warn">Une anomalie de fonctionnement ? Merci de la signaler à la personne qui t’a partagé ÉquiComptes.</p>
   <p id="beta-gate-message" class="beta-gate-message" role="status" aria-live="polite">Préparation de la connexion…</p>
   <section id="beta-config-panel" hidden>
@@ -562,7 +565,7 @@ html[data-bank-mode="separate"] #v9-settings-bank-help{display:none!important}
 <button class="btn" data-v82-action="help">? Aide et suggestions</button>
 <button class="btn" data-v82-action="share">▦ Partager ÉquiComptes</button>
 <button class="btn" data-v82-action="banking">⇄ Changer de mode bancaire</button>
-</div><p class="footnote" id="v9-menu-version">ÉquiComptes V9.0 · Synchronisation Firebase · Données privées du foyer</p></div></dialog>
+</div><p class="footnote" id="v9-menu-version">ÉquiComptes V9.0.1 · Synchronisation Firebase · Données privées du foyer</p></div></dialog>
 <dialog id="v82-share" class="dialog" aria-labelledby="v82-share-title"><div class="dialog-inner">
 <div class="dialog-title"><h2 id="v82-share-title">Partager ÉquiComptes</h2><button class="close" data-v82-close="v82-share" aria-label="Fermer">×</button></div>
 <p class="note">Faites scanner ce QR code pour ouvrir l'application officielle et l'installer sur un téléphone.</p>
@@ -1028,6 +1031,7 @@ function scheduleRender(){
 }
 function openCharge(id=null){
  editingId=id;const ch=(window.EQUI_LAB_TEST?labMonthCharges(state.month):state.charges).find(x=>x.id===id);
+ const chargeNotice=by('charge-error');chargeNotice.textContent='';chargeNotice.hidden=true;
  chargeDraft=ch?JSON.parse(JSON.stringify(ch)):{id:null,name:'',amount:0,owner:'common',enabled:true,schedule:defSchedule()};
  chargeDraft.schedule=normalizeSchedule(chargeDraft.schedule);
  scheduleYear=Number(state.month.slice(0,4));
@@ -1038,8 +1042,10 @@ function openCharge(id=null){
   const current=state.lab.latestMonthSeen,next=labNextMonth(current),scope=by('lab-charge-effective');
   scope.options[0].textContent='Mois en cours ('+labelMonth(current)+')';
   scope.options[1].textContent='Mois suivant ('+labelMonth(next)+')';
-  scope.value=state.month===next?'next':'current';
-  scope.disabled=labIsClosed(state.month)||state.month>next;
+  scope.value=(state.month===next||(!ch&&state.month===current&&labIsClosed(current)))?'next':'current';
+  // Une nouvelle charge future ne doit jamais toucher aux calculs antérieurs.
+  if(!ch&&scope.value==='next'&&(!chargeDraft.schedule.start||chargeDraft.schedule.start<next))chargeDraft.schedule.start=next;
+  scope.disabled=(labIsClosed(state.month)&&(!!ch||state.month!==current))||state.month>next;
   const refresh=()=>{
    const from=scope.value==='next'?next:current,mode=labModeAt(from);
    by('lab-charge-payer-joint').value=ch?labPayer(ch.id,'joint',from):'joint';
@@ -1050,8 +1056,8 @@ function openCharge(id=null){
    by('lab-charge-separate-wrap').classList.toggle('lab-payer-active',mode==='separate');
    by('lab-charge-payer-help').textContent=labChangeError(from)||('Comptes choisis pour '+labelMonth(from)+'. Les périodes antérieures sont préservées.');
   };
-  scope.onchange=refresh;refresh();
-  const readOnly=labIsClosed(state.month);
+  scope.onchange=()=>{refresh();if(!ch&&scope.value==='next'&&(!by('schedule-start').value||by('schedule-start').value<next)){by('schedule-start').value=next;scheduleRender();}};refresh();
+  const readOnly=labIsClosed(state.month)&&(!!ch||state.month!==current);
   by('charge-form').querySelectorAll('input,select,button[type="submit"],#delete-charge').forEach(el=>el.disabled=readOnly);
   by('lab-charge-payer-help').classList.toggle('lab-historical-readonly',readOnly);
   if(readOnly)by('lab-charge-payer-help').textContent='CONSULTATION SEULEMENT : mois précédent ou clôturé. Aucune modification autorisée.';
@@ -1063,22 +1069,29 @@ function openCharge(id=null){
  scheduleRender();const dialog=by('charge-dialog');if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
 }
 function closeCharge(){const d=by('charge-dialog');if(typeof d.close==='function')d.close();else d.removeAttribute('open');chargeDraft=null}
+function chargeError(message){const node=by('charge-error');node.textContent=message;node.hidden=false;}
 function processCharge(ev){
  ev.preventDefault();readChargeDraftFields();const name=chargeDraft.name,raw=by('charge-amount').value.trim();
- if(!name){toast('Indique le nom de la charge.');return}
- if(!/^\d+(?:[.,]\d{1,2})?$/.test(raw.replace(/\s/g,''))||chargeDraft.amount>100000000){toast('Indique un montant habituel valide (0 € autorisé).');return}
- if(chargeDraft.schedule.start&&chargeDraft.schedule.end&&chargeDraft.schedule.start>chargeDraft.schedule.end){toast('La date de fin doit être après la date de début.');return}
- if(chargeDraft.schedule.type==='ten'&&!chargeDraft.schedule.months.length){toast('Choisis au moins un mois pour cette charge.');return}
+ if(!name){chargeError('Indique le nom de la charge.');return}
+ if(!/^\d+(?:[.,]\d{1,2})?$/.test(raw.replace(/\s/g,''))||chargeDraft.amount>100000000){chargeError('Indique un montant habituel valide (0 € autorisé).');return}
+ if(chargeDraft.schedule.start&&chargeDraft.schedule.end&&chargeDraft.schedule.start>chargeDraft.schedule.end){chargeError('La date de fin doit être après la date de début.');return}
+ if(chargeDraft.schedule.type==='ten'&&!chargeDraft.schedule.months.length){chargeError('Choisis au moins un mois pour cette charge.');return}
  if(window.EQUI_LAB_TEST){
   const current=state.lab.latestMonthSeen,next=labNextMonth(current),from=by('lab-charge-effective').value==='next'?next:current;
-  if(state.month<current||state.month>next||labIsClosed(state.month)){toast('Modification impossible : mois antérieur ou clôturé.');return}
   const existing=editingId?state.charges.find(x=>x.id===editingId):null;
+  if(editingId&&!existing){chargeError('Charge introuvable : actualise la liste avant de recommencer.');return}
+  const futureNew=!existing&&from===next;
+  if(state.month<current||state.month>next||(labIsClosed(state.month)&&!futureNew)){chargeError('Modification impossible : mois antérieur ou clôturé.');return}
   const financialChange=!existing||JSON.stringify({...existing,schedule:normalizeSchedule(existing.schedule)})!==JSON.stringify({...chargeDraft,schedule:normalizeSchedule(chargeDraft.schedule)});
-  if(financialChange&&(state.month!==current||labChangeError(current))){toast('Les réglages financiers ne peuvent changer que pour un mois courant non validé.');return}
-  const error=labChangeError(from);if(error){toast(error);return}
+  if(financialChange&&!futureNew&&(state.month!==current||labChangeError(current))){chargeError('Les réglages financiers de ce mois sont verrouillés. Pour ajouter une nouvelle charge sans toucher aux virements validés, choisis « Mois suivant ».');return}
+  const error=labChangeError(from);if(error){chargeError(error);return}
+  if(futureNew){
+   if(chargeDraft.schedule.end&&chargeDraft.schedule.end<from){chargeError('La date de fin doit être postérieure au début d’application ('+labelMonth(from)+').');return}
+   if(!chargeDraft.schedule.start||chargeDraft.schedule.start<from)chargeDraft.schedule.start=from;
+  }
   const joint=by('lab-charge-payer-joint').value,personal=by('lab-charge-payer-separate').value;
-  if(labModeAt(from)==='separate'&&!['p1','p2'].includes(personal)){toast('Choisis un compte personnel payeur pour '+labelMonth(from)+'.');return}
-  if(!['joint','p1','p2'].includes(joint)||!['','p1','p2'].includes(personal)){toast('Compte de prélèvement invalide.');return}
+  if(labModeAt(from)==='separate'&&!['p1','p2'].includes(personal)){chargeError('Choisis un compte personnel payeur pour '+labelMonth(from)+'.');return}
+  if(!['joint','p1','p2'].includes(joint)||!['','p1','p2'].includes(personal)){chargeError('Compte de prélèvement invalide.');return}
   if(editingId){const i=state.charges.findIndex(x=>x.id===editingId);if(i<0)return;state.charges[i]=JSON.parse(JSON.stringify(chargeDraft))}
   else{chargeDraft.id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.charges.push(JSON.parse(JSON.stringify(chargeDraft)))}
   for(const [mode,value] of [['joint',joint],['separate',personal]])if(labPayer(chargeDraft.id,mode,from)!==value)labSetPayer(chargeDraft.id,mode,from,value);
