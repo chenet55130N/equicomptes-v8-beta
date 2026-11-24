@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import {rows} from './env.mjs';
+import {runMath} from './suite.mjs';
+process.env.TZ='UTC';
+runMath();
+for(const name of ['journeys','sync-tests','storage','accounts','dated'])await (await import('./'+name+'.mjs')).run();
+if(!process.argv.includes('--comparaison'))await (await import('./extra.mjs')).run();
+const json=process.argv.indexOf('--json');
+if(json!==-1)fs.writeFileSync(process.argv[json+1],JSON.stringify(rows));
+const failed=rows.filter(r=>!r.ok);
+console.log(rows.length+' scénarios, '+(rows.length-failed.length)+' réussis, '+failed.length+' en écart');
+for(const r of failed)console.error(r.id,r.issue,JSON.stringify(r.expected),JSON.stringify(r.actual));
+if(failed.length)process.exitCode=1;

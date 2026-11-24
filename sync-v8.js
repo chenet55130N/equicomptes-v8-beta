@@ -125,7 +125,7 @@ function bumpDirty(){
  const keys=new Set([...observed.keys(),...latest.keys()]);let changed=false;
  for(const key of keys){
   const before=observed.get(key),after=latest.get(key);
-  if(fmt(before)===fmt(after))continue;
+  if(stableBank(before)===stableBank(after))continue;
   const prev=dirty[key];
   // Baseline de l'élément lors de la première saisie non synchronisée.
   const base=prev?prev.base:(shadow.has(key)?shadow.get(key):null);
@@ -156,7 +156,7 @@ function refreshRemoteBaseline(remote){shadow=remoteDocsToMap(remote);saveBaseli
 function flagConflict(key,remote){
  const op=dirty[key];if(!op)return false;
  // Le document distant a changé pendant l'absence de connexion.
- if(fmt(op.base)!==fmt(remote===undefined?null:remote)){
+ if(stableBank(op.base??null)!==stableBank(remote??null)&&stableBank(op.deleted?null:op.value)!==stableBank(remote??null)){
   conflicts.set(key,{remote:remote===undefined?null:remote});return true;
  }
  return false;
@@ -166,11 +166,11 @@ function applyCloudSnapshot(group,id,v,metadata){
  if(metadata?.hasPendingWrites)return;
  if(dirty[key]){
   // Le changement local a priorité tant que le conflit n'est pas résolu.
-  if(!conflicts.has(key))flagConflict(key,value);
+  if(!inFlight.has(key))flagConflict(key,value);
   refreshStatus();return;
  }
  const old=shadow.has(key)?shadow.get(key):null;
- if(fmt(old)===fmt(value))return;
+ if(stableBank(old)===stableBank(value))return;
  if(value===null)shadow.delete(key);else shadow.set(key,value);
  saveBaseline();B.patch(group,id,value);updateObserved();refreshStatus();
 }
@@ -207,7 +207,7 @@ async function readRemoteAndMerge(u){
   const pos=key.indexOf('/'),group=key.slice(0,pos),id=key.slice(pos+1);
   if(!GROUPS.includes(group)||!id)continue;
   const remoteValue=freshRemote.has(key)?freshRemote.get(key):null;
-  if(fmt(remoteValue)===fmt(op.deleted?null:op.value)){delete dirty[key];saveDiskQueue();continue;}
+  if(stableBank(remoteValue)===stableBank(op.deleted?null:op.value)){delete dirty[key];saveDiskQueue();continue;}
   B.patch(group,id,op.deleted?null:op.value);
   flagConflict(key,remoteValue);
  }
@@ -215,7 +215,7 @@ async function readRemoteAndMerge(u){
  // Après lecture du foyer côté serveur, appliquer la date réelle avant les
  // abonnements temps réel. Les changements sont enregistrés par le journal
  // de synchronisation habituel, sans écraser le serveur.
- if(typeof B.advanceRealDate==='function')B.advanceRealDate();
+ 
  for(const group of GROUPS){
   const off=sdk.onSnapshot(pathCollection(group),{includeMetadataChanges:true},snapshot=>{
    if(snapshot.metadata.fromCache){if(!navigator.onLine)disconnected=true;refreshStatus();}
@@ -226,7 +226,9 @@ async function readRemoteAndMerge(u){
   subscriptions.push(off);
  }
  onlineReady=true;disconnected=false;lastServerContact=true;
- rememberUser(u);unlocked();refreshStatus();scheduleSync();
+ rememberUser(u);unlocked();refreshStatus();
+ if(typeof B.advanceRealDate==='function')await B.advanceRealDate();
+ scheduleSync();
 }
 async function startCloud(u){
  if(isConnecting)return;
@@ -256,32 +258,26 @@ async function syncPending(){
   inFlight.add(key);
   const rev=op.rev;
   try{
-   if(group==='settings'&&id==='v9-banking'&&!op.deleted){
-    // Transaction optimiste : aucun écrasement silencieux d'une version modifiée
-    // entre-temps sur le deuxième appareil. Le conflit est proposé à l'utilisateur.
-    const ref=pathDoc(group,id);
-    await sdk.runTransaction(db,async transaction=>{
-     const snapshot=await transaction.get(ref);
-     const current=snapshot.exists()?snapshot.data():null;
-     if(stableBank(current)!==stableBank(op.base??null)){
-      const error=Error('Modification bancaire concurrente');
-      error.code='equi/concurrent-bank-change';error.remote=current;
-      throw error;
-     }
-     transaction.set(ref,op.value);
-    });
-   }else if(op.deleted)await sdk.deleteDoc(pathDoc(group,id));
-   else await sdk.setDoc(pathDoc(group,id),op.value);
-   // N'effacer le journal que si l'utilisateur n'a pas modifié l'entrée entre-temps.
-   if(dirty[key]?.rev===rev){
-    delete dirty[key];saveDiskQueue();
-    if(op.deleted)shadow.delete(key);else shadow.set(key,op.value);
-    saveBaseline();
-   }
+   const ref=pathDoc(group,id),requested=op.deleted?null:op.value;
+   await sdk.runTransaction(db,async transaction=>{
+    const snapshot=await transaction.get(ref);
+    const remote=snapshot.exists()?snapshot.data():null;
+    if(stableBank(remote)===stableBank(requested))return;
+    if(stableBank(remote)!==stableBank(op.base??null)){
+     const error=Error('Cet élément a été modifié sur un autre appareil.');
+     error.code='equi/concurrent-change';error.remote=remote;throw error;
+    }
+    if(op.deleted)transaction.delete(ref);
+    else transaction.set(ref,requested);
+   });
+   if(dirty[key]?.rev===rev)delete dirty[key];
+   else if(dirty[key])dirty[key].base=requested;
+   if(op.deleted)shadow.delete(key);else shadow.set(key,requested);
+   conflicts.delete(key);saveDiskQueue();saveBaseline();
   }catch(e){
-   if(e?.code==='equi/concurrent-bank-change'){
+   if(e?.code==='equi/concurrent-change'){
     conflicts.set(key,{remote:e.remote??null});
-    note('Paramètres bancaires modifiés sur un autre appareil : choisis la version à conserver.');
+    note('Élément modifié sur un autre appareil : choisis la version à conserver.');
    }else{
     disconnected=String(e?.code||'').includes('unavailable')||!navigator.onLine;
     note('Synchronisation suspendue : '+errorText(e));
