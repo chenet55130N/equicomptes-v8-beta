@@ -1,8 +1,8 @@
 {
   "id": "./?equicomptes-v8-beta",
-  "name": "ÉquiComptes V9.0",
+  "name": "ÉquiComptes V9.0.4",
   "short_name": "ÉquiComptes V9",
-  "description": "ÉquiComptes V9.0 : choix des comptes bancaires, charges équitables et synchronisation privée avec mode hors ligne.",
+  "description": "ÉquiComptes V9.0.4 : choix des comptes bancaires, charges équitables et synchronisation privée avec mode hors ligne.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

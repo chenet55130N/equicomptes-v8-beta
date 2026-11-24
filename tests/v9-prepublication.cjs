@@ -60,13 +60,14 @@ function section(text,start,end){
  const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../manifest.webmanifest'),'utf8'));
  const serviceWorker=fs.readFileSync(path.join(__dirname,'../service-worker.js'),'utf8');
  assert.equal(manifest.id,'./?equicomptes-v8-beta');
- assert.equal(manifest.name,'ÉquiComptes V9.0');
+ const displayed=html.match(/name="application-name" content="([^"]+)"/)[1];
+ assert.equal(manifest.name,displayed);
  assert.equal(manifest.short_name,'ÉquiComptes V9');
  assert.deepEqual(manifest.icons.map(icon=>icon.src),['icon-v9-192.png','icon-v9-512.png']);
  for(const icon of manifest.icons){
   assert.ok(fs.existsSync(path.join(__dirname,'..',icon.src)),'Icône PWA absente : '+icon.src);
  }
- assert.match(html,/<strong>ÉquiComptes V9\.0<\/strong>/);
+ assert.ok(html.includes('<strong>'+displayed+'</strong>'));
  assert.doesNotMatch(html,/<strong>ÉquiComptes V8\.3<\/strong>/);
  assert.match(html,/rel="manifest" href="\.\/manifest\.webmanifest"/);
  // Le lien n'est pas affiché sous le QR, mais reste dans le DOM
@@ -76,7 +77,7 @@ function section(text,start,end){
  assert.match(html,/id="v82-share-copy"/);
  assert.match(html,/id="v82-share-system"/);
  assert.match(html,/const url=by\('v82-share-link'\)\.href/);
- assert.match(serviceWorker,/equi-v9-16-themes-20261118-r1/);
+ assert.ok(serviceWorker.includes('equi-v'+displayed.split(' V')[1].replaceAll('.','-')));
  assert.match(serviceWorker,/icon-v9-192\.png/);
  assert.match(serviceWorker,/icon-v9-512\.png/);
  // Régression UI : ni message de prépublication ni configuration bancaire
@@ -94,8 +95,8 @@ function section(text,start,end){
  assert.match(html,/id="v9-income-intro"/);
  assert.match(html,/separate\?'Bonus commun'/);
  assert.match(html,/id="v9-default-bank-p1-wrap"/);
- assert.match(html,/src="\.\/sync-v8\.js\?v=9\.0-epuree"/);
- assert.match(html,/if\(!v82Demo\)setInterval\(\(\)=>\{if\(!document.hidden\)v82Snapshot\(\);\},60000\)/);
+ const syncUrl=html.match(/src="(\.\/sync-v8\.js\?v=[^"]+)"/)[1];assert.ok(serviceWorker.includes(syncUrl));
+ assert.match(html,/if\(!v82Demo\)setInterval\([\s\S]{0,220}v82Snapshot\(\);[\s\S]{0,30}60000\)/);
  assert.match(html,/version:v,exportedAt:new Date\(\)\.toISOString\(\)/);
  assert.match(html,/labFrozenAt\(state.month\)\?\.result\|\|state.history.find/);
  assert.match(sync,/await batch.commit\(\);[\s\S]{0,600}await sdk.setDoc\(sdk.doc\(db,'foyers',hid,'settings','v9-banking'\)/);
@@ -140,7 +141,7 @@ function section(text,start,end){
   settlements:Object.fromEntries(current.settlements.map(x=>[x.id,x])),
   history:Object.fromEntries(current.history.map(x=>[x.month,x]))
  };
- const bridge=section(html,'function betaReplace(remote){','\nlet betaRenderTimer');
+ const bridge='let localReadFailed=false;'+section(html,'function betaReplace(remote){','\nlet betaRenderTimer');
  const restored=new Function('state','seed','validate','betaRefresh','remote',bridge+';betaReplace(remote);return state')(current,seed,validate,()=>{},remote);
  assert.equal(restored.settings.nameN,'Alex');
  assert.equal(restored.monthlySalaries['2026-10'].moveA,100);
@@ -187,24 +188,24 @@ function section(text,start,end){
  assert.deepEqual(success,{writes:1,conflicts:0,pending:0});
  assert.deepEqual(conflict,{writes:0,conflicts:1,pending:1});
  const labFns=section(html,'function labModeAt(month){','function labRenderBanking(){');
- const makeTimeline=unpaid=>{
+ const makeTimeline=async unpaid=>{
   const state={month:'2026-11',charges:[],additionalIncome:[],history:[],settings:{bankN:'joint',bankA:'joint'},monthlySalaries:{'2026-11':{moveN:0,moveA:0}},lab:{
    initial:'joint',transitions:[],pending:{from:'2026-11',effective:'2026-12',to:'separate'},
    payers:{},jointPayers:{},payerChanges:{joint:{},separate:{}},clock:'2026-11-16',latestMonthSeen:'2026-11',
    paid:{},configured:true,blocked:'',split:'prorata',splitChanges:[],frozen:{}
   }};
   const deps={
-   state,labToday:()=> '2026-12-01',labNextMonth:m=>{const [y,mm]=m.split('-').map(Number);const d=new Date(y,mm,1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')},
+   state,v82Context:()=>({scope:'fixture'}),v82Snapshot:async()=>true,labToday:()=> '2026-12-01',labNextMonth:m=>{const [y,mm]=m.split('-').map(Number);const d=new Date(y,mm,1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')},
    debtState:()=>({pending:[]}),movementState:()=>({base:{p1:unpaid,p2:0},done:{p1:0,p2:0}}),
    monthIncome:()=>[],bonusParts:()=>({}),compute:()=>({netN:0,netA:0,groups:{common:0,p1:0,p2:0}}),
-   personName:v=>v,switchMonth:m=>{state.month=m},persist:()=>{},labRenderBanking:()=>{},
+   personName:v=>v,switchMonth:m=>{state.month=m},persist:()=>true,labRenderBanking:()=>{},
    renderCharges:()=>{},renderHistory:()=>{},toast:()=>{},labelMonth:m=>m,effectiveCharge:()=>({active:true})};
   const k=Object.keys(deps);
   const clock=new Function(...k,labFns+';return labClockChange')(...k.map(x=>deps[x]));
-  clock('2026-12-01');
+  await clock('2026-12-01');
   return state;
  };
- const ok=makeTimeline(0),blocked=makeTimeline(2500);
+ const ok=await makeTimeline(0),blocked=await makeTimeline(2500);
  assert.equal(ok.lab.initial,'joint');
  assert.equal(ok.lab.pending,null);
  assert.equal(ok.lab.latestMonthSeen,'2026-12');
@@ -214,5 +215,15 @@ function section(text,start,end){
  assert.equal(blocked.lab.latestMonthSeen,'2026-11');
  assert.match(blocked.lab.blocked,/non validé/);
  assert.equal(blocked.lab.clock,'2026-12-01','La date réelle doit avancer même si la clôture est suspendue');
+ const datedConflict=new Function(section(sync,'function datedChargeConflict(','function resolveConflicts(){')+';return datedChargeConflict')();
+ const revised=amount=>({name:'Contrat',amount:10000,revisions:[{from:'2026-12',name:'Contrat',amount}]});
+ const options=datedConflict(revised(12000),revised(13000));
+ assert.match(options,/2026-12/);assert.match(options,/120,00/);assert.match(options,/130,00/);
+ if(process.env.GITHUB_ACTIONS==='true'){
+  const {execFileSync}=require('node:child_process');
+  execFileSync(process.execPath,[path.join(__dirname,'simulations-v904/run.mjs')],{stdio:'inherit'});
+  execFileSync(process.execPath,[path.join(__dirname,'simulations-v904/navigateur.cjs')],{stdio:'inherit'});
+  if(process.env.GITHUB_HEAD_REF==='correctif/v9.0.4-16-anomalies')execFileSync(process.execPath,[path.join(__dirname,'simulations-v904/comparer-publication.mjs')],{stdio:'inherit'});
+ }
  console.log('V9 PREPUBLICATION PASS: syntaxe, 9 catégories V8, import V9, sauvegardes, conflit Firestore, passage de mois, blocages');
 })().catch(err=>{console.error(err);process.exitCode=1});
