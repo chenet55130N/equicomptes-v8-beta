@@ -215,10 +215,15 @@ function section(text,start,end){
  assert.equal(blocked.lab.latestMonthSeen,'2026-11');
  assert.match(blocked.lab.blocked,/non validé/);
  assert.equal(blocked.lab.clock,'2026-12-01','La date réelle doit avancer même si la clôture est suspendue');
+ const datedConflict=new Function(section(sync,'function datedChargeConflict(','function resolveConflicts(){')+';return datedChargeConflict')();
+ const revised=amount=>({name:'Contrat',amount:10000,revisions:[{from:'2026-12',name:'Contrat',amount}]});
+ const options=datedConflict(revised(12000),revised(13000));
+ assert.match(options,/2026-12/);assert.match(options,/120,00/);assert.match(options,/130,00/);
  if(process.env.GITHUB_ACTIONS==='true'){
   const {execFileSync}=require('node:child_process');
   execFileSync(process.execPath,[path.join(__dirname,'simulations-v904/run.mjs')],{stdio:'inherit'});
   execFileSync(process.execPath,[path.join(__dirname,'simulations-v904/navigateur.cjs')],{stdio:'inherit'});
+  if(process.env.GITHUB_HEAD_REF==='correctif/v9.0.4-16-anomalies')execFileSync(process.execPath,[path.join(__dirname,'simulations-v904/comparer-publication.mjs')],{stdio:'inherit'});
  }
  console.log('V9 PREPUBLICATION PASS: syntaxe, 9 catégories V8, import V9, sauvegardes, conflit Firestore, passage de mois, blocages');
 })().catch(err=>{console.error(err);process.exitCode=1});

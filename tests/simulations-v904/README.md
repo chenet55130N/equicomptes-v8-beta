@@ -5,3 +5,5 @@ Avec Node.js 22 ou supérieur, depuis la racine du dépôt, exécuter `node test
 Pour comparer le même ensemble de 8 200 cas avec une autre révision, passer `--comparaison` et définir `EQUICOMPTES_SOURCE` avec le chemin de sa racine. Le numéro attendu et les ressources PWA proviennent de la révision testée.
 
 Le pilote télécharge le module de test LinkeDOM à une révision fixe et vérifie son SHA-256. Hors ligne, définir `EQUICOMPTES_DOM` avec le chemin de cette copie de `worker.js`. La campagne utilise UTC et des graines déterministes. Le service Firestore en mémoire, le stockage et les comptes utilisés dans cette campagne sont isolés de la production.
+
+Pour vérifier de nouveau la V9.0.3 servie sur le site, exécuter `node tests/simulations-v904/comparer-publication.mjs`. Cette commande contrôle les empreintes des fichiers téléchargés avant de rejouer la campagne de référence.

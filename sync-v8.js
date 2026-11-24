@@ -295,6 +295,24 @@ function reconnectSoon(){
   else{const cfg=await loadConfig();if(cfg)await startFirebase(cfg);}
  },900);
 }
+function datedChargeConflict(local,shared){
+ const revisions=doc=>doc?.revisions||[];
+ const dates=[...new Set([...revisions(local),...revisions(shared)].map(row=>row.from))].sort();
+ if(!dates.length)return '';
+ const at=(doc,date)=>revisions(doc).filter(row=>row.from<=date).sort((a,b)=>a.from.localeCompare(b.from)).at(-1)||doc;
+ const describe=row=>{
+  if(!row||row.removed)return 'supprimée';
+  const amount=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format((row.amount||0)/100);
+  return (row.name||'Charge')+' · '+amount+(row.enabled===false?' · désactivée':'');
+ };
+ const lines=[];
+ for(const date of dates){
+  const a=describe(at(local,date)),b=describe(at(shared,date));
+  if(a!==b)lines.push(date+' · sur cet appareil : '+a+' · dans le foyer : '+b);
+ }
+ if(!lines.length)return '';
+ return '\n'+lines.slice(0,4).join('\n')+(lines.length>4?'\n'+(lines.length-4)+' autre(s) période(s) différente(s).':'')+'\n';
+}
 function resolveConflicts(){
  if(!conflicts.size)return;
  for(const [key,c]of [...conflicts]){
@@ -313,8 +331,9 @@ function resolveConflicts(){
   };
   const localAmount=['charges','incomes','expenses'].includes(group)?money(op.deleted?null:op.value):null;
   const sharedAmount=['charges','incomes','expenses'].includes(group)?money(c.remote):null;
-  const comparison=localAmount!==null && sharedAmount!==null
-   ?`\nSur cet appareil : ${localAmount}\nDans le foyer partagé : ${sharedAmount}\n` : '';
+  const dated=group==='charges'?datedChargeConflict(op.deleted?null:op.value,c.remote):'';
+  const comparison=dated||(localAmount!==null && sharedAmount!==null
+   ?`\nSur cet appareil : ${localAmount}\nDans le foyer partagé : ${sharedAmount}\n` : '');
   const yes=confirm(`DEUX MODIFICATIONS DIFFÉRENTES\n\n« ${itemName} » a été modifié sur deux appareils.${comparison}\nQuelle version veux-tu conserver ?\n\nOK : garder MA modification et l'envoyer au foyer.\n\nAnnuler : garder la VERSION PARTAGÉE et remplacer ma modification.\n\nSeul cet élément est concerné.`);
   if(yes){op.base=c.remote;saveDiskQueue();}
   else{

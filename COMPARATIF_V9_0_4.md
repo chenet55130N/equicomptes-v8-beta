@@ -9,7 +9,7 @@ La page publique, le module de synchronisation et le service worker récupérés
 | En écart | 50 | 0 |
 | Catégories présentant au moins un écart | 16 | 0 |
 
-Les 4 608 scénarios de calcul courant et les 120 parcours ordinaires de gestion des charges datées réussissent sur les deux versions. Les 19 contrôles supplémentaires de reprise de données portent sur le correctif.
+Les 4 608 scénarios de calcul courant et les 120 parcours ordinaires de gestion des charges datées réussissent sur les deux versions. Les 19 contrôles supplémentaires de reprise de données portent sur le correctif. L’essai dans Chrome vérifie le sens du virement de 250 €, puis la persistance de sa confirmation après réouverture.
 
 | N° | Anomalie | Échecs en V9.0.3 | Échecs en V9.0.4 | Comportement vérifié |
 |---:|---|---:|---:|---|
@@ -19,7 +19,7 @@ Les 4 608 scénarios de calcul courant et les 120 parcours ordinaires de gestion
 | 4 | Clôture prématurée | 2 | 0 | Les mouvements restant à confirmer sont indiqués avant clôture. Une ancienne archive bloquée permet de confirmer un mouvement déjà prévu. |
 | 5 | Copie des virements | 2 | 0 | En mode sans joint, un seul virement d’Alex à Camille est copié. Une fois effectué, la copie indique qu’il ne reste rien à verser. |
 | 6 | Préparation du changement de mode | 1 | 0 | Le menu permet de choisir les payeurs du mois suivant avant de quitter le mode joint. Annuler annule aussi la préparation. |
-| 7 | Écrasement entre appareils | 14 | 0 | Une modification concurrente conserve les deux propositions pour arbitrage, y compris lorsqu’une personne supprime la ligne. |
+| 7 | Écrasement entre appareils | 14 | 0 | Une modification concurrente conserve les deux propositions pour arbitrage. Pour deux tarifs programmés, le choix indique aussi les montants et le mois concernés. |
 | 8 | Charge réactivée sans payeur | 2 | 0 | Une exception mensuelle déclenche la demande de payeur. La compensation attend que le compte soit identifié. |
 | 9 | Deux salaires nuls | 2 | 0 | Sur une facture commune de 100 €, le prorata attend une base de calcul. En 50/50, le résumé et le détail indiquent 50 €. |
 | 10 | Modification d’un mois clôturé | 3 | 0 | L’ajout de prime, la restauration des salaires habituels et l’annulation d’une compensation confirmée sont protégés. |
